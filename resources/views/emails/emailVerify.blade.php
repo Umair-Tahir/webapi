@@ -1,0 +1,1 @@
+<p>Please <a href="https://ally.eezly.com/verify-account?token={{$code}}" target="_blank">click here</a> to verify your email address and activate your eezly restaurant account.</p>
