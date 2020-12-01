@@ -9,7 +9,7 @@ class DatabaseSeeder extends Seeder
      *
      * @return void
      */
-    /*public function run()
+    public function run()
     {
         $this->call(UsersTableSeeder::class);
         $this->call(CustomFieldsTableSeeder::class);
@@ -57,17 +57,17 @@ class DatabaseSeeder extends Seeder
         $this->call(EarningsTableSeeder::class);
         $this->call(DriversPayoutsTableSeeder::class);
         $this->call(RestaurantsPayoutsTableSeeder::class);
-    }*/
+    }
 
     // For Update 1.1.0 RENAME IT run()
 
-    public function run()
-    {
-	$this->call(ExtraGroupsTableSeeder::class);
-	$this->call(CuisinesTableSeeder::class);
-        $this->call(DemoPermissionsPermissionsTableSeeder::class);
-        $this->call(RoleHasPermissionsTableSeeder::class);
-    }
+//    public function run()
+//    {
+//	$this->call(ExtraGroupsTableSeeder::class);
+//	$this->call(CuisinesTableSeeder::class);
+//        $this->call(DemoPermissionsPermissionsTableSeeder::class);
+//        $this->call(RoleHasPermissionsTableSeeder::class);
+//    }
 /*
  * php artisan iseed currencies,custom_fields,custom_field_values,delivery_addresses,drivers,drivers_payouts,driver_restaurants,earnings,extras,faqs,faq_categories,favorites,favorite_extras,foods,food_orders,food_order_extras,food
 _reviews,galleries,media,migrations,model_has_permissions,model_has_roles,notifications,nutrition,orders,order_statuses,password_resets,payments,permissions,restaurants,restaurants_payouts,restaurant_reviews,roles,role_has_permissions,uploads,user_restaurants
