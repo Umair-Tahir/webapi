@@ -69,4 +69,24 @@ class FoodOrderAPIController extends Controller
 
         return $this->sendResponse($foodOrder->toArray(), 'Food Order retrieved successfully');
     }
+
+    /**
+     * Store a newly created Food Order in storage.
+     *
+     * @param Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function store(Request $request)
+    {
+        $input = $request->all();
+       try {
+            $foodOrder = $this->foodOrderRepository->create($input);
+
+        } catch (ValidatorException $e) {
+            return $this->sendError($e->getMessage());
+        }
+
+        return $this->sendResponse($foodOrder->toArray(), __('lang.saved_successfully', ['operator' => __('lang.foodOrder')]));
+    }
 }
