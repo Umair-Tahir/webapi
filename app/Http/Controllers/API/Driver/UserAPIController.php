@@ -12,6 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Prettus\Validator\Exceptions\ValidatorException;
+use Twilio\Rest\Client;
 
 class UserAPIController extends Controller
 {
@@ -69,11 +70,14 @@ class UserAPIController extends Controller
                 'name' => 'required',
                 'email' => 'required|unique:users|email',
                 'password' => 'required',
+                'phone_number' => 'required|unique:users|min:8',
+
             ]);
             $user = new User;
             $user->name = $request->input('name');
             $user->email = $request->input('email');
             $user->device_token = $request->input('device_token', '');
+            $user->phone_number = $request->input('phone_number');
             $user->password = Hash::make($request->input('password'));
             $user->api_token = str_random(60);
             $user->save();
@@ -208,5 +212,54 @@ class UserAPIController extends Controller
             ], 'Reset link not sent');
         }
 
+    }
+
+    function phoneVerify(Request $request)
+    {
+
+//        $this->validate($request, ['phone_number' => 'required|string|min:8']);
+//        $data = $request->validate([
+//            'phone_number' => ['required', 'string', 'min:8'],
+//        ]);
+//        /* Get credentials from .env */
+//        $token = getenv("TWILIO_AUTH_TOKEN");
+//        $twilio_sid = getenv("TWILIO_SID");
+//        $twilio_verify_sid = getenv("TWILIO_VERIFY_SID");
+//        $twilio = new Client($twilio_sid, $token);
+//
+//            $twilio->verify->v2->services($twilio_verify_sid)
+//                ->verifications
+//                ->create('+'.$data['phone_number'], "sms");
+//
+//            return $twilio;
+//        code to verify OTP
+
+        $data = $request->validate([
+            'verification_code' => ['required', 'numeric'],
+            'phone_number' => ['required', 'string', 'min:8'],
+        ]);
+
+        /* Get credentials from .env */
+        $token = getenv("TWILIO_AUTH_TOKEN");
+        $twilio_sid = getenv("TWILIO_SID");
+        $twilio_verify_sid = getenv("TWILIO_VERIFY_SID");
+        $twilio = new Client($twilio_sid, $token);
+        $verification = $twilio->verify->v2->services($twilio_verify_sid)
+            ->verificationChecks
+            ->create($data['verification_code'], array('to' => '+'.$data['phone_number']));
+
+        if ($verification->valid) {
+            $user = tap(User::where('phone_number', $data['phone_number']))->update(['isVerified' => true]);
+            if (!$user) {
+                return $this->sendError('User not found', 401);
+            }
+            $user=User::where('phone_number', $data['phone_number'])->first();
+            return $this->sendResponse($user, 'Phone verified Successfully.');
+        }
+        else{
+            return $this->sendError([
+                'error' => 'Invalid verification code entered!',
+            ], 'Invalid verification code entered');
+        }
     }
 }

@@ -173,18 +173,18 @@ class PayPalController extends Controller
      * @return \App\Models\Order
      */
     protected function createOrder($userId, $deliveryAddressId = null, $status = '')
-    {
-        if (!strcasecmp($status, 'Completed') || !strcasecmp($status, 'Processed')) {
-            $amount = 0;
-            $user = $this->userRepository->findWithoutFail($userId);
-            $orders = [];
-            if (!empty($user)) {
-                $carts = $this->cartRepository->findByField('user_id', $userId);
-                foreach ($carts as $cart) {
-                    $orders['foods'][] = [
-                        'food_id' => $cart->food->id,
-                        'price' => $cart->food->discount_price > 0 ? $cart->food->discount_price : $cart->food->price,
-                        'quantity' => $cart->quantity,
+    {        if (!strcasecmp($status, 'Completed') || !strcasecmp($status, 'Processed')) {
+        $amount = 0;
+        $user = $this->userRepository->findWithoutFail($userId);
+        $orders = [];
+        if (!empty($user)) {
+            $carts = $this->cartRepository->findByField('user_id', $userId);
+            foreach ($carts as $cart) {
+                $orders['foods'][] = [
+                    'food_id' => $cart->food->id,
+                    'price' => $cart->food->discount_price > 0 ? $cart->food->discount_price : $cart->food->price,
+                    '
+quantity' => $cart->quantity,
                         'extras' => $cart->extras->pluck('id')->toArray(),
                     ];
 
