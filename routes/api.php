@@ -18,6 +18,7 @@ Route::prefix('driver')->group(function () {
     Route::get('logout', 'API\Driver\UserAPIController@logout');
     Route::get('settings', 'API\Driver\UserAPIController@settings');
     Route::post('phone_verify', 'API\Driver\UserAPIController@phoneVerify');
+
 });
 
 
