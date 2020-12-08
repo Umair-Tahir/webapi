@@ -261,6 +261,7 @@ class ComposerStaticInit6dc24fae20caa22311c7f26e01e00501
         'C' => 
         array (
             'Cron\\' => 5,
+            'CraigPaul\\Moneris\\' => 18,
             'Complex\\' => 8,
             'Collective\\Html\\' => 16,
             'Carbon\\' => 7,
@@ -684,6 +685,10 @@ class ComposerStaticInit6dc24fae20caa22311c7f26e01e00501
         'Cron\\' => 
         array (
             0 => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron',
+        ),
+        'CraigPaul\\Moneris\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/craigpaul/moneris-api/src',
         ),
         'Complex\\' => 
         array (
@@ -1142,6 +1147,19 @@ class ComposerStaticInit6dc24fae20caa22311c7f26e01e00501
         'Complex\\Complex' => __DIR__ . '/..' . '/markbaker/complex/classes/src/Complex.php',
         'Complex\\Exception' => __DIR__ . '/..' . '/markbaker/complex/classes/src/Exception.php',
         'Composer\\InstalledVersions' => __DIR__ . '/..' . '/composer/InstalledVersions.php',
+        'CraigPaul\\Moneris\\CreditCard' => __DIR__ . '/..' . '/craigpaul/moneris-api/src/CreditCard.php',
+        'CraigPaul\\Moneris\\Crypt' => __DIR__ . '/..' . '/craigpaul/moneris-api/src/Crypt.php',
+        'CraigPaul\\Moneris\\Customer' => __DIR__ . '/..' . '/craigpaul/moneris-api/src/Customer.php',
+        'CraigPaul\\Moneris\\Gateway' => __DIR__ . '/..' . '/craigpaul/moneris-api/src/Gateway.php',
+        'CraigPaul\\Moneris\\Gettable' => __DIR__ . '/..' . '/craigpaul/moneris-api/src/Gettable.php',
+        'CraigPaul\\Moneris\\Moneris' => __DIR__ . '/..' . '/craigpaul/moneris-api/src/Moneris.php',
+        'CraigPaul\\Moneris\\Preparable' => __DIR__ . '/..' . '/craigpaul/moneris-api/src/Preparable.php',
+        'CraigPaul\\Moneris\\Processor' => __DIR__ . '/..' . '/craigpaul/moneris-api/src/Processor.php',
+        'CraigPaul\\Moneris\\Receipt' => __DIR__ . '/..' . '/craigpaul/moneris-api/src/Receipt.php',
+        'CraigPaul\\Moneris\\Response' => __DIR__ . '/..' . '/craigpaul/moneris-api/src/Response.php',
+        'CraigPaul\\Moneris\\Settable' => __DIR__ . '/..' . '/craigpaul/moneris-api/src/Settable.php',
+        'CraigPaul\\Moneris\\Transaction' => __DIR__ . '/..' . '/craigpaul/moneris-api/src/Transaction.php',
+        'CraigPaul\\Moneris\\Vault' => __DIR__ . '/..' . '/craigpaul/moneris-api/src/Vault.php',
         'Cron\\AbstractField' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/AbstractField.php',
         'Cron\\CronExpression' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/CronExpression.php',
         'Cron\\DayOfMonthField' => __DIR__ . '/..' . '/dragonmantank/cron-expression/src/Cron/DayOfMonthField.php',

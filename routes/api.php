@@ -13,7 +13,6 @@
 Route::prefix('driver')->group(function () {
     Route::post('login', 'API\Driver\UserAPIController@login');
     Route::post('register', 'API\Driver\UserAPIController@register');
-    Route::post('send_reset_link_email', 'API\UserAPIController@sendResetLinkEmail');
     Route::get('user', 'API\Driver\UserAPIController@user');
     Route::get('logout', 'API\Driver\UserAPIController@logout');
     Route::get('settings', 'API\Driver\UserAPIController@settings');
@@ -21,7 +20,7 @@ Route::prefix('driver')->group(function () {
 
 });
 
-
+Route::post('paymentz', 'API\UserAPIController@paymentM');
 Route::post('login', 'API\UserAPIController@login');
 Route::post('register', 'API\UserAPIController@register');
 Route::post('send_reset_link_email', 'API\UserAPIController@sendResetLinkEmail');

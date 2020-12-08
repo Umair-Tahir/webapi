@@ -198,6 +198,22 @@ class UserAPIController extends Controller
 
         $this->validate($request, ['email' => 'required|email']);
 
+
+            $response = Password::broker()->sendResetLink(
+                $request->only('email'));
+
+
+        if ($response == Password::RESET_LINK_SENT) {
+            return $this->sendResponse(true, 'Reset link was sent successfully');
+        } else {
+            return $this->sendError('Reset link not sent', 401);
+        }
+
+    }
+
+
+    public function paymentM(Request $request){
+
         try{
             $response = Password::broker()->sendResetLink(
                 $request->only('email'));
@@ -207,12 +223,7 @@ class UserAPIController extends Controller
             echo "</pre>";
         }
 
-
-        if ($response == Password::RESET_LINK_SENT) {
-            return $this->sendResponse(true, 'Reset link was sent successfully');
-        } else {
-            return $this->sendError('Reset link not sent', 401);
-        }
+        return $this->sendResponse(true, 'payment charged');
 
     }
 }
