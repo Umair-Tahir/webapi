@@ -77,16 +77,16 @@ class FoodOrderAPIController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
-    {
-        $input = $request->all();
-       try {
-            $foodOrder = $this->foodOrderRepository->create($input);
-
-        } catch (ValidatorException $e) {
-            return $this->sendError($e->getMessage());
-        }
-
-        return $this->sendResponse($foodOrder->toArray(), __('lang.saved_successfully', ['operator' => __('lang.foodOrder')]));
-    }
+//    public function store(Request $request)
+//    {
+//        $input = $request->all();
+//       try {
+//            $foodOrder = $this->foodOrderRepository->create($input);
+//
+//        } catch (ValidatorException $e) {
+//            return $this->sendError($e->getMessage());
+//        }
+//
+//        return $this->sendResponse($foodOrder->toArray(), __('lang.saved_successfully', ['operator' => __('lang.foodOrder')]));
+//    }
 }
