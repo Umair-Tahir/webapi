@@ -77,6 +77,8 @@ Route::middleware('auth:api')->group(function () {
 
     Route::resource('orders', 'API\OrderAPIController');
 
+    Route::post('generate_order', 'API\GenerateOrderAPIController@store_order');
+
     Route::resource('food_orders', 'API\FoodOrderAPIController');
 
     Route::resource('notifications', 'API\NotificationAPIController');
@@ -85,6 +87,9 @@ Route::middleware('auth:api')->group(function () {
     Route::resource('carts', 'API\CartAPIController');
 
     Route::resource('delivery_addresses', 'API\DeliveryAddressAPIController');
+
+    Route::get('trending_foods', 'API\TrendApiController@trending_foods');
+    Route::get('popular_foods', 'API\TrendApiController@popular_foods');
 });
 
 Route::post('partner-register', 'CustomController@createPartner');
