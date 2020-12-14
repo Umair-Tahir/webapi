@@ -34,7 +34,6 @@ class TrendAPIController extends Controller
             $food[$i] = $this->foodRepository->findWithoutFail($fid['food_id']);
             $i++;
         }
-
         return $this->sendResponse($food, 'Showing Trending Foods');
     }
 

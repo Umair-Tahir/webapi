@@ -6,7 +6,7 @@
     'aliases' => 
     array (
     ),
-    'reference' => 'c0656c8c3a70f77b91cb50ac7eb868dd5921f60d',
+    'reference' => '6b5bbf4a6590c7e3ed8d43b1f833acdb29df11e5',
     'name' => 'laravel/laravel',
   ),
   'versions' => 
@@ -62,6 +62,15 @@
       array (
         0 => '*',
       ),
+    ),
+    'craigpaul/moneris-api' => 
+    array (
+      'pretty_version' => 'v0.8.1',
+      'version' => '0.8.1.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '0f56561ab937ba3824a62c911aa4f536ea18b610',
     ),
     'davedevelopment/hamcrest-php' => 
     array (
@@ -514,7 +523,7 @@
       'aliases' => 
       array (
       ),
-      'reference' => 'c0656c8c3a70f77b91cb50ac7eb868dd5921f60d',
+      'reference' => '6b5bbf4a6590c7e3ed8d43b1f833acdb29df11e5',
     ),
     'laravel/socialite' => 
     array (

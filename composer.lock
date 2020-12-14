@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "ee1ae765579fee262ac85df1afb32412",
+    "content-hash": "d68885e10fe4aa40ea5d07828a8597d4",
     "packages": [
         {
             "name": "anlutro/l4-settings",
@@ -243,6 +243,60 @@
             },
             "abandoned": "https://github.com/Laravel-Lang/lang",
             "time": "2019-03-17T10:36:46+00:00"
+        },
+        {
+            "name": "craigpaul/moneris-api",
+            "version": "v0.8.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/craigpaul/moneris-api.git",
+                "reference": "0f56561ab937ba3824a62c911aa4f536ea18b610"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/craigpaul/moneris-api/zipball/0f56561ab937ba3824a62c911aa4f536ea18b610",
+                "reference": "0f56561ab937ba3824a62c911aa4f536ea18b610",
+                "shasum": ""
+            },
+            "require": {
+                "guzzlehttp/guzzle": "^6.2",
+                "php": ">=5.6"
+            },
+            "require-dev": {
+                "fzaninotto/faker": "^1.6",
+                "mockery/mockery": "~0.9",
+                "phpunit/phpunit": "~5.0",
+                "squizlabs/php_codesniffer": "^2.7",
+                "symfony/var-dumper": "^3.1"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "CraigPaul\\Moneris\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "Craig Paul",
+                    "email": "craig@townfolio.co"
+                }
+            ],
+            "description": "An easier way to consume the (truly awful) Moneris eSELECTplus API.",
+            "keywords": [
+                "api",
+                "eSELECTplus",
+                "moneris"
+            ],
+            "support": {
+                "issues": "https://github.com/craigpaul/moneris-api/issues",
+                "source": "https://github.com/craigpaul/moneris-api/tree/v0.8.1"
+            },
+            "abandoned": true,
+            "time": "2020-05-05T15:29:33+00:00"
         },
         {
             "name": "dnoegel/php-xdg-base-dir",

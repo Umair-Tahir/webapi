@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\API;
 
+
+
+use App\Http\Middleware\App;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Events\OrderChangedEvent;
@@ -14,7 +17,7 @@ use App\Repositories\OrderRepository;
 use App\Repositories\PaymentRepository;
 use App\Repositories\FoodOrderRepository;
 use App\Repositories\UserRepository;
-use Braintree\Gateway;
+
 use Flash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Notification;
@@ -23,6 +26,8 @@ use Prettus\Repository\Criteria\RequestCriteria;
 use Prettus\Repository\Exceptions\RepositoryException;
 use Prettus\Validator\Exceptions\ValidatorException;
 use Stripe\Token;
+
+use CraigPaul\Moneris\Moneris;
 
 
 class GenerateOrderAPIController extends Controller
@@ -37,7 +42,7 @@ class GenerateOrderAPIController extends Controller
     private $userRepository;
     /** @var  PaymentRepository */
     private $paymentRepository;
-    /** @var  NotificationRepository */
+    /* @var  NotificationRepository  */
     private $notificationRepository;
 
     public function __construct(OrderRepository $orderRepo, FoodOrderRepository $foodOrderRepository, CartRepository $cartRepo, PaymentRepository $paymentRepo, NotificationRepository $notificationRepo, UserRepository $userRepository)
@@ -50,10 +55,105 @@ class GenerateOrderAPIController extends Controller
         $this->notificationRepository = $notificationRepo;
     }
 
+
+
+/*----------------Moneris Payment ------------------*/
+
+
+    public function moneris_payment(Request $request){
+        //return $this->sendResponse(true , 'Demo Payment');
+
+        /**************************** Request Variables ********
+        Card Verification Digits and/or Address Verification Service provided by Moneris
+         CVD & AVS are disabled in this payment method
+         ***********************/
+        $store_id='TCZPPtore5';
+        $api_token='dpXSY2QQLX3B';
+
+        /** optional
+                    Instantiation    * **/
+        $params = [
+            'environment' => Moneris::ENV_TESTING, // default: Moneris::ENV_LIVE
+//            'avs' => true, // default: false
+//            'cvd' => true, // default: false
+//            'cof' => true, // default: false
+        ];
+        $gateway = (new Moneris($store_id, $api_token, $params))->connect();
+        $gateway = Moneris::create($store_id, $api_token, $params);
+
+        /**  Pre-Authorization  * **/
+        $params = [
+            'order_id' => 'po'.uniqid('1234-56789', true),
+            'amount' => '2.99',
+            'credit_card' => '4242424242424242',
+            'expiry_month' => '12',
+            'expiry_year' => '20',
+//            'avs_street_number' => '123',
+//            'avs_street_name' => 'lakeshore blvd',
+//            'avs_zipcode' => '90210',
+//            'cvd' => '111',
+            'payment_indicator' => 'U',
+            'payment_information' => '2',
+        ];
+
+        $response = $gateway->preauth($params);
+
+        /* Capture (Pre-Authorization Completion) */
+        $params = [
+            'order_id' => 'po'.uniqid('1234-56789', true),
+            'amount' => '2.99',
+            'credit_card' => '4242424242424242',
+            'expiry_month' => '12',
+            'expiry_year' => '20',
+//            'avs_street_number' => '123',
+//            'avs_street_name' => 'lakeshore blvd',
+//            'avs_zipcode' => '90210',
+//            'cvd' => '111',
+            'payment_indicator' => 'U',
+            'payment_information' => '2',
+        ];
+
+        $response = $gateway->preauth($params);
+
+        $response = $gateway->capture($response->transaction);
+
+        /* Purchase */
+        $params = [
+            'order_id' => 'po'.uniqid('1234-56789', true),
+            'amount' => '2.99',
+            'credit_card' => '4242424242424242',
+            'expiry_month' => '12',
+            'expiry_year' => '20',
+//            'avs_street_number' => '123',
+//            'avs_street_name' => 'lakeshore blvd',
+//            'avs_zipcode' => '90210',
+//            'cvd' => '111',
+            'payment_indicator' => 'U',
+            'payment_information' => '2',
+        ];
+
+        $response = $gateway->purchase($params);
+
+
+        if($response->errors){
+            $errors = $response->errors;
+            return $this->sendError($errors);
+        }
+        $receipt = $response->receipt();
+        return $this->sendResponse($response , 'Payments');
+
+    }
+
+/*----------------Moneris Payment ------------------*/
+
+
+
     /**
      * Create new Order after receiving parameters from app
      */
     public function store_order (Request $request){
+        $txnArray = array("type" => "purchase");
+        $mpgTxn = new mpgTransaction($txnArray);
         $input = $request->all();
         $amount = 0;
 
