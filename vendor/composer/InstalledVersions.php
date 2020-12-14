@@ -76,16 +76,16 @@ private static $installed = array (
         0 => '*',
       ),
     ),
-    'craigpaul/moneris-api' => 
+    'craigpaul/moneris-api' =>
     array (
       'pretty_version' => 'v0.8.1',
       'version' => '0.8.1.0',
-      'aliases' => 
+      'aliases' =>
       array (
       ),
       'reference' => '0f56561ab937ba3824a62c911aa4f536ea18b610',
     ),
-    'davedevelopment/hamcrest-php' => 
+    'davedevelopment/hamcrest-php' =>
     array (
       'replaced' => 
       array (
