@@ -27,15 +27,21 @@ class TrendAPIController extends Controller
                       ->groupBy('food_id')->orderByRaw('COUNT(*) DESC')
                       ->limit(5)
                       ->get();
+        if($food_orders){
+            $i=0;
+            $food=Array();
+            foreach ($food_orders as $fid) {
+                $food[$i] = $this->foodRepository->findWithoutFail($fid['food_id']);
+                $i++;
+            }
 
-        $i=0;
-        $food=Array();
-        foreach ($food_orders as $fid) {
-            $food[$i] = $this->foodRepository->findWithoutFail($fid['food_id']);
-            $i++;
+            return $this->sendResponse($food, 'Showing Trending Foods');
+        }
+        else{
+            return $this->sendError('No food list to display as No orders exist yet.', 401);
+
         }
 
-        return $this->sendResponse($food, 'Showing Trending Foods');
     }
 
 
@@ -45,12 +51,18 @@ class TrendAPIController extends Controller
 
 //        select('name')>groupBy('name')->orderByRaw('COUNT(*) DESC')->limit(1)->get();
 
-        $i=0;
-        $food=Array();
-        foreach ($food_orders as $fid) {
-            $food[$i] = $this->foodRepository->findWithoutFail($fid['food_id']);
-            $i++;
+
+        if($food_orders){
+            $i=0;
+            $food=Array();
+            foreach ($food_orders as $fid) {
+                $food[$i] = $this->foodRepository->findWithoutFail($fid['food_id']);
+                $i++;
+            }
+            return $this->sendResponse($food, 'Showing Popular foods');
+
+        }else{
+            return $this->sendError('No food list to display as No orders exist yet.', 401);
         }
-        return $this->sendResponse($food, 'Showing Popular foods');
     }
 }

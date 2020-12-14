@@ -33,6 +33,17 @@
         </div>
     </div>
 
+    <!-- delivery_time Field -->
+    <div class="form-group row ">
+        {!! Form::label('delivery_time',"Delivery Time(mins)", ['class' => 'col-3 control-label text-right']) !!}
+        <div class="col-9">
+            {!! Form::number('delivery_time', null,  ['class' => 'form-control','step'=>'any','placeholder'=>  '30']) !!}
+            <div class="form-text text-muted">
+               Insert the Expected Delivery time in Minutes
+            </div>
+        </div>
+    </div>
+
     <!-- delivery_range Field -->
     <div class="form-group row ">
         {!! Form::label('delivery_range', trans("lang.restaurant_delivery_range"), ['class' => 'col-3 control-label text-right']) !!}

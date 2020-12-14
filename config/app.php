@@ -54,7 +54,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => env('APP_URL', 'http://eezly-env.eba-k4smuzem.sa-east-1.elasticbeanstalk.com'),
 
     /*
     |--------------------------------------------------------------------------

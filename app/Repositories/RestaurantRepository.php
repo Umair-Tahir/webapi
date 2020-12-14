@@ -32,6 +32,7 @@ class RestaurantRepository extends BaseRepository implements CacheableInterface
         'phone',
         'mobile',
         'information',
+        'delivery_time',
         'delivery_fee',
         'default_tax',
         'delivery_range',
