@@ -61,75 +61,71 @@ class GenerateOrderAPIController extends Controller
 
 
     public function moneris_payment(Request $request){
-        //return $this->sendResponse(true , 'Demo Payment');
+        $input = $request->all();
 
         /**************************** Request Variables ********
         Card Verification Digits and/or Address Verification Service provided by Moneris
          CVD & AVS are disabled in this payment method
          ***********************/
-        $store_id='TCZPPtore5';
-        $api_token='dpXSY2QQLX3B';
+        $store_id= $input['store_id'];
+        $api_token= $input['api_token'];
 
-        /** optional
-                    Instantiation    * **/
+        /************** optional Instantiation    ***************/
         $params = [
-            'environment' => Moneris::ENV_TESTING, // default: Moneris::ENV_LIVE
-//            'avs' => true, // default: false
-//            'cvd' => true, // default: false
-//            'cof' => true, // default: false
+            'environment' => Moneris::ENV_LIVE, // default: Moneris::ENV_LIVE
+      /*    'environment' => Moneris::ENV_TESTING, // default: Moneris::ENV_LIVE
+            'avs' => true, // default: false
+            'cvd' => true, // default: false
+            'cof' => true, // default: false */
         ];
         $gateway = (new Moneris($store_id, $api_token, $params))->connect();
         $gateway = Moneris::create($store_id, $api_token, $params);
 
-        /**  Pre-Authorization  * **/
+        /*******************  Pre-Authorization  * *******************/
         $params = [
-            'order_id' => 'po'.uniqid('1234-56789', true),
-            'amount' => '2.99',
-            'credit_card' => '4242424242424242',
-            'expiry_month' => '12',
-            'expiry_year' => '20',
+            'order_id' => uniqid('1234-56789', true),
+            'amount' => $input['amount'],
+            'credit_card' => $input['credit_card'],
+            'expiry_month' => $input['expiry_month'],
+            'expiry_year' => $input['expiry_year'],
 //            'avs_street_number' => '123',
 //            'avs_street_name' => 'lakeshore blvd',
 //            'avs_zipcode' => '90210',
 //            'cvd' => '111',
-            'payment_indicator' => 'U',
-            'payment_information' => '2',
+            'payment_indicator' => $input['payment_indicator'],
+            'payment_information' => $input['payment_information'],
         ];
 
         $response = $gateway->preauth($params);
 
-        /* Capture (Pre-Authorization Completion) */
+        /****************** Capture (Pre-Authorization Completion) ******************/
         $params = [
-            'order_id' => 'po'.uniqid('1234-56789', true),
-            'amount' => '2.99',
-            'credit_card' => '4242424242424242',
-            'expiry_month' => '12',
-            'expiry_year' => '20',
+            'order_id' => uniqid('1234-56789', true),
+            'amount' => $input['amount'],
+            'credit_card' => $input['credit_card'],
+            'expiry_month' => $input['expiry_month'],
+            'expiry_year' => $input['expiry_year'],
 //            'avs_street_number' => '123',
 //            'avs_street_name' => 'lakeshore blvd',
 //            'avs_zipcode' => '90210',
 //            'cvd' => '111',
-            'payment_indicator' => 'U',
-            'payment_information' => '2',
+            'payment_indicator' => $input['payment_indicator'],
+            'payment_information' => $input['payment_information'],
         ];
 
         $response = $gateway->preauth($params);
 
         $response = $gateway->capture($response->transaction);
 
-        /* Purchase */
+        /**************** Purchase ****************/
         $params = [
-            'order_id' => 'po'.uniqid('1234-56789', true),
-            'amount' => '2.99',
-            'credit_card' => '4242424242424242',
-            'expiry_month' => '12',
-            'expiry_year' => '20',
-//            'avs_street_number' => '123',
-//            'avs_street_name' => 'lakeshore blvd',
-//            'avs_zipcode' => '90210',
-//            'cvd' => '111',
-            'payment_indicator' => 'U',
-            'payment_information' => '2',
+            'order_id' => uniqid('1234-56789', true),
+            'amount' => $input['amount'],
+            'credit_card' => $input['credit_card'],
+            'expiry_month' => $input['expiry_month'],
+            'expiry_year' => $input['expiry_year'],
+            'payment_indicator' => $input['payment_indicator'],
+            'payment_information' => $input['payment_information']
         ];
 
         $response = $gateway->purchase($params);
@@ -140,8 +136,19 @@ class GenerateOrderAPIController extends Controller
             return $this->sendError($errors);
         }
         $receipt = $response->receipt();
-        return $this->sendResponse($response , 'Payments');
 
+        //Calling Order Function to save order
+        $request['payment_id'] = $params['order_id'];
+        $request['order_status_id'] = '2';
+        $order_response = $this->store_order($request);
+
+        if($order_response->errors) {
+            $errors = $response->errors;
+            return $this->sendError($errors);
+        }
+        else{
+        return $this->sendResponse($order_response , 'Order Created Successfully');
+        }
     }
 
 /*----------------Moneris Payment ------------------*/
@@ -152,8 +159,8 @@ class GenerateOrderAPIController extends Controller
      * Create new Order after receiving parameters from app
      */
     public function store_order (Request $request){
-        $txnArray = array("type" => "purchase");
-        $mpgTxn = new mpgTransaction($txnArray);
+
+
         $input = $request->all();
         $amount = 0;
 
@@ -168,7 +175,7 @@ class GenerateOrderAPIController extends Controller
                 );
             } else {
                 $order = $this->orderRepository->create(
-                    $request->only('user_id', 'order_status_id', 'tax', 'delivery_address_id', 'delivery_fee','hint')
+                    $request->only('user_id', 'order_status_id', 'tax', 'delivery_address_id', 'delivery_fee','hint','payment_id')
                 );
             }
 
@@ -177,8 +184,8 @@ class GenerateOrderAPIController extends Controller
                 $amount += $foodOrder['price'] * $foodOrder['quantity'];
                 $this->foodOrderRepository->create($foodOrder);
             }
-            $payment_id = 2;
-            $this->orderRepository->update(['payment_id' => $payment_id], $order->id);
+            //$payment_id = 2;
+            //$this->orderRepository->update(['payment_id' => $payment_id], $order->id);
 
         }
         catch (ValidatorException $e) {
