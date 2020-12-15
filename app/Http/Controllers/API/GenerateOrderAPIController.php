@@ -175,7 +175,7 @@ class GenerateOrderAPIController extends Controller
                 );
             } else {
                 $order = $this->orderRepository->create(
-                    $request->only('user_id', 'order_status_id', 'tax', 'delivery_address_id', 'delivery_fee','hint','payment_id')
+                    $request->only('user_id', 'order_status_id', 'tax', 'delivery_address_id', 'delivery_fee','hint')
                 );
             }
 
@@ -184,8 +184,8 @@ class GenerateOrderAPIController extends Controller
                 $amount += $foodOrder['price'] * $foodOrder['quantity'];
                 $this->foodOrderRepository->create($foodOrder);
             }
-            //$payment_id = 2;
-            //$this->orderRepository->update(['payment_id' => $payment_id], $order->id);
+            $payment_id = 2;
+            $this->orderRepository->update(['payment_id' => $payment_id], $order->id);
 
         }
         catch (ValidatorException $e) {
