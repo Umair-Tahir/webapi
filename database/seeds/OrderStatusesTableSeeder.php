@@ -52,6 +52,18 @@ class OrderStatusesTableSeeder extends Seeder
                 'created_at' => '2019-10-15 18:04:30',
                 'updated_at' => '2019-10-15 18:04:30',
             ),
+            array (
+                'id' => 6,
+                'status' => 'Pending',
+                'created_at' => '2019-10-15 18:04:30',
+                'updated_at' => '2019-10-15 18:04:30',
+            ),
+            array (
+                'id' => 7,
+                'status' => 'Canceled',
+                'created_at' => '2019-10-15 18:04:30',
+                'updated_at' => '2019-10-15 18:04:30',
+            ),
         ));
         
         

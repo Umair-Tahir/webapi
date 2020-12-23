@@ -34,9 +34,13 @@ class Order extends Model
         'delivery_address_id',
         'delivery_fee',
         'active',
-        'driver_id'
+        'driver_id',
+        'expected_delivery_time',
+        'vendor_shared_price',
+        'eezly_shared_price',
+        'grand_total',
+        'is_french'
     ];
-
     /**
      * The attributes that should be casted to native types.
      *
