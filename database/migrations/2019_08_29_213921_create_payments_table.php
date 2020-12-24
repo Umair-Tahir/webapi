@@ -15,7 +15,9 @@ class CreatePaymentsTable extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->increments('id');
             $table->double('price', 8, 2)->default(0);
+            $table->string('moneris_order_id', 255)->nullable();
             $table->string('description', 255)->nullable();
+            $table->string('moneris_receipt', 255)->nullable();
             $table->integer('user_id')->unsigned();
             $table->string('status')->nullable();
             $table->string('method')->nullable();
