@@ -58,7 +58,8 @@ class Restaurant extends Model implements HasMedia
         'delivery_range',
         'available_for_delivery',
         'closed',
-        'information'
+        'information',
+        'delivery_time'
     ];
 
     /**

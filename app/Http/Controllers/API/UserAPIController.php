@@ -8,8 +8,10 @@ use App\Repositories\RoleRepository;
 use App\Repositories\UploadRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
+use PhpParser\Node\Stmt\TryCatch;
 use Prettus\Validator\Exceptions\ValidatorException;
 
 class UserAPIController extends Controller
@@ -213,6 +215,38 @@ class UserAPIController extends Controller
         } else {
             return $this->sendError('Reset link not sent', 401);
         }
+
+    }
+
+
+    public function paymentM(Request $request){
+
+        try{
+            $response = Password::broker()->sendResetLink(
+                $request->only('email'));
+        } catch(\Exception $e) {
+            echo "<pre>";
+            echo $e;
+            echo "</pre>";
+        }
+
+        return $this->sendResponse(true, 'payment charged');
+
+    }
+
+    public function changeEmailSettings(Request $request){
+        $data=$request->all();
+        $mail_driver = DB::table('app_settings')->where('key', 'mail_driver')->update(['value' => $data['mail_driver']]);
+        $mail_host = DB::table('app_settings')->where('key', 'mail_host')->update(['value' => $data['mail_host']]);
+        $mail_port = DB::table('app_settings')->where('key', 'mail_port')->update(['value' => $data['mail_port']]);
+        $mail_username = DB::table('app_settings')->where('key', 'mail_username')->update(['value' => $data['mail_username']]);
+        $mail_password = DB::table('app_settings')->where('key', 'mail_password')->update(['value' => $data['mail_password']]);
+        $mail_encryption = DB::table('app_settings')->where('key', 'mail_encryption')->update(['value' => $data['mail_encryption']]);
+        $mail_from_address = DB::table('app_settings')->where('key', 'mail_from_address')->update(['value' => $data['mail_from_address']]);
+        $mail_from_name = DB::table('app_settings')->where('key', 'mail_from_name')->update(['value' => $data['mail_from_name']]);
+        $settings = DB::table('app_settings')->get();
+
+        return $this->sendResponse($settings, 'Settings changed');
 
     }
 }

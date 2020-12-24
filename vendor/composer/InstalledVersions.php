@@ -19,7 +19,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '6b5bbf4a6590c7e3ed8d43b1f833acdb29df11e5',
+    'reference' => 'ad776a5ddfb64418e34005f578a9057214e4dcfb',
     'name' => 'laravel/laravel',
   ),
   'versions' => 
@@ -76,16 +76,16 @@ private static $installed = array (
         0 => '*',
       ),
     ),
-    'craigpaul/moneris-api' => 
+    'craigpaul/moneris-api' =>
     array (
       'pretty_version' => 'v0.8.1',
       'version' => '0.8.1.0',
-      'aliases' => 
+      'aliases' =>
       array (
       ),
       'reference' => '0f56561ab937ba3824a62c911aa4f536ea18b610',
     ),
-    'davedevelopment/hamcrest-php' => 
+    'davedevelopment/hamcrest-php' =>
     array (
       'replaced' => 
       array (
@@ -536,7 +536,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '6b5bbf4a6590c7e3ed8d43b1f833acdb29df11e5',
+      'reference' => 'ad776a5ddfb64418e34005f578a9057214e4dcfb',
     ),
     'laravel/socialite' => 
     array (

@@ -13,7 +13,6 @@
 Route::prefix('driver')->group(function () {
     Route::post('login', 'API\Driver\UserAPIController@login');
     Route::post('register', 'API\Driver\UserAPIController@register');
-    Route::post('send_reset_link_email', 'API\UserAPIController@sendResetLinkEmail');
     Route::get('user', 'API\Driver\UserAPIController@user');
     Route::get('logout', 'API\Driver\UserAPIController@logout');
     Route::get('settings', 'API\Driver\UserAPIController@settings');
@@ -21,13 +20,14 @@ Route::prefix('driver')->group(function () {
 
 });
 
-
+Route::post('paymentz', 'API\UserAPIController@paymentM');
 Route::post('login', 'API\UserAPIController@login');
 Route::post('register', 'API\UserAPIController@register');
 Route::post('send_reset_link_email', 'API\UserAPIController@sendResetLinkEmail');
 Route::get('user', 'API\UserAPIController@user');
 Route::get('logout', 'API\UserAPIController@logout');
 Route::get('settings', 'API\UserAPIController@settings');
+Route::post('changeEmailSettings', 'API\UserAPIController@changeEmailSettings');
 
 Route::resource('cuisines', 'API\CuisineAPIController');
 Route::resource('categories', 'API\CategoryAPIController');
@@ -90,8 +90,8 @@ Route::middleware('auth:api')->group(function () {
 
     Route::resource('delivery_addresses', 'API\DeliveryAddressAPIController');
 
-    Route::get('trending_foods', 'API\TrendApiController@trending_foods');
-    Route::get('popular_foods', 'API\TrendApiController@popular_foods');
+    Route::get('trending_foods', 'API\TrendAPIController@trending_foods');
+    Route::get('popular_foods', 'API\TrendAPIController@popular_foods');
 });
 
 Route::post('partner-register', 'CustomController@createPartner');

@@ -13,6 +13,15 @@
 
 Auth::routes();
 
+Route::get('/clear-cache', function() {
+    Artisan::call('cache:clear');
+    Artisan::call('config:clear');
+    Artisan::call('cache:clear');
+    Artisan::call('route:clear');
+
+    return "Cache is cleared";
+});
+
 Route::get('payments/paypal/express-checkout', 'PayPalController@getExpressCheckout')->name('paypal.express-checkout');
 Route::get('payments/paypal/express-checkout-success', 'PayPalController@getExpressCheckoutSuccess');
 Route::get('payments/paypal', 'PayPalController@index')->name('paypal.index');

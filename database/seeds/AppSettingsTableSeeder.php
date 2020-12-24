@@ -57,25 +57,25 @@ class AppSettingsTableSeeder extends Seeder
             array (
                 'id' => 21,
                 'key' => 'mail_host',
-                'value' => 'smtp.hostinger.com',
+                'value' => 'mail.privateemail.com',
             ),
             7 => 
             array (
                 'id' => 22,
                 'key' => 'mail_port',
-                'value' => '587',
+                'value' => '465',
             ),
             8 => 
             array (
                 'id' => 23,
                 'key' => 'mail_username',
-                'value' => 'fooddelivery@smartersvision.com',
+                'value' => 'noreply@eezly.com',
             ),
             9 => 
             array (
                 'id' => 24,
                 'key' => 'mail_password',
-                'value' => 'NnvAwk&&E7',
+                'value' => 'Xuctub-robxYv-powha2',
             ),
             10 => 
             array (
@@ -87,13 +87,13 @@ class AppSettingsTableSeeder extends Seeder
             array (
                 'id' => 26,
                 'key' => 'mail_from_address',
-                'value' => 'fooddelivery@smartersvision.com',
+                'value' => 'noreply@eezly.com',
             ),
             12 => 
             array (
                 'id' => 27,
                 'key' => 'mail_from_name',
-                'value' => 'Smarter Vision',
+                'value' => 'Eezly',
             ),
             13 => 
             array (
