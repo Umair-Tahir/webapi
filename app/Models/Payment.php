@@ -26,7 +26,9 @@ class Payment extends Model
         'description',
         'status',
         'method',
-        'user_id'
+        'user_id',
+        'moneris_order_id',
+        'moneris_receipt'
     ];
 
     /**

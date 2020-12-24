@@ -863,6 +863,7 @@ class ComposerStaticInit6dc24fae20caa22311c7f26e01e00501
         'App\\Http\\Controllers\\API\\RestaurantAPIController' => __DIR__ . '/../..' . '/app/Http/Controllers/API/RestaurantAPIController.php',
         'App\\Http\\Controllers\\API\\RestaurantReviewAPIController' => __DIR__ . '/../..' . '/app/Http/Controllers/API/RestaurantReviewAPIController.php',
         'App\\Http\\Controllers\\API\\RestaurantsPayoutAPIController' => __DIR__ . '/../..' . '/app/Http/Controllers/API/RestaurantsPayoutAPIController.php',
+        'App\\Http\\Controllers\\API\\TTPaymentAPIController' => __DIR__ . '/../..' . '/app/Http/Controllers/API/TTPaymentAPIController.php',
         'App\\Http\\Controllers\\API\\TrendAPIController' => __DIR__ . '/../..' . '/app/Http/Controllers/API/TrendAPIController.php',
         'App\\Http\\Controllers\\API\\UserAPIController' => __DIR__ . '/../..' . '/app/Http/Controllers/API/UserAPIController.php',
         'App\\Http\\Controllers\\AppSettingController' => __DIR__ . '/../..' . '/app/Http/Controllers/AppSettingController.php',

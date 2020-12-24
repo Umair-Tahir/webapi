@@ -2,84 +2,111 @@
 
 namespace App\Http\Controllers\API;
 
-
 use App\Models\Payment;
 use App\Repositories\PaymentRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+
 use InfyOm\Generator\Criteria\LimitOffsetCriteria;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Illuminate\Support\Facades\Response;
 use Prettus\Repository\Exceptions\RepositoryException;
 use Flash;
 
-/**
- * Class PaymentController
- * @package App\Http\Controllers\API
- */
+use CraigPaul\Moneris\Moneris;
+
 class PaymentAPIController extends Controller
 {
-    /** @var  PaymentRepository */
-    private $paymentRepository;
-
     public function __construct(PaymentRepository $paymentRepo)
     {
         $this->paymentRepository = $paymentRepo;
     }
 
-    /**
-     * Display a listing of the Payment.
-     * GET|HEAD /payments
-     *
-     * @param Request $request
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function index(Request $request)
+
+    public function create_payment(Request $request)
     {
-        try {
-            $this->paymentRepository->pushCriteria(new RequestCriteria($request));
-            $this->paymentRepository->pushCriteria(new LimitOffsetCriteria($request));
-        } catch (RepositoryException $e) {
-            Flash::error($e->getMessage());
+        dd($request);
+        $input = $request->all();
+
+        /**************************** Request Variables ********
+        Card Verification Digits and/or Address Verification Service provided by Moneris
+        CVD & AVS are disabled in this payment method
+         ***********************/
+        $store_id  = $input['store_id'];
+        $api_token = $input['token'];
+
+        /************** optional Instantiation    ***************/
+        $params = [
+            'environment' => Moneris::ENV_TESTING, // default: Moneris::ENV_LIVE
+        ];
+        $gateway = (new Moneris($store_id, $api_token, $params))->connect();
+        $gateway = Moneris::create($store_id, $api_token, $params);
+        // dd($gateway);
+
+        /**************** Purchase ****************/
+        $params = [
+            'order_id' => uniqid('1234-56789', true),
+            'amount' => '1.00',
+            'credit_card' => '4242424242424242',
+            'expiry_month' => '12',
+            'expiry_year' => '20',
+        ];
+
+        $response = $gateway->purchase($params);
+
+        if($response->errors){
+            $errors = $response->errors;
+            return $this->sendError($errors);
         }
-        $payments = $this->paymentRepository->all();
-
-        return $this->sendResponse($payments->toArray(), 'Payments retrieved successfully');
-    }
-
-    /**
-     * Display the specified Payment.
-     * GET|HEAD /payments/{id}
-     *
-     * @param int $id
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function show($id)
-    {
-        /** @var Payment $payment */
-        if (!empty($this->paymentRepository)) {
-            $payment = $this->paymentRepository->findWithoutFail($id);
+        else{
+            $receipt = $response->receipt();
+            return $this->sendResponse($receipt , 'Payment Successfully');
         }
 
-        if (empty($payment)) {
-            return $this->sendError('Payment not found');
-        }
-
-        return $this->sendResponse($payment->toArray(), 'Payment retrieved successfully');
-    }
-
-    public function byMonth()
-    {
-        $payments = [];
-        if (!empty($this->paymentRepository)) {
-            $payments = $this->paymentRepository->orderBy("created_at",'asc')->all()->map(function ($row) {
-                $row['month'] = $row['created_at']->format('M');
-                return $row;
-            })->groupBy('month')->map(function ($row) {
-                return $row->sum('price');
-            });
-        }
-        return $this->sendResponse([array_values($payments->toArray()),array_keys($payments->toArray())], 'Payment retrieved successfully');
+        //Calling Order Function to save order
+        $request['payment_id'] = $params['order_id'];
+        $request['order_status_id'] = '2';
+        $order_response = $this->store_order($request);
     }
 }
+
+
+
+//Payment which has to be later staged inside above code to work fearlessly
+
+/*******************  Pre-Authorization  * *******************/
+//$params = [
+//    'order_id' => uniqid('1234-56789', true),
+//    'amount' => $input['amount'],
+//    'credit_card' => $input['credit_card'],
+//    'expiry_month' => $input['expiry_month'],
+//    'expiry_year' => $input['expiry_year'],
+////            'avs_street_number' => '123',
+////            'avs_street_name' => 'lakeshore blvd',
+////            'avs_zipcode' => '90210',
+////            'cvd' => '111',
+//    'payment_indicator' => $input['payment_indicator'],
+//    'payment_information' => $input['payment_information'],
+//];
+//
+//$response = $gateway->preauth($params);
+//
+///****************** Capture (Pre-Authorization Completion) ******************/
+//$params = [
+//    'order_id' => uniqid('1234-56789', true),
+//    'amount' => $input['amount'],
+//    'credit_card' => $input['credit_card'],
+//    'expiry_month' => $input['expiry_month'],
+//    'expiry_year' => $input['expiry_year'],
+////            'avs_street_number' => '123',
+////            'avs_street_name' => 'lakeshore blvd',
+////            'avs_zipcode' => '90210',
+////            'cvd' => '111',
+//    'payment_indicator' => $input['payment_indicator'],
+//    'payment_information' => $input['payment_information'],
+//];
+//
+//$response = $gateway->preauth($params);
+//
+//$response = $gateway->capture($response->transaction);
+

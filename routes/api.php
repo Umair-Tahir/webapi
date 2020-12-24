@@ -79,8 +79,8 @@ Route::middleware('auth:api')->group(function () {
 
     Route::resource('orders', 'API\OrderAPIController');
 
-    Route::post('generate_order', 'API\GenerateOrderAPIController@store_order');
-    Route::post('generate_payment', 'API\GenerateOrderAPIController@moneris_payment');
+    Route::post('generate_order', 'API\GenerateOrderAPIController@order_payment');
+    //Route::post('generate_payment', 'API\GenerateOrderAPIController@moneris_payment');
 
     Route::resource('food_orders', 'API\FoodOrderAPIController');
 

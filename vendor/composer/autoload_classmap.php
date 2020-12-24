@@ -98,6 +98,7 @@ return array(
     'App\\Http\\Controllers\\API\\RestaurantAPIController' => $baseDir . '/app/Http/Controllers/API/RestaurantAPIController.php',
     'App\\Http\\Controllers\\API\\RestaurantReviewAPIController' => $baseDir . '/app/Http/Controllers/API/RestaurantReviewAPIController.php',
     'App\\Http\\Controllers\\API\\RestaurantsPayoutAPIController' => $baseDir . '/app/Http/Controllers/API/RestaurantsPayoutAPIController.php',
+    'App\\Http\\Controllers\\API\\TTPaymentAPIController' => $baseDir . '/app/Http/Controllers/API/TTPaymentAPIController.php',
     'App\\Http\\Controllers\\API\\TrendAPIController' => $baseDir . '/app/Http/Controllers/API/TrendAPIController.php',
     'App\\Http\\Controllers\\API\\UserAPIController' => $baseDir . '/app/Http/Controllers/API/UserAPIController.php',
     'App\\Http\\Controllers\\AppSettingController' => $baseDir . '/app/Http/Controllers/AppSettingController.php',
