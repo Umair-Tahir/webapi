@@ -19,7 +19,8 @@ class OrderStatus extends Model
 
 
     public $fillable = [
-        'status'
+        'status',
+        'french_status'
     ];
 
     /**
@@ -28,7 +29,8 @@ class OrderStatus extends Model
      * @var array
      */
     protected $casts = [
-        'status' => 'string'
+        'status' => 'string',
+        'french_status' => 'string'
     ];
 
     /**

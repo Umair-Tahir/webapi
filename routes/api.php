@@ -21,6 +21,7 @@ Route::prefix('driver')->group(function () {
 });
 
 Route::post('paymentz', 'API\UserAPIController@paymentM');
+Route::post('sendInvoice/{id}', 'API\OrderAPIController@generateInvoice');
 Route::post('login', 'API\UserAPIController@login');
 Route::post('register', 'API\UserAPIController@register');
 Route::post('send_reset_link_email', 'API\UserAPIController@sendResetLinkEmail');

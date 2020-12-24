@@ -4,6 +4,7 @@ namespace App\Http\Controllers\API;
 
 use App\Events\OrderChangedEvent;
 use App\Http\Controllers\Controller;
+use App\Mail\OrderNotificationEmail;
 use App\Models\Order;
 use App\Notifications\NewOrder;
 use App\Notifications\StatusChangedOrder;
@@ -17,6 +18,7 @@ use Braintree\Gateway;
 use Flash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use InfyOm\Generator\Criteria\LimitOffsetCriteria;
 use Prettus\Repository\Criteria\RequestCriteria;
@@ -271,4 +273,32 @@ class OrderAPIController extends Controller
         return $this->sendResponse($order->toArray(), __('lang.saved_successfully', ['operator' => __('lang.order')]));
     }
 
+
+    public function generateInvoice(Request $request,$id){
+
+        /** @var Order $order */
+        if (!empty($this->orderRepository)) {
+            try {
+                $this->orderRepository->pushCriteria(new RequestCriteria($request));
+                $this->orderRepository->pushCriteria(new LimitOffsetCriteria($request));
+            } catch (RepositoryException $e) {
+                Flash::error($e->getMessage());
+            }
+            $order = $this->orderRepository->findWithoutFail($id);
+
+        }
+
+        if (empty($order)) {
+            return $this->sendError('Order not found');
+        }
+
+        $isFrench=true;
+        $toRestaurant=true;
+//        return (new CustomerInvoice($order))->render();
+        Mail::to('hqayyum47@gmail.com')->send(new OrderNotificationEmail($order,$isFrench,$toRestaurant));
+
+
+        return $this->sendResponse($order->toArray(), 'Order retrieved successfully');
+
+          }
 }

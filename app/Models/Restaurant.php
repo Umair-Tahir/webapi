@@ -41,7 +41,7 @@ class Restaurant extends Model implements HasMedia
     }
 
     public $table = 'restaurants';
-    
+
 
 
     public $fillable = [
@@ -59,7 +59,10 @@ class Restaurant extends Model implements HasMedia
         'available_for_delivery',
         'closed',
         'information',
-        'delivery_time'
+        'french_information',
+        'delivery_time',
+        'opening_hour',
+        'closing_hour'
     ];
 
     /**
@@ -82,7 +85,10 @@ class Restaurant extends Model implements HasMedia
         'delivery_range'=>'double',
         'available_for_delivery'=>'boolean',
         'closed'=>'boolean',
-        'information' => 'string'
+        'information' => 'string',
+        'french_information' => 'string',
+        'opening_hour' => 'string',
+        'closing_hour' => 'string'
     ];
 
     /**

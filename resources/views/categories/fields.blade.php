@@ -12,6 +12,17 @@
     </div>
   </div>
 </div>
+    <!--French Name Field -->
+    <div class="form-group row ">
+        {!! Form::label('french_name', 'French_name', ['class' => 'col-3 control-label text-right']) !!}
+        <div class="col-9">
+            {!! Form::text('french_name', null,  ['class' => 'form-control','placeholder'=>  trans("lang.category_name_placeholder")]) !!}
+            <div class="form-text text-muted">
+                {{ trans("lang.category_name_help") }}
+            </div>
+        </div>
+    </div>
+
 
 <!-- Description Field -->
 <div class="form-group row ">

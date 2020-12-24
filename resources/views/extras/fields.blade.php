@@ -12,7 +12,16 @@
             </div>
         </div>
     </div>
-
+    <!-- Name Field -->
+    <div class="form-group row ">
+        {!! Form::label('french_name', 'French Name', ['class' => 'col-3 control-label text-right']) !!}
+        <div class="col-9">
+            {!! Form::text('french_name', null,  ['class' => 'form-control','placeholder'=>  trans("lang.extra_name_placeholder")]) !!}
+            <div class="form-text text-muted">
+                {{ trans("lang.extra_name_help") }}
+            </div>
+        </div>
+    </div>
     <!-- Image Field -->
     <div class="form-group row">
         {!! Form::label('image', trans("lang.extra_image"), ['class' => 'col-3 control-label text-right']) !!}

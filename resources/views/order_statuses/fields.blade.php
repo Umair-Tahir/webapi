@@ -12,6 +12,17 @@
     </div>
   </div>
 </div>
+
+  <!-- Status French Field -->
+  <div class="form-group row ">
+    {!! Form::label('french_status', 'French Status', ['class' => 'col-3 control-label text-right']) !!}
+    <div class="col-9">
+      {!! Form::text('french_status', null,  ['class' => 'form-control','placeholder'=>  trans("lang.order_status_status_placeholder")]) !!}
+      <div class="form-text text-muted">
+        {{ trans("lang.order_status_status_help") }}
+      </div>
+    </div>
+  </div>
 </div>
 <div style="flex: 50%;max-width: 50%;padding: 0 4px;" class="column">
 </div>

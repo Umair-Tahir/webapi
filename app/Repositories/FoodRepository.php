@@ -26,6 +26,8 @@ class FoodRepository extends BaseRepository implements CacheableInterface
      */
     protected $fieldSearchable = [
         'name',
+        'french_name',
+        'french_description',
         'price',
         'discount_price',
         'description',

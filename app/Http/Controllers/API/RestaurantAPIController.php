@@ -55,6 +55,7 @@ class RestaurantAPIController extends Controller
     public function index(Request $request)
     {
         try {
+
             $this->restaurantRepository->pushCriteria(new RequestCriteria($request));
             $this->restaurantRepository->pushCriteria(new LimitOffsetCriteria($request));
             $this->restaurantRepository->pushCriteria(new RestaurantsOfCuisinesCriteria($request));
@@ -64,7 +65,6 @@ class RestaurantAPIController extends Controller
                 $this->restaurantRepository->pushCriteria(new NearCriteria($request));
             }
             $restaurants = $this->restaurantRepository->all();
-
         } catch (RepositoryException $e) {
             return $this->sendError($e->getMessage());
         }

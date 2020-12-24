@@ -19,7 +19,14 @@ Route::get('/clear-cache', function() {
     Artisan::call('cache:clear');
     Artisan::call('route:clear');
 
+//    they can receive directly to POS
+
+
     return "Cache is cleared";
+});
+
+Route::get('/run-migrations', function () {
+    return Artisan::call('migrate', ["--force" => true ]);
 });
 
 Route::get('payments/paypal/express-checkout', 'PayPalController@getExpressCheckout')->name('paypal.express-checkout');

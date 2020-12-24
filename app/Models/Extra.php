@@ -32,6 +32,7 @@ class Extra extends Model implements HasMedia
 
     public $fillable = [
         'name',
+        'french_name',
         'description',
         'price',
         'food_id',
@@ -45,6 +46,7 @@ class Extra extends Model implements HasMedia
      */
     protected $casts = [
         'name' => 'string',
+        'french_name' => 'string',
         'image' => 'string',
         'description' => 'string',
         'price' => 'double',

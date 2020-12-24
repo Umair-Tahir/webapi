@@ -32,6 +32,7 @@ class RestaurantRepository extends BaseRepository implements CacheableInterface
         'phone',
         'mobile',
         'information',
+        'french_information',
         'delivery_time',
         'delivery_fee',
         'default_tax',
@@ -39,6 +40,8 @@ class RestaurantRepository extends BaseRepository implements CacheableInterface
         'available_for_delivery',
         'closed',
         'admin_commission',
+        'opening_hour',
+        'closing_hour',
     ];
 
     /**

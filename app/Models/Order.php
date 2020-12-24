@@ -34,6 +34,7 @@ class Order extends Model
         'delivery_address_id',
         'delivery_fee',
         'active',
+        'tip',
         'driver_id'
     ];
 
@@ -46,6 +47,7 @@ class Order extends Model
         'user_id' => 'integer',
         'order_status_id' => 'integer',
         'tax' => 'double',
+        'tip' => 'double',
         'hint' => 'string',
         'status' => 'string',
         'payment_id' => 'integer',
