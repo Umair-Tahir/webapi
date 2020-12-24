@@ -981,6 +981,7 @@ class ComposerStaticInit6dc24fae20caa22311c7f26e01e00501
         'App\\Listeners\\UpdateOrderEarningTable' => __DIR__ . '/../..' . '/app/Listeners/UpdateOrderEarningTable.php',
         'App\\Listeners\\UpdateRestaurantEarningTableListener' => __DIR__ . '/../..' . '/app/Listeners/UpdateRestaurantEarningTableListener.php',
         'App\\Listeners\\UpdateUserDriverTableListener' => __DIR__ . '/../..' . '/app/Listeners/UpdateUserDriverTableListener.php',
+        'App\\Mail\\OrderNotificationEmail' => __DIR__ . '/../..' . '/app/Mail/OrderNotificationEmail.php',
         'App\\Mail\\Verification' => __DIR__ . '/../..' . '/app/Mail/Verification.php',
         'App\\Models\\Cart' => __DIR__ . '/../..' . '/app/Models/Cart.php',
         'App\\Models\\Category' => __DIR__ . '/../..' . '/app/Models/Category.php',

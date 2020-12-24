@@ -216,6 +216,7 @@ return array(
     'App\\Listeners\\UpdateOrderEarningTable' => $baseDir . '/app/Listeners/UpdateOrderEarningTable.php',
     'App\\Listeners\\UpdateRestaurantEarningTableListener' => $baseDir . '/app/Listeners/UpdateRestaurantEarningTableListener.php',
     'App\\Listeners\\UpdateUserDriverTableListener' => $baseDir . '/app/Listeners/UpdateUserDriverTableListener.php',
+    'App\\Mail\\OrderNotificationEmail' => $baseDir . '/app/Mail/OrderNotificationEmail.php',
     'App\\Mail\\Verification' => $baseDir . '/app/Mail/Verification.php',
     'App\\Models\\Cart' => $baseDir . '/app/Models/Cart.php',
     'App\\Models\\Category' => $baseDir . '/app/Models/Category.php',
