@@ -115,23 +115,22 @@
                                 <tbody><tr>
                                     <td style="font-family:Avenir,Helvetica,sans-serif;box-sizing:border-box;padding:35px">
                                         <h1 style="font-family:Avenir,Helvetica,sans-serif;box-sizing:border-box;color:#2f3133;font-size:19px;font-weight:bold;margin-top:0;text-align:left">Hello!</h1>
-                                        <p style="font-family:Avenir,Helvetica,sans-serif;box-sizing:border-box;color:#74787e;font-size:16px;line-height:1.5em;margin-top:0;text-align:left">Your order has been received and will be dispatch shortly. Please check the following Invoice related to your order.</p>
+                                        <p style="font-family:Avenir,Helvetica,sans-serif;box-sizing:border-box;color:#74787e;font-size:16px;line-height:1.5em;margin-top:0;text-align:left">@if($toRestaurant) You've received a new order. Please watch the details mentioned below. @else Your order has been received and will be ready to deliver shortly. Please check the following Invoice related to your order. @endif</p>
                                         <div id="invoiceholder">
 
                                             <div id="invoice" class="effect2">
 
                                                 <div id="invoice-top">
                                                     <div class="info">
-                                                        <h2>Michael Truong</h2>
-                                                        <p> 289-335-6503</br>
-                                                            278 Kuvalis Trail
-                                                            Brownton, HI 37431
+                                                        <h2>@if(isset($order->user->name)) {{$order->user->name}}  @endif</h2>
+                                                        <p> @if(isset($order->user->phone_number)) {{$order->user->phone_number}}  @endif </br>
+                                                            @if(isset($order->deliveryAddress->address)) {{$order->deliveryAddress->address}}  @endif
                                                         </p>
                                                     </div><!--End Info-->
                                                     <div class="title">
-                                                        <h1>Order #1069</h1>
-                                                        <p>Status: Received</br>
-                                                            Date: June 27, 2015
+                                                        <h1>Order #@if(isset($order)){{$order->id}} @else Null @endif</h1>
+                                                        <p>Status: @if(isset($order)){{$order->orderStatus->status}} @else Null @endif</br>
+                                                            Date: @if(isset($order)){{$order->orderStatus->created_at->toDateString()}}  @endif
                                                         </p>
                                                     </div><!--End Title-->
                                                 </div><!--End InvoiceTop-->
@@ -140,16 +139,15 @@
 
                                                 <div id="invoice-mid">
                                                     <div class="info">
-                                                        <h2>Resturent Name</h2>
-                                                        <p> 555-555-5555JohnDoe@gmail.com</br>
-                                                            278 Kuvalis Trail
-                                                            Brownton, HI 37431
+                                                        <h2>@if(isset($order->foodOrders[0]->food->restaurant->name)){{$order->foodOrders[0]->food->restaurant->name}}  @endif</h2>
+                                                        <p> @if(isset($order->foodOrders[0]->food->restaurant->phone)){{$order->foodOrders[0]->food->restaurant->phone}} @endif</br>
+                                                            @if(isset($order->foodOrders[0]->food->restaurant->address))  {{$order->foodOrders[0]->food->restaurant->address}} @endif
                                                         </p>
                                                     </div>
 
                                                     <div id="project">
                                                         <h2>Expected Delivery time</h2>
-                                                        <p id="deliverDuration">25 Hours </p>
+                                                        <p id="deliverDuration">@if(isset($order->expected_delivery_time) && !is_null($order->expected_delivery_time))  {{$order->expected_delivery_time}} min  @endif </p>
                                                     </div>
                                                 </div><!--End Invoice Mid-->
 
@@ -163,47 +161,48 @@
                                                                 <td class="Rate"><h2>Price</h2></td>
                                                                 <td class="subtotal"><h2>Sub-total</h2></td>
                                                             </tr>
-
-                                                            <tr class="service">
-                                                                <td class="tableitem"><p class="itemtext">Communication</p></td>
-                                                                <td class="tableitem"><p class="itemtext">5</p></td>
-                                                                <td class="tableitem"><p class="itemtext">$75</p></td>
-                                                                <td class="tableitem"><p class="itemtext">$375.00</p></td>
-                                                            </tr>
-
-                                                            <tr class="service">
-                                                                <td class="tableitem"><p class="itemtext">Asset Gathering</p></td>
-                                                                <td class="tableitem"><p class="itemtext">3</p></td>
-                                                                <td class="tableitem"><p class="itemtext">$75</p></td>
-                                                                <td class="tableitem"><p class="itemtext">$225.00</p></td>
-                                                            </tr>
-
-                                                            <tr class="service">
-                                                                <td class="tableitem"><p class="itemtext">Design Development</p></td>
-                                                                <td class="tableitem"><p class="itemtext">5</p></td>
-                                                                <td class="tableitem"><p class="itemtext">$75</p></td>
-                                                                <td class="tableitem"><p class="itemtext">$375.00</p></td>
-                                                            </tr>
-
-                                                            <tr class="service">
-                                                                <td class="tableitem"><p class="itemtext">Animation</p></td>
-                                                                <td class="tableitem"><p class="itemtext">20</p></td>
-                                                                <td class="tableitem"><p class="itemtext">$75</p></td>
-                                                                <td class="tableitem"><p class="itemtext">$1,500.00</p></td>
-                                                            </tr>
-
-                                                            <tr class="service">
-                                                                <td class="tableitem"><p class="itemtext">Animation Revisions</p></td>
-                                                                <td class="tableitem"><p class="itemtext">10</p></td>
-                                                                <td class="tableitem"><p class="itemtext">$75</p></td>
-                                                                <td class="tableitem"><p class="itemtext">$750.00</p></td>
-                                                            </tr>
-
+                                                            @if(isset($order))
+                                                                @foreach($order->foodOrders as $foodOrder)
+                                                                    <tr class="service">
+                                                                        <td class="tableitem"><p class="itemtext">{{$foodOrder->food->name}}</p></td>
+                                                                        <td class="tableitem"><p class="itemtext">{{$foodOrder->quantity}}</p></td>
+                                                                        <td class="tableitem"><p class="itemtext">${{$foodOrder->food->price}}</p></td>
+                                                                        <td class="tableitem"><p class="itemtext">${{$foodOrder->price}}</p></td>
+                                                                    </tr>
+                                                                @endforeach
+                                                            @endif
+                                                            @if(isset($order->delivery_fee) && $order->delivery_fee!=0)
+                                                                <tr class="service">
+                                                                    <td class="tableitem"><p class="itemtext"></p></td>
+                                                                    <td class="tableitem" colspan="2"><p class="itemtext">Delivery Fee</p></td>
+                                                                    <td class="tableitem"><p class="itemtext" >${{$order->delivery_fee}}</p></td>
+                                                                </tr>
+                                                            @endif
+                                                            @if($toRestaurant)
+                                                                <tr class="service">
+                                                                    <td class="tableitem"><p class="itemtext"></p></td>
+                                                                    <td class="tableitem" colspan="2"><p class="itemtext">Restaurant Shared Price</p></td>
+                                                                    <td class="tableitem"><p class="itemtext">${{$order->vendor_shared_price}}</p></td>
+                                                                </tr>
+                                                            @endif
+                                                            @if($toRestaurant)
+                                                                <tr class="service">
+                                                                    <td class="tableitem"><p class="itemtext"></p></td>
+                                                                    <td class="tableitem" colspan="2"><p class="itemtext">Eezly Fee</p></td>
+                                                                    <td class="tableitem"><p class="itemtext">${{$order->eezly_shared_price}}</p></td>
+                                                                </tr>
+                                                            @endif
+                                                            @if(isset($order->tip) && $order->tip!=0)
+                                                                <tr class="service">
+                                                                    <td class="tableitem"><p class="itemtext"></p></td>
+                                                                    <td class="tableitem" colspan="2"><p class="itemtext">Tip</p></td>
+                                                                    <td class="tableitem"><p class="itemtext">${{$order->tip}}</p></td>
+                                                                </tr>
+                                                            @endif
                                                             <tr class="service">
                                                                 <td class="tableitem"><p class="itemtext"></p></td>
-                                                                <td class="tableitem"><p class="itemtext">Tax</p></td>
-                                                                <td class="tableitem"><p class="itemtext">13%</p></td>
-                                                                <td class="tableitem"><p class="itemtext">$419.25</p></td>
+                                                                <td class="tableitem" colspan="2"><p class="itemtext">Tax(14.975%)</p></td>
+                                                                <td class="tableitem"><p class="itemtext"> @if(isset($order)) ${{$order->tax}}  @endif</p></td>
                                                             </tr>
 
 
@@ -211,7 +210,7 @@
                                                                 <td></td>
                                                                 <td></td>
                                                                 <td class="Rate"><h2>Total</h2></td>
-                                                                <td class="payment"><h2>$3,644.25</h2></td>
+                                                                <td class="payment"><h2> @if(isset($order)) ${{$order->grand_total}}  @endif</h2></td>
                                                             </tr>
 
                                                         </table>
@@ -219,7 +218,11 @@
 
 
                                                     <div id="legalcopy">
-                                                        <p class="legal"><strong>Thank you for using Eezly!</strong>  Your order is expected to be delivered within <strong id="deliveryTime">56 hours</strong>.Please reach out to provided contact details for any concerns or queries.</p>
+                                                        @if($toRestaurant)
+                                                            <p class="legal"><strong>Thank you for using Eezly!</strong>  The order is expected to be delivered within <strong id="deliveryTime">@if(isset($order->expected_delivery_time) && !is_null($order->expected_delivery_time))  {{$order->expected_delivery_time}} min  @endif</strong>.Please reach out to customer via provided phone number if any delay is expected in delivery.</p>
+                                                        @else
+                                                        <p class="legal"><strong>Thank you for using Eezly!</strong>  Your order is expected to be delivered within <strong id="deliveryTime">@if(isset($order->expected_delivery_time) && !is_null($order->expected_delivery_time))  {{$order->expected_delivery_time}} min  @endif</strong>.Please reach out to restaurant for any queries regarding order.</p>
+                                                        @endif
                                                     </div>
 
                                                 </div><!--End InvoiceBot-->
@@ -236,7 +239,7 @@
                         <td style="font-family:Avenir,Helvetica,sans-serif;background-color: #ffc107 !important">
                             <table align="center" width="570" cellpadding="0" cellspacing="0" style="font-family:Avenir,Helvetica,sans-serif;margin:0 auto;padding:0;text-align:center;width:570px"><tbody><tr>
                                     <td align="center" style="font-family:Avenir,Helvetica,sans-serif;padding:35px">
-                                        <p style="font-family:Avenir,Helvetica,sans-serif;line-height:1.5em;margin-top:0;color:#00000 !important;font-size:12px;text-align:center">© 2020 Food Delivery. All rights reserved.</p>
+                                        <p style="font-family:Avenir,Helvetica,sans-serif;line-height:1.5em;margin-top:0;color:#000000 !important;font-size:12px;text-align:center">© 2020 Food Delivery. All rights reserved.</p>
                                     </td>
                                 </tr></tbody></table>
                         </td>

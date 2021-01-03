@@ -65,8 +65,6 @@ class GenerateOrderAPIController extends Controller
 
         /* Validation Rules & Validation */
         $rules=[
-            "store_id"      => 'required',
-            "token"         => 'required',
             'credit_card'   => 'required',
             'expiry_month'   => 'required',
             'expiry_year'   => 'required',
@@ -95,8 +93,8 @@ class GenerateOrderAPIController extends Controller
                     /***Card Verification Digits and/or Address Verification Service provided by Moneris
                      * CVD & AVS are disabled in this payment method
                      ***********************/
-                    $store_id = $input['store_id'];
-                    $api_token = $input['token'];
+                    $store_id = getenv("MONERIS_STORE_ID");
+                    $api_token = getenv("MONERIS_API_TOKEN");
                     /************** optional Instantiation    ***************/
                     $params = [
                         'environment' => Moneris::ENV_TESTING, // default: Moneris::ENV_LIVE

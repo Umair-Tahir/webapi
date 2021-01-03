@@ -236,7 +236,7 @@ class UserAPIController extends Controller
 
     public function changeEmailSettings(Request $request){
         $data=$request->all();
-        $mail_driver = DB::table('app_settings')->where('key', 'mail_driver')->update(['value' => $data['mail_driver']]);
+        $mail_driver = DB::table('app_setitngs')->where('key', 'mail_driver')->update(['value' => $data['mail_driver']]);
         $mail_host = DB::table('app_settings')->where('key', 'mail_host')->update(['value' => $data['mail_host']]);
         $mail_port = DB::table('app_settings')->where('key', 'mail_port')->update(['value' => $data['mail_port']]);
         $mail_username = DB::table('app_settings')->where('key', 'mail_username')->update(['value' => $data['mail_username']]);

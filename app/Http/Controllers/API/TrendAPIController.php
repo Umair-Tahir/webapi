@@ -27,6 +27,7 @@ class TrendAPIController extends Controller
                       ->groupBy('food_id')->orderByRaw('COUNT(*) DESC')
                       ->limit(5)
                       ->get();
+
         if($food_orders){
             $i=0;
             $food=Array();

@@ -29,6 +29,10 @@ Route::get('/run-migrations', function () {
     return Artisan::call('migrate', ["--force" => true ]);
 });
 
+Route::get('run-seeder/{class}',function($class){
+    return Artisan::call("db:seed",array("--force" => true,'--class'=>$class));
+});
+
 Route::get('payments/paypal/express-checkout', 'PayPalController@getExpressCheckout')->name('paypal.express-checkout');
 Route::get('payments/paypal/express-checkout-success', 'PayPalController@getExpressCheckoutSuccess');
 Route::get('payments/paypal', 'PayPalController@index')->name('paypal.index');

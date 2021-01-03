@@ -293,9 +293,13 @@ class OrderAPIController extends Controller
         }
 
         $isFrench=true;
-        $toRestaurant=true;
+        $toRestaurant=false;
 //        return (new CustomerInvoice($order))->render();
-        Mail::to('hqayyum47@gmail.com')->send(new OrderNotificationEmail($order,$isFrench,$toRestaurant));
+        //Send email invoice to customer
+        Mail::to($order->user->email)->send(new OrderNotificationEmail($order,$isFrench,$toRestaurant));
+        $toRestaurant=true;
+        //Send email invoice to restaurant
+        Mail::to($order->foodOrders[0]->food->restaurant->users[0]->email)->send(new OrderNotificationEmail($order,$isFrench,$toRestaurant));
 
 
         return $this->sendResponse($order->toArray(), 'Order retrieved successfully');
