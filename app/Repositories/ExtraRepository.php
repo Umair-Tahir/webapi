@@ -21,6 +21,7 @@ class ExtraRepository extends BaseRepository
      */
     protected $fieldSearchable = [
         'name',
+        'french_name',
         'description',
         'price',
         'food_id',

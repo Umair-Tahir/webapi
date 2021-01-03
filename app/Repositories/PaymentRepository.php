@@ -22,7 +22,11 @@ class PaymentRepository extends BaseRepository
     protected $fieldSearchable = [
         'price',
         'description',
-        'user_id'
+        'status',
+        'method',
+        'user_id',
+        'moneris_order_id',
+        'moneris_receipt'
     ];
 
     /**

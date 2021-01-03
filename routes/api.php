@@ -21,6 +21,7 @@ Route::prefix('driver')->group(function () {
 });
 
 Route::post('paymentz', 'API\UserAPIController@paymentM');
+Route::post('sendInvoice/{id}', 'API\OrderAPIController@generateInvoice');
 Route::post('login', 'API\UserAPIController@login');
 Route::post('register', 'API\UserAPIController@register');
 Route::post('send_reset_link_email', 'API\UserAPIController@sendResetLinkEmail');
@@ -35,6 +36,8 @@ Route::resource('restaurants', 'API\RestaurantAPIController');
 
 Route::resource('faq_categories', 'API\FaqCategoryAPIController');
 Route::resource('foods', 'API\FoodAPIController');
+Route::get('trending_foods', 'API\TrendAPIController@trending_foods');
+Route::get('popular_foods', 'API\TrendAPIController@popular_foods');
 Route::resource('galleries', 'API\GalleryAPIController');
 Route::resource('food_reviews', 'API\FoodReviewAPIController');
 Route::resource('nutrition', 'API\NutritionAPIController');
@@ -90,8 +93,7 @@ Route::middleware('auth:api')->group(function () {
 
     Route::resource('delivery_addresses', 'API\DeliveryAddressAPIController');
 
-    Route::get('trending_foods', 'API\TrendAPIController@trending_foods');
-    Route::get('popular_foods', 'API\TrendAPIController@popular_foods');
+
 });
 
 Route::post('partner-register', 'CustomController@createPartner');

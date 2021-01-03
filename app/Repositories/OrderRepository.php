@@ -28,6 +28,12 @@ class OrderRepository extends BaseRepository
         'delivery_address_id',
         'active',
         'driver_id',
+        'expected_delivery_time',
+        'vendor_shared_price',
+        'eezly_shared_price',
+        'grand_total',
+        'is_french',
+        'tip'
     ];
 
     /**

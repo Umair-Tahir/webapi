@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 
 
 use App\Http\Middleware\App;
+use App\Mail\OrderNotificationEmail;
 use App\Models\Payment;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -21,6 +22,7 @@ use App\Repositories\UserRepository;
 
 use Flash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification;
 use InfyOm\Generator\Criteria\LimitOffsetCriteria;
 use Prettus\Repository\Criteria\RequestCriteria;
@@ -63,8 +65,6 @@ class GenerateOrderAPIController extends Controller
 
         /* Validation Rules & Validation */
         $rules=[
-            "store_id"      => 'required',
-            "token"         => 'required',
             'credit_card'   => 'required',
             'expiry_month'   => 'required',
             'expiry_year'   => 'required',
@@ -93,8 +93,8 @@ class GenerateOrderAPIController extends Controller
                     /***Card Verification Digits and/or Address Verification Service provided by Moneris
                      * CVD & AVS are disabled in this payment method
                      ***********************/
-                    $store_id = $input['store_id'];
-                    $api_token = $input['token'];
+                    $store_id = getenv("MONERIS_STORE_ID");
+                    $api_token = getenv("MONERIS_API_TOKEN");
                     /************** optional Instantiation    ***************/
                     $params = [
                         'environment' => Moneris::ENV_TESTING, // default: Moneris::ENV_LIVE
@@ -131,7 +131,17 @@ class GenerateOrderAPIController extends Controller
 
                         /******** If else for store_order function **********/
                         //dd($order_response);
-                        if ($order_response == 'success') {
+                        if ($order_response['status'] == 'success') {
+
+                            $isFrench=$input['is_french'];
+                            $toRestaurant=false;
+                            $order=$order_response['order'];
+                            //Send email invoice to customer
+                            Mail::to($order->user->email)->send(new OrderNotificationEmail($order,$isFrench,$toRestaurant));
+                            $toRestaurant=true;
+                            //Send email invoice to restaurant
+                            Mail::to($order->foodOrders[0]->food->restaurant->users[0]->email)->send(new OrderNotificationEmail($order,$isFrench,$toRestaurant));
+
                             return $this->sendResponse($order_response, 'Payment and order are successfully created');
                         } else {
                             return ($order_response);
@@ -180,10 +190,16 @@ class GenerateOrderAPIController extends Controller
                 $foodOrder['order_id'] = $order->id;
                 $this->foodOrderRepository->create($foodOrder);
             }
+
+            $orderResponse=[
+              'status' => 'success',
+                'order' => $order
+            ];
         } catch (ValidatorException $e) {
             return($e->getMessage());
         }
-        return ('success');
+
+        return $orderResponse;
     }
 }
 

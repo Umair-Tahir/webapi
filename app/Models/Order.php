@@ -39,7 +39,8 @@ class Order extends Model
         'vendor_shared_price',
         'eezly_shared_price',
         'grand_total',
-        'is_french'
+        'is_french',
+        'tip'
     ];
     /**
      * The attributes that should be casted to native types.
@@ -50,6 +51,7 @@ class Order extends Model
         'user_id' => 'integer',
         'order_status_id' => 'integer',
         'tax' => 'double',
+        'tip' => 'double',
         'hint' => 'string',
         'status' => 'string',
         'payment_id' => 'integer',

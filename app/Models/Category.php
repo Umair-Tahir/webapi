@@ -28,7 +28,8 @@ class Category extends Model implements HasMedia
 
     public $fillable = [
         'name',
-        'description'
+        'description',
+        'french_name'
     ];
 
     /**
@@ -38,6 +39,7 @@ class Category extends Model implements HasMedia
      */
     protected $casts = [
         'name' => 'string',
+        'french_name' => 'string',
         'description' => 'string',
         'image' => 'string'
     ];

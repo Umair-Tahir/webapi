@@ -5,6 +5,7 @@ namespace App\DataTables;
 use App\Models\CustomField;
 use App\Models\Restaurant;
 use Barryvdh\DomPDF\Facade as PDF;
+use Illuminate\Support\Facades\App;
 use Yajra\DataTables\EloquentDataTable;
 use Yajra\DataTables\Services\DataTable;
 
@@ -87,6 +88,11 @@ class RestaurantDataTable extends DataTable
      */
     public function html()
     {
+//        $url=url()->full();
+//        if (App::environment('production')) {
+////            $url=secure_url($url);
+//    }
+
         return $this->builder()
             ->columns($this->getColumns())
             ->minifiedAjax()

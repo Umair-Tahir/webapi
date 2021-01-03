@@ -144,6 +144,25 @@
         </div>
     </div>
 
+    <!-- Longitude Field -->
+    <div class="form-group row ">
+        {!! Form::label('opening_hour', 'Opening Hour', ['class' => 'col-2 control-label text-right']) !!}
+        <div class="col-4">
+            {!! Form::text('opening_hour', null,  ['id'=>'timePickerOpeningHour','class' => 'form-control timepickerHours','placeholder'=>  'Opening time','readonly'=>'readonly']) !!}
+            <div class="form-text text-muted">
+                Select Opening Hour
+            </div>
+        </div>
+        {!! Form::label('closing_hour', 'Closing Time', ['class' => 'col-2 control-label text-right']) !!}
+        <div class="col-4">
+            {!! Form::text('closing_hour', null,  ['id'=>'timePickerClosingHour','class' => 'form-control timepickerHours','placeholder'=>  'Closing time','readonly'=>'readonly']) !!}
+            <div class="form-text text-muted">
+                Select Closing Hour
+            </div>
+        </div>
+    </div>
+
+
 </div>
 <div style="flex: 50%;max-width: 50%;padding: 0 4px;" class="column">
 
@@ -220,6 +239,16 @@
         {!! Form::label('information', trans("lang.restaurant_information"), ['class' => 'col-3 control-label text-right']) !!}
         <div class="col-9">
             {!! Form::textarea('information', null, ['class' => 'form-control','placeholder'=>
+             trans("lang.restaurant_information_placeholder")  ]) !!}
+            <div class="form-text text-muted">{{ trans("lang.restaurant_information_help") }}</div>
+        </div>
+    </div>
+
+<!-- Information Field -->
+    <div class="form-group row ">
+        {!! Form::label('french_information', 'French Information', ['class' => 'col-3 control-label text-right']) !!}
+        <div class="col-9">
+            {!! Form::textarea('french_information', null, ['class' => 'form-control','placeholder'=>
              trans("lang.restaurant_information_placeholder")  ]) !!}
             <div class="form-text text-muted">{{ trans("lang.restaurant_information_help") }}</div>
         </div>

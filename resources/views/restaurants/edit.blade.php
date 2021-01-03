@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="{{asset('plugins/summernote/summernote-bs4.css')}}">
 {{--dropzone--}}
 <link rel="stylesheet" href="{{asset('plugins/dropzone/bootstrap.min.css')}}">
+<link href="https://unpkg.com/gijgo@1.9.13/css/gijgo.min.css" rel="stylesheet" type="text/css">
 @endpush
 @section('content')
 <!-- Content Header (Page header) -->
@@ -73,8 +74,15 @@
 <script src="{{asset('plugins/summernote/summernote-bs4.min.js')}}"></script>
 {{--dropzone--}}
 <script src="{{asset('plugins/dropzone/dropzone.js')}}"></script>
+<script src="https://unpkg.com/gijgo@1.9.13/js/gijgo.min.js" type="text/javascript"></script>
 <script type="text/javascript">
     Dropzone.autoDiscover = false;
     var dropzoneFields = [];
+    $('#timePickerOpeningHour').timepicker({
+        uiLibrary: 'bootstrap4'
+    });
+    $('#timePickerClosingHour').timepicker({
+        uiLibrary: 'bootstrap4'
+    });
 </script>
 @endpush

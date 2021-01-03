@@ -15,7 +15,7 @@ class OrderStatusesTableSeeder extends Seeder
         
 
         \DB::table('order_statuses')->delete();
-        
+
         \DB::table('order_statuses')->insert(array (
             0 => 
             array (
@@ -60,7 +60,7 @@ class OrderStatusesTableSeeder extends Seeder
             ),
             array (
                 'id' => 7,
-                'status' => 'Canceled',
+                'status' => 'Cancelled',
                 'created_at' => '2019-10-15 18:04:30',
                 'updated_at' => '2019-10-15 18:04:30',
             ),

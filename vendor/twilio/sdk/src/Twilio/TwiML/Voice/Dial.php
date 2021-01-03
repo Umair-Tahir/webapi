@@ -208,4 +208,26 @@ class Dial extends TwiML {
     public function setRingTone($ringTone): self {
         return $this->setAttribute('ringTone', $ringTone);
     }
+
+    /**
+     * Add RecordingTrack attribute.
+     *
+     * @param string $recordingTrack To indicate which audio track should be
+     *                               recorded
+     */
+    public function setRecordingTrack($recordingTrack): self {
+        return $this->setAttribute('recordingTrack', $recordingTrack);
+    }
+
+    /**
+     * Add Sequential attribute.
+     *
+     * @param bool $sequential Used to determine if child TwiML nouns should be
+     *                         dialed in order, one after the other (sequential) or
+     *                         dial all at once (parallel). Default is false,
+     *                         parallel
+     */
+    public function setSequential($sequential): self {
+        return $this->setAttribute('sequential', $sequential);
+    }
 }

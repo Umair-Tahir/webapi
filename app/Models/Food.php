@@ -42,7 +42,7 @@ class Food extends Model implements HasMedia
      */
     public static $rules = [
         'name' => 'required',
-        'french_name' => 'required',
+//        'french_name' => 'required',
         'price' => 'required|numeric|min:0',
         'restaurant_id' => 'required|exists:restaurants,id',
         'category_id' => 'required|exists:categories,id'
@@ -74,6 +74,7 @@ class Food extends Model implements HasMedia
         'price' => 'double',
         'discount_price' => 'double',
         'description' => 'string',
+        'french_description' => 'string',
         'ingredients' => 'string',
         'weight' => 'double',
         'package_items_count' => 'integer',
