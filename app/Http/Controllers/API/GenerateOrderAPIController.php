@@ -93,12 +93,23 @@ class GenerateOrderAPIController extends Controller
                     /***Card Verification Digits and/or Address Verification Service provided by Moneris
                      * CVD & AVS are disabled in this payment method
                      ***********************/
-                    $store_id = getenv("MONERIS_STORE_ID");
-                    $api_token = getenv("MONERIS_API_TOKEN");
                     /************** optional Instantiation    ***************/
-                    $params = [
-                        'environment' => Moneris::ENV_TESTING, // default: Moneris::ENV_LIVE
-                    ];
+
+                    $gateway_env= getenv("Live_ENV_MONERIS");
+                    if ($gateway_env) {
+                        $store_id = getenv("Live_MONERIS_STORE_ID");
+                        $api_token = getenv("Live_MONERIS_API_TOKEN");
+                        $params = [
+                            'environment' => Moneris::ENV_LIVE, // default: Moneris::ENV_LIVE
+                        ];
+                    }else{
+                        $store_id = getenv("Local_MONERIS_STORE_ID");
+                        $api_token = getenv("Local_MONERIS_API_TOKEN");
+                        $params = [
+                            'environment' => Moneris::ENV_TESTING, // default: Moneris::ENV_LIVE
+                        ];
+                    }
+
                     $gateway = (new Moneris($store_id, $api_token, $params))->connect();
                     $gateway = Moneris::create($store_id, $api_token, $params);
 
