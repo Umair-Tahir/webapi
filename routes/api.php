@@ -67,8 +67,15 @@ Route::middleware('auth:api')->group(function () {
             Route::resource('driversPayouts', 'API\DriversPayoutAPIController');
 
             Route::resource('restaurantsPayouts', 'API\RestaurantsPayoutAPIController');
+
+
         });
     });
+
+    /* Manager Routes */
+    Route::post('managerHome', 'API\Manager\HomeAPIController@show');
+    Route::post('SalesChart/{days}', 'API\Manager\TrendsAPIController@sales_chart');
+
     Route::post('users/{id}', 'API\UserAPIController@update');
 
     Route::resource('order_statuses', 'API\OrderStatusAPIController');
