@@ -104,8 +104,8 @@
                 <table width="100%" cellpadding="0" cellspacing="0" style="font-family:Avenir,Helvetica,sans-serif;box-sizing:border-box;margin:0;padding:0;width:100%">
                     <tbody><tr>
                         <td style="font-family:Avenir,Helvetica,sans-serif;box-sizing:border-box;padding:25px 0;text-align:center;background-color: #ffc107 !important">
-                            <a href="http://eezly-env.eba-k4smuzem.sa-east-1.elasticbeanstalk.com" style="font-family:Avenir,Helvetica,sans-serif;box-sizing:border-box;color:#bbbfc3;font-size:19px;font-weight:bold;text-decoration:none" target="_blank" data-saferedirecturl="https://www.google.com/url?q=http://eezly-env.eba-k4smuzem.sa-east-1.elasticbeanstalk.com&amp;source=gmail&amp;ust=1608897117682000&amp;usg=AFQjCNGQHshUo80mqTF_EDsvyRdOmFiYaw">
-                                <image  src="http://eezly.com/images/logo_default.png" />
+                            <a href="https://www.eezly.com" style="font-family:Avenir,Helvetica,sans-serif;box-sizing:border-box;color:#bbbfc3;font-size:19px;font-weight:bold;text-decoration:none" target="_blank" data-saferedirecturl="https://www.google.com/url?q=https://www.eezly.com&amp;source=gmail&amp;ust=1608897117682000&amp;usg=AFQjCNGQHshUo80mqTF_EDsvyRdOmFiYaw">
+                                <image  src="https://eezly.com/images/logo_default.png" />
                             </a>
                         </td>
                     </tr>
@@ -188,7 +188,7 @@
                                                             @if($toRestaurant)
                                                                 <tr class="service">
                                                                     <td class="tableitem"><p class="itemtext"></p></td>
-                                                                    <td class="tableitem" colspan="2"><p class="itemtext">Eezly Fee</p></td>
+                                                                    <td class="tableitem" colspan="2"><p class="itemtext">eezly Fee</p></td>
                                                                     <td class="tableitem"><p class="itemtext">${{$order->eezly_shared_price}}</p></td>
                                                                 </tr>
                                                             @endif
@@ -219,9 +219,9 @@
 
                                                     <div id="legalcopy">
                                                         @if($toRestaurant)
-                                                            <p class="legal"><strong>Thank you for using Eezly!</strong>  The order is expected to be delivered within <strong id="deliveryTime">@if(isset($order->expected_delivery_time) && !is_null($order->expected_delivery_time))  {{$order->expected_delivery_time}} min  @endif</strong>.Please reach out to customer via provided phone number if any delay is expected in delivery.</p>
+                                                            <p class="legal"><strong>Thank you for using eezly!</strong>  The order is expected to be delivered within <strong id="deliveryTime">@if(isset($order->expected_delivery_time) && !is_null($order->expected_delivery_time))  {{$order->expected_delivery_time}} min  @endif</strong>.Please reach out to customer via provided phone number if any delay is expected in delivery.</p>
                                                         @else
-                                                        <p class="legal"><strong>Thank you for using Eezly!</strong>  Your order is expected to be delivered within <strong id="deliveryTime">@if(isset($order->expected_delivery_time) && !is_null($order->expected_delivery_time))  {{$order->expected_delivery_time}} min  @endif</strong>.Please reach out to restaurant for any queries regarding order.</p>
+                                                        <p class="legal"><strong>Thank you for using eezly!</strong>  Your order is expected to be delivered within <strong id="deliveryTime">@if(isset($order->expected_delivery_time) && !is_null($order->expected_delivery_time))  {{$order->expected_delivery_time}} min  @endif</strong>.Please reach out to restaurant for any queries regarding order.</p>
                                                         @endif
                                                     </div>
 
@@ -229,7 +229,7 @@
                                             </div><!--End Invoice-->
                                         </div><!-- End Invoice Holder-->
                                         <H3 style="font-family:Avenir,Helvetica,sans-serif;box-sizing:border-box;color:#74787e;font-size:16px;line-height:1.5em;margin-top:0;text-align:left">Feel free to reach out for any concerns and queries.</H3>
-                                        <H1 style="font-family:Avenir,Helvetica,sans-serif;box-sizing:border-box;font-size:16px;line-height:1.5em;margin-top:0;text-align:left"><span style="color:#74787e;font-size: 14px;">Regards,</span><br>Eezly</H1>
+                                        <H1 style="font-family:Avenir,Helvetica,sans-serif;box-sizing:border-box;font-size:16px;line-height:1.5em;margin-top:0;text-align:left"><span style="color:#74787e;font-size: 14px;">Regards,</span><br>eezly</H1>
                                     </td>
                                 </tr>
                                 </tbody></table>
@@ -239,7 +239,7 @@
                         <td style="font-family:Avenir,Helvetica,sans-serif;background-color: #ffc107 !important">
                             <table align="center" width="570" cellpadding="0" cellspacing="0" style="font-family:Avenir,Helvetica,sans-serif;margin:0 auto;padding:0;text-align:center;width:570px"><tbody><tr>
                                     <td align="center" style="font-family:Avenir,Helvetica,sans-serif;padding:35px">
-                                        <p style="font-family:Avenir,Helvetica,sans-serif;line-height:1.5em;margin-top:0;color:#000000 !important;font-size:12px;text-align:center">© 2020 Food Delivery. All rights reserved.</p>
+                                        <p style="font-family:Avenir,Helvetica,sans-serif;line-height:1.5em;margin-top:0;color:#000000 !important;font-size:12px;text-align:center">© 2020 eezly. All rights reserved.</p>
                                     </td>
                                 </tr></tbody></table>
                         </td>

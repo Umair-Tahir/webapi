@@ -93,7 +93,8 @@
 </div>
 
 </div>
-@if($customCuisines)
+
+@if(isset($customCuisines))
 <div class="clearfix"></div>
 <div class="col-12 custom-field-container">
   <h5 class="col-12 pb-4">{!! trans('lang.custom_field_plural') !!}</h5>
