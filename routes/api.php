@@ -10,6 +10,12 @@
 |
 */
 
+
+
+
+//Driver Routes
+
+
 Route::prefix('driver')->group(function () {
     Route::post('login', 'API\Driver\UserAPIController@login');
     Route::post('register', 'API\Driver\UserAPIController@register');
@@ -17,6 +23,18 @@ Route::prefix('driver')->group(function () {
     Route::get('logout', 'API\Driver\UserAPIController@logout');
     Route::get('settings', 'API\Driver\UserAPIController@settings');
     Route::post('phone_verify', 'API\Driver\UserAPIController@phoneVerify');
+
+});
+
+
+
+//Manager Routes
+
+Route::prefix('manager')->group(function () {
+    Route::post('login', 'API\Manager\UserAPIController@login');
+    Route::post('register', 'API\Manager\UserAPIController@register');
+    Route::get('user', 'API\Manager\UserAPIController@user');
+    Route::get('logout', 'API\Manager\UserAPIController@logout');
 
 });
 
