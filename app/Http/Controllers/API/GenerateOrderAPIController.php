@@ -96,7 +96,7 @@ class GenerateOrderAPIController extends Controller
                     /************** optional Instantiation    ***************/
 
                     $gateway_env= getenv("Live_ENV_MONERIS");
-                    if ($gateway_env == false) {
+                    if ($gateway_env == true) {
                         $store_id = getenv("Live_MONERIS_STORE_ID");
                         $api_token = getenv("Live_MONERIS_API_TOKEN");
                         $params = [
@@ -118,7 +118,7 @@ class GenerateOrderAPIController extends Controller
                     /**************** Purchase ****************/
                     $params = [
                         'cvd' => $input['cvd'],
-                        'order_id' => uniqid('1234-56789', true).date('Y-m-d'),
+                        'order_id' => uniqid('1234-56789', true).'_'.date('Y-m-d'),
                         'amount' => $input['grand_total'],
                         'credit_card' => $input['credit_card'],//'4242424242424242',
                         'expiry_month' => $input['expiry_month'],//'12',
