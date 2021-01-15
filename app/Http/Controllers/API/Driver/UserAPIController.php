@@ -44,8 +44,8 @@ class UserAPIController extends Controller
             if (auth()->attempt(['email' => $request->input('email'), 'password' => $request->input('password')])) {
                 // Authentication passed...
                 $user = auth()->user();
-                if (!$user->hasRole('driver')) {
-                    $this->sendError('User not driver', 401);
+                if (!$user->hasRole('client')) {
+                    $this->sendError('User not client', 401);
                 }
                 $user->device_token = $request->input('device_token', '');
                 $user->save();
@@ -93,7 +93,7 @@ class UserAPIController extends Controller
                 $user->api_token = str_random(60);
                 $user->save();
 
-                $user->assignRole('driver');
+                $user->assignRole('client');
 
                 if (copy(public_path('images/avatar_default.png'), public_path('images/avatar_default_temp.png'))) {
                     $user->addMedia(public_path('images/avatar_default_temp.png'))
