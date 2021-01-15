@@ -31,6 +31,7 @@ use Prettus\Validator\Exceptions\ValidatorException;
 use Stripe\Token;
 use Illuminate\Support\Facades\Validator;
 use CraigPaul\Moneris\Moneris;
+use function Symfony\Component\VarDumper\Dumper\esc;
 
 class GenerateOrderAPIController extends Controller
 {
@@ -144,11 +145,14 @@ class GenerateOrderAPIController extends Controller
                         //Save Payment and sending response if payment is successful
                         $receipt = $response->receipt();
                         $receipt_json = json_encode($receipt);
-                        //dd($array);
+
+                        $variable= $receipt->read('message');
+                        $variable = substr((string)$variable, 0, strpos( (string)$variable, "  "));
+
                         $payment = $this->paymentRepository->create([
                             "price" => $receipt->read('amount'),
                             "user_id" => $input['user_id'],
-                            "status" => $receipt->read('message'),
+                            "status" =>  $variable,
                             "method" => 'moneris',
                             'moneris_order_id' => $receipt->read('id'),
                             'moneris_receipt' => $receipt->read('reference')
