@@ -96,17 +96,19 @@ class GenerateOrderAPIController extends Controller
                     /************** optional Instantiation    ***************/
 
                     $gateway_env= getenv("Live_ENV_MONERIS");
-                    if ($gateway_env) {
+                    if ($gateway_env == false) {
                         $store_id = getenv("Live_MONERIS_STORE_ID");
                         $api_token = getenv("Live_MONERIS_API_TOKEN");
                         $params = [
                             'environment' => Moneris::ENV_LIVE, // default: Moneris::ENV_LIVE
+                            'cvd' => true,
                         ];
                     }else{
                         $store_id = getenv("Local_MONERIS_STORE_ID");
                         $api_token = getenv("Local_MONERIS_API_TOKEN");
                         $params = [
                             'environment' => Moneris::ENV_TESTING, // default: Moneris::ENV_LIVE
+                            'cvd' => true,
                         ];
                     }
 
@@ -115,14 +117,28 @@ class GenerateOrderAPIController extends Controller
 
                     /**************** Purchase ****************/
                     $params = [
-                        'order_id' => uniqid('1234-56789', true),
+                        'cvd' => $input['cvd'],
+                        'order_id' => uniqid('1234-56789', true).date('Y-m-d'),
                         'amount' => $input['grand_total'],
                         'credit_card' => $input['credit_card'],//'4242424242424242',
                         'expiry_month' => $input['expiry_month'],//'12',
                         'expiry_year' => $input['expiry_year'],//'20',
                     ];
-                    $response = $gateway->purchase($params);
 
+                    // $response = $gateway->verify($params);
+                    // FOR TESTING Purposes
+
+                   // dd($response);
+//                    if ($response->successful && !$response->failedCvd) {
+//                        dd('kdkdkdk');
+//                    }
+//                    else {
+//                            $errors = $response->errors;
+//                            dd($errors);
+//                        }
+
+
+                    $response = $gateway->purchase($params);
 
                     if ($response->successful) {
                         //Save Payment and sending response if payment is successful
@@ -135,6 +151,7 @@ class GenerateOrderAPIController extends Controller
                             "status" => $receipt->read('message'),
                             "method" => 'moneris',
                             'moneris_order_id' => $receipt->read('id'),
+                            'moneris_receipt' => $receipt->read('reference')
                             //'moneris_receipt' =>
                         ]);
                         $request['payment_id'] = $payment->id;
@@ -148,10 +165,10 @@ class GenerateOrderAPIController extends Controller
                             $toRestaurant=false;
                             $order=$order_response['order'];
                             //Send email invoice to customer
-                            Mail::to($order->user->email)->send(new OrderNotificationEmail($order,$isFrench,$toRestaurant));
-                            $toRestaurant=true;
-                            //Send email invoice to restaurant
-                            Mail::to($order->foodOrders[0]->food->restaurant->users[0]->email)->send(new OrderNotificationEmail($order,$isFrench,$toRestaurant));
+//                            Mail::to($order->user->email)->send(new OrderNotificationEmail($order,$isFrench,$toRestaurant));
+//                            $toRestaurant=true;
+//                            //Send email invoice to restaurant
+//                            Mail::to($order->foodOrders[0]->food->restaurant->users[0]->email)->send(new OrderNotificationEmail($order,$isFrench,$toRestaurant));
 
                             return $this->sendResponse($order_response, 'Payment and order are successfully created');
                         } else {

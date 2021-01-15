@@ -16,15 +16,15 @@ class TrendsAPIController extends Controller
             $sales = array();
 
             for( $i=0; $i<$days; $i++){
-                //date('Y-m-d',strtotime("-6 days"));
-                $date = \Carbon\Carbon::today()->subDays($i+1);
-                $sales[$i] =  Food::select('id')
-                               ->where( 'created_at', '=', $date->toDateString())
-                               ->pluck('created_at');
-
-                $dates[$i] =$date->toDateString();
+                //date('Y-m-d',strtotime("-6 days")); ->toDateString()
+                $date = date('Y-m-d');// \Carbon\Carbon::today()->subDays($i+1);
+                $sales[$i] =  Food::select('id') ->pluck('created_at');
+                             //  ->where( 'created_at', '=', $date)
+                              // ->pluck('created_at');
+                dd($sales[$i]);
+                $dates[$i] =$date;
             }
-            dd($sales);
+
 
 
                // ->groupBy('food_id')->orderByRaw('COUNT(*) DESC')
