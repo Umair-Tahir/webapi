@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\API;
 
 
+use App\Models\Order;
 use App\Models\OrderStatus;
 use App\Repositories\OrderStatusRepository;
 use Illuminate\Http\Request;
@@ -69,4 +70,37 @@ class OrderStatusAPIController extends Controller
 
         return $this->sendResponse($orderStatus->toArray(), 'Order Status retrieved successfully');
     }
+
+    /*Function to Show all User Orders Statuses*/
+    public function user_orders(){
+        $user_id = auth()->user();
+        $order_status = OrderStatus::all()->pluck('id');
+        $orders = Order::select('*')
+            ->whereIn('order_status_id', $order_status)
+            ->where('user_id','=',$user_id->id)
+            ->groupBy('order_status_id')
+            ->get();
+
+        if($orders){
+            return $this->sendResponse($orders->toArray(), 'Showing all orders of User');
+        }
+        else{
+            return $this->sendError('No Orders Found');
+        }
+
+    }
+
+    /* Function to show him his User single order */
+    public function current_order_status($id)
+    {
+        $order = Order::select('*')
+            ->where('id', '=', $id)
+            ->get();
+        if ($order->count() > 0) {
+            return $this->sendResponse($order->toArray(), 'Showing Order');
+        } else {
+            return $this->sendError('No Order Found of such id');
+        }
+    }
+
 }

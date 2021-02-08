@@ -91,11 +91,17 @@ Route::middleware('auth:api')->group(function () {
     });
 
     /* Manager Routes */
-    Route::post('managerHome', 'API\Manager\HomeAPIController@show');
-    Route::post('SalesChart/{days}', 'API\Manager\TrendsAPIController@sales_chart');
+    Route::post('manager/Home', 'API\Manager\HomeAPIController@show');
+    Route::post('manager/SalesChart/{days}', 'API\Manager\TrendsAPIController@sales_chart');
+    Route::get('manager/best_seller/{id}', 'API\Manager\TrendsAPIController@best_seller');
+    Route::get('manager/show_cuisines/{id}', 'API\Manager\CuisineAPIController@show_all');
+    Route::resource('manager/restaurants', 'API\Manager\RestaurantAPIController');
+    /* --- */
 
     Route::post('users/{id}', 'API\UserAPIController@update');
 
+    Route::get('order_statuses/get_order_status/{id}', 'API\OrderStatusAPIController@current_order_status');
+    Route::get('order_statuses/all_orders_statuses', 'API\OrderStatusAPIController@user_orders');
     Route::resource('order_statuses', 'API\OrderStatusAPIController');
 
     Route::get('payments/byMonth', 'API\PaymentAPIController@byMonth')->name('payments.byMonth');
@@ -107,6 +113,9 @@ Route::middleware('auth:api')->group(function () {
     Route::resource('orders', 'API\OrderAPIController');
 
     Route::post('generate_order', 'API\GenerateOrderAPIController@order_payment');
+
+
+
     //Route::post('generate_payment', 'API\GenerateOrderAPIController@moneris_payment');
 
     Route::resource('food_orders', 'API\FoodOrderAPIController');
