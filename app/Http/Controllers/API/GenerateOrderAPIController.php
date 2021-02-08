@@ -69,6 +69,7 @@ class GenerateOrderAPIController extends Controller
             'credit_card'   => 'required',
             'expiry_month'   => 'required',
             'expiry_year'   => 'required',
+            'cvc_code'   => 'required',
             "user_id"       => 'required',
             "delivery_address_id" => 'required',
             "delivery_fee"        => 'required',
@@ -118,10 +119,10 @@ class GenerateOrderAPIController extends Controller
 
                     /**************** Purchase ****************/
                     $params = [
-                        'cvd' => $input['cvd'],
+                        'cvd' => $input['cvc_code'],
                         'order_id' => uniqid('1234-56789', true).'_'.date('Y-m-d'),
                         'amount' => $input['grand_total'],
-                        'credit_card' => $input['credit_card'],//'4242424242424242',
+                        'credit_card' => str_replace(' ', '', $input['credit_card']),//'4242424242424242',
                         'expiry_month' => $input['expiry_month'],//'12',
                         'expiry_year' => $input['expiry_year'],//'20',
                     ];
@@ -168,11 +169,11 @@ class GenerateOrderAPIController extends Controller
                             $isFrench=$input['is_french'];
                             $toRestaurant=false;
                             $order=$order_response['order'];
-                            //Send email invoice to customer
-//                            Mail::to($order->user->email)->send(new OrderNotificationEmail($order,$isFrench,$toRestaurant));
-//                            $toRestaurant=true;
-//                            //Send email invoice to restaurant
-//                            Mail::to($order->foodOrders[0]->food->restaurant->users[0]->email)->send(new OrderNotificationEmail($order,$isFrench,$toRestaurant));
+                            //Send email invoice to customer $order->user->email
+                            Mail::to($order->user->email)->send(new OrderNotificationEmail($order,$isFrench,$toRestaurant));
+                            $toRestaurant=true;
+                            //Send email invoice to restaurant $order->foodOrders[0]->food->restaurant->users[0]->email
+                            Mail::to('phil@eezly.com')->send(new OrderNotificationEmail($order,$isFrench,$toRestaurant));
 
                             return $this->sendResponse($order_response, 'Payment and order are successfully created');
                         } else {
