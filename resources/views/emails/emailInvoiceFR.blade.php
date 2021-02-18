@@ -125,7 +125,8 @@
                                                     <div class="info">
                                                         <h2>@if(isset($order->user->name)) {{$order->user->name}}  @endif</h2>
                                                         <p> @if(isset($order->user->phone_number)) {{$order->user->phone_number}}  @endif </br>
-                                                            @if(isset($order->deliveryAddress->address)) {{$order->deliveryAddress->address}}  @endif
+                                                            @if(isset($order->hint)) {{$order->hint}}  @endif
+                                                            {{--@if(isset($order->deliveryAddress->address)) {{$order->deliveryAddress->address}}  @endif--}}
                                                         </p>
                                                     </div><!--End Info-->
                                                     <div class="title">
@@ -245,7 +246,7 @@
                         <td style="font-family:Avenir,Helvetica,sans-serif;background-color: #ffc107 !important">
                             <table align="center" width="570" cellpadding="0" cellspacing="0" style="font-family:Avenir,Helvetica,sans-serif;margin:0 auto;padding:0;text-align:center;width:570px"><tbody><tr>
                                     <td align="center" style="font-family:Avenir,Helvetica,sans-serif;padding:35px">
-                                        <p style="font-family:Avenir,Helvetica,sans-serif;line-height:1.5em;margin-top:0;color:#000000 !important;font-size:12px;text-align:center">© 2020 eezly. All rights reserved.</p>
+                                        <p style="font-family:Avenir,Helvetica,sans-serif;line-height:1.5em;margin-top:0;color:#000000 !important;font-size:12px;text-align:center">© 2021 eezly. All rights reserved.</p>
                                     </td>
                                 </tr></tbody></table>
                         </td>
