@@ -188,4 +188,28 @@ class RestaurantAPIController extends Controller
 
         return $this->sendResponse($restaurant, __('lang.deleted_successfully', ['operator' => __('lang.restaurant')]));
     }
+    /**
+     * Create Restaurant from data received from wp website.
+     *
+     * @param $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function wp_restaurant(Request $request){
+
+        $input = $request->all();
+        if ( $input['action'] = ['wp_form']) {
+           $input['description'] = 'This restaurant via request received from Wordpress website';
+        }
+        $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->restaurantRepository->model());
+        try {
+            $restaurant = $this->restaurantRepository->create($input);
+            $restaurant->customFieldsValues()->createMany(getCustomFieldsValues($customFields, $request));
+
+        } catch (ValidatorException $e) {
+            return $this->sendError($e->getMessage());
+        }
+        return $this->sendResponse($restaurant->toArray(), __('lang.saved_successfully', ['operator' => __('lang.restaurant')]));
+
+    }
 }

@@ -34,7 +34,7 @@ class TrendsAPIController extends Controller
                                     ->whereDate('created_at', '=', $date)
                                     ->get()
                                     ->count();
-                $sales[$i] = [$date => $s_count];
+                $sales[$i] = [date('j M, Y',strtotime('-'.$i.' days')) => $s_count]; // 18 Feb, 2021
             }
         } catch (ValidatorException $e) {
             return($e->getMessage());
@@ -48,54 +48,66 @@ class TrendsAPIController extends Controller
     */
 
     public function best_seller($id){
-
         try {
-            if($this->restaurantRepository->findWithoutFail($id)){
+            if($this->restaurantRepository->findWithoutFail($id)) {
                 $res_foods = Food::select('restaurant_id', 'id')
-                                    ->where('restaurant_id', '=', $id)
-                                    ->pluck('id');
+                    ->where('restaurant_id', '=', $id)
+                    ->pluck('id');
 
-                //filtering top 3 foods if exist
-                $date  = \Carbon\Carbon::today()->subDays(14);
-                $foods = FoodOrder::select('food_id')
-                                    ->whereIn('food_id', $res_foods)
-                                    ->where('created_at','>',$date)
-                                    ->groupBy('food_id')
-                                    ->orderByRaw('COUNT(*) DESC')
-                                    ->limit(3)
-                                    ->pluck('food_id');
+                /*Checking if restaurant has any food or not */
+                if(!$res_foods->isEmpty()){
+                    //filtering top 3 foods if exist
+                    $date = \Carbon\Carbon::today()->subDays(14);
+                    $foods = FoodOrder::select('food_id')
+                        ->whereIn('food_id', $res_foods)
+                        ->where('created_at', '>', $date)
+                        ->groupBy('food_id')
+                        ->orderByRaw('COUNT(*) DESC')
+                        ->limit(3)
+                        ->pluck('food_id');
+                    //Counting all food orders in Carbon date
 
-                //Counting top records in specific time
-                $total = FoodOrder::select('food_id')
-                    ->whereIn('food_id', $res_foods)
-                    ->where('created_at','>',$date)
-                    ->get()
-                    ->count();
-
-                //Getting top counts
-                $count = array();
-                $i= 0;
-                foreach ($foods as $food){
-                    $num = FoodOrder::select('food_id')
-                        ->where('food_id', '=', $food)
-                        ->where('created_at','>',$date)
+                    $total = FoodOrder::select('food_id')
+                        ->whereIn('food_id', $res_foods)
+                        ->where('created_at', '>', $date)
                         ->get()
                         ->count();
-                    $count[$i] = [$foods[$i] => $num];
-                    $i++;
+                }else
+                return $this->sendError("Restaurant don't have any foods", 404);
 
+                /*Checking if foods array has any food or not */
+                if(!$foods->isEmpty()){
+                    //Getting top counts
+                    $count = array();
+                    $data= array() ;
+                    $i = 0;
+                    foreach ($foods as $food) {
+                        $num = FoodOrder::select('food_id')
+                            ->where('food_id', '=', $food)
+                            ->where('created_at', '>', $date)
+                            ->get()
+                            ->count();
+                        $count[$i] = [
+                            'name' => Food::where('id', $food)->pluck('name')->get(0),
+                            'total_sales' => $num
+                        ];
+                        $i++;
 
-                    $data = [$count, 'total orders' => $total];
-                }
-
-                }
+                        $data = [
+                            'Foods' => $count ,
+                            'total_orders' => $total
+                        ];
+                    }
+                }else
+                    return $this->sendError('No foods were ordered in last 14 days', 404);
+            }
             else{
                 return $this->sendError( 'No restaurant found',404);
             }
           } catch (ValidatorException $e) {
         return($e->getMessage());
         }
-        return $this->sendResponse($data, 'Most populars foods of my restaurant along with there totsl orders');
+    return $this->sendResponse($data, 'Most populars foods of my restaurant along with there total orders in last 14 days');
     }
 
 

@@ -50,6 +50,7 @@ Route::post('changeEmailSettings', 'API\UserAPIController@changeEmailSettings');
 
 Route::resource('cuisines', 'API\CuisineAPIController');
 Route::resource('categories', 'API\CategoryAPIController');
+Route::post('restaurants/wordpress', 'API\RestaurantAPIController@wp_restaurant');
 Route::resource('restaurants', 'API\RestaurantAPIController');
 
 Route::resource('faq_categories', 'API\FaqCategoryAPIController');
@@ -91,8 +92,8 @@ Route::middleware('auth:api')->group(function () {
     });
 
     /* Manager Routes */
-    Route::post('manager/Home', 'API\Manager\HomeAPIController@show');
-    Route::post('manager/SalesChart/{days}', 'API\Manager\TrendsAPIController@sales_chart');
+    Route::get('manager/Home/{id}', 'API\Manager\HomeAPIController@show');
+    Route::get('manager/SalesChart/{days}', 'API\Manager\TrendsAPIController@sales_chart');
     Route::get('manager/best_seller/{id}', 'API\Manager\TrendsAPIController@best_seller');
     Route::get('manager/show_cuisines/{id}', 'API\Manager\CuisineAPIController@show_all');
     Route::resource('manager/restaurants', 'API\Manager\RestaurantAPIController');
