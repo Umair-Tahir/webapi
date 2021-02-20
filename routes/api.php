@@ -28,15 +28,6 @@ Route::prefix('driver')->group(function () {
 
 
 
-//Manager Routes
-
-Route::prefix('manager')->group(function () {
-    Route::post('login', 'API\Manager\UserAPIController@login');
-    Route::post('register', 'API\Manager\UserAPIController@register');
-    Route::get('user', 'API\Manager\UserAPIController@user');
-    Route::get('logout', 'API\Manager\UserAPIController@logout');
-
-});
 
 Route::post('paymentz', 'API\UserAPIController@paymentM');
 Route::post('sendInvoice/{id}', 'API\OrderAPIController@generateInvoice');
@@ -87,16 +78,23 @@ Route::middleware('auth:api')->group(function () {
             Route::resource('restaurantsPayouts', 'API\RestaurantsPayoutAPIController');
 
 
+            Route::post('login', 'API\Manager\UserAPIController@login');
+            Route::post('register', 'API\Manager\UserAPIController@register');
+            Route::get('user', 'API\Manager\UserAPIController@user');
+            Route::get('logout', 'API\Manager\UserAPIController@logout');
+
+            /* Manager Routes */
+            Route::post('manager/Home', 'API\Manager\HomeAPIController@show');
+            Route::post('manager/SalesChart/{days}', 'API\Manager\TrendsAPIController@sales_chart');
+            Route::get('manager/best_seller/{id}', 'API\Manager\TrendsAPIController@best_seller');
+            Route::get('manager/show_cuisines/{id}', 'API\Manager\CuisineAPIController@show_all');
+            Route::resource('manager/restaurants', 'API\Manager\RestaurantAPIController');
+            /* --- */
+
         });
     });
 
-    /* Manager Routes */
-    Route::post('manager/Home', 'API\Manager\HomeAPIController@show');
-    Route::post('manager/SalesChart/{days}', 'API\Manager\TrendsAPIController@sales_chart');
-    Route::get('manager/best_seller/{id}', 'API\Manager\TrendsAPIController@best_seller');
-    Route::get('manager/show_cuisines/{id}', 'API\Manager\CuisineAPIController@show_all');
-    Route::resource('manager/restaurants', 'API\Manager\RestaurantAPIController');
-    /* --- */
+
 
     Route::post('users/{id}', 'API\UserAPIController@update');
 

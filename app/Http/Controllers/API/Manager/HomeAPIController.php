@@ -24,8 +24,9 @@ class HomeAPIController extends Controller
                 $total += $price;
 
             $orderResponse=[
-                'Total orders ' => count($food_sales),
-                'Total Sales' => round($total, 2)
+                'total_orders ' => count($food_sales),
+                'total_sales' => round($total, 2),
+                'future_payouts' => 0
             ];
         } catch (ValidatorException $e) {
             return($e->getMessage());

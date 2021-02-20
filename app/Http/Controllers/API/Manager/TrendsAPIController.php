@@ -14,6 +14,7 @@ use App\Http\Controllers\Controller;
 
 class TrendsAPIController extends Controller
 {
+    private $restaurantRepository;
 
     public function __construct(RestaurantRepository $restaurantRepo)
     {
@@ -85,7 +86,7 @@ class TrendsAPIController extends Controller
                     $i++;
 
 
-                    $data = [$count, 'total orders' => $total];
+                    $data = [$count, 'total_orders' => $total];
                 }
 
                 }
