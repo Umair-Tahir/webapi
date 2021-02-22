@@ -77,6 +77,7 @@ Route::middleware('auth')->group(function () {
             Route::resource('permissions', 'PermissionController');
             Route::resource('roles', 'RoleController');
             Route::resource('customFields', 'CustomFieldController');
+            Route::post('users/remove-media', 'UserController@removeMedia');
             Route::get('users/login-as-user/{id}', 'UserController@loginAsUser')->name('users.login-as-user');
             Route::patch('update', 'AppSettingController@update');
             Route::patch('translate', 'AppSettingController@translate');

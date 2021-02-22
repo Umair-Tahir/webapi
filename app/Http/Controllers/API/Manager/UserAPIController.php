@@ -70,9 +70,9 @@ class UserAPIController extends Controller
                 'name' => 'required',
                 'email' => 'required|unique:users|email',
                 'password' => 'required',
-                'phone_number' => 'required|unique:users|min:8',
-
+                'phone_number' => 'required|unique:users|min:8'
             ]);
+            $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->userRepository->model());
 
                     /* Get credentials from .env */
         $token = getenv("TWILIO_AUTH_TOKEN");
@@ -92,6 +92,7 @@ class UserAPIController extends Controller
                 $user->password = Hash::make($request->input('password'));
                 $user->api_token = str_random(60);
                 $user->save();
+                $user->customFieldsValues()->createMany(getCustomFieldsValues($customFields, $request));
 
                 $user->assignRole('manager');
 
