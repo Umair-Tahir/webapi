@@ -4,17 +4,13 @@
 //define('RDS_USERNAME', $_SERVER['RDS_USERNAME']);
 //define('RDS_PASSWORD', $_SERVER['RDS_PASSWORD']);
 //define('RDS_DB_NAME', $_SERVER['RDS_DB_NAME']);
-if (env('APP_ENV', '127.0.0.1')!='local') {
-    $host=$_SERVER['RDS_HOSTNAME'];
-    $username=$_SERVER['RDS_USERNAME'];
-    $password=$_SERVER['RDS_PASSWORD'];
-    $database=$_SERVER['RDS_DB_NAME'];
-}else{
+
+
     $host=env('DB_HOST', '127.0.0.1');
     $username=env('DB_USERNAME', 'forge');
     $password=env('DB_PASSWORD', '*Passw0rd#');
     $database=env('DB_DATABASE', 'forge');
-}
+
 return [
 
     /*
@@ -56,11 +52,6 @@ return [
 
         'mysql' => [
             'driver' => 'mysql',
-//            'host' => RDS_HOSTNAME,
-//            'port' => env('DB_PORT', '3306'),
-//            'database' => RDS_DB_NAME,
-//            'username' => RDS_USERNAME,
-//            'password' => RDS_PASSWORD,
             'host' =>$host,
             'port' => env('DB_PORT', '3306'),
             'database' => $database,

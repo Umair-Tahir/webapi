@@ -28,7 +28,14 @@ class TrendAPIController extends Controller
                       ->limit(5)
                       ->get();
 
+
         if($food_orders){
+            if(count($food_orders)==0){
+                $food_orders =  FoodOrder::inRandomOrder()->select('food_id')
+                    ->groupBy('food_id')->orderByRaw('COUNT(*) DESC')
+                    ->limit(5)
+                    ->get();
+            }
             $i=0;
             $food=Array();
             foreach ($food_orders as $fid) {

@@ -54,7 +54,7 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://eezly-env.eba-k4smuzem.sa-east-1.elasticbeanstalk.com'),
+    'url' => env('APP_URL', 'https://52.67.77.39'),
 
     /*
     |--------------------------------------------------------------------------
