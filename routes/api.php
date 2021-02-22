@@ -93,7 +93,7 @@ Route::middleware('auth:api')->group(function () {
 
     /* Manager Routes */
     Route::get('manager/Home/{id}', 'API\Manager\HomeAPIController@show');
-    Route::get('manager/SalesChart/{days}', 'API\Manager\TrendsAPIController@sales_chart');
+    Route::post('manager/SalesChart', 'API\Manager\TrendsAPIController@sales_chart');
     Route::get('manager/best_seller/{id}', 'API\Manager\TrendsAPIController@best_seller');
     Route::get('manager/show_cuisines/{id}', 'API\Manager\CuisineAPIController@show_all');
     Route::resource('manager/restaurants', 'API\Manager\RestaurantAPIController');
