@@ -1,7 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\API\Manager;
-
+use Illuminate\Support\Facades\DB;
 use App\Models\FoodOrder;
 use App\Models\Restaurant;
 use App\Repositories\RestaurantRepository;
@@ -25,19 +25,31 @@ class TrendsAPIController extends Controller
     /*
        Sales Chart on the basis of Daily, Monthly Bases
     */
-    public function sales_chart($days){
-
+    public function sales_chart(Request $request){
+        $restaurants_id = $request['restaurant_id'];
+        $days = $request['days'];
         try {
-            $sales = array();
-            for( $i=0; $i<$days; $i++){
-                $date = date('Y-m-d',strtotime('-'.$i.' days'));
-                $s_count =  FoodOrder::select('id', 'created_at')
-                                    ->whereDate('created_at', '=', $date)
-                                    ->get()
-                                    ->count();
-                $sales[$i] = [date('j M, Y',strtotime('-'.$i.' days')) => $s_count]; // 18 Feb, 2021
-            }
-        } catch (ValidatorException $e) {
+            if ($this->restaurantRepository->findWithoutFail($restaurants_id)) {
+                /*Checking if restaurant has any food or not */
+                $restaurants_foods = Food::select('restaurant_id', 'id')
+                    ->where('restaurant_id', '=', $restaurants_id)
+                    ->pluck('id');
+            } else
+                return $this->sendError("Restaurant doesn't exist", 404);
+            if (!$restaurants_foods->isEmpty()) {
+                $sales = array();
+                for ($i = 1; $i <= $days; $i++) {
+                    $date = date('Y-m-d', strtotime('-' . $i . ' days'));
+                    $s_count = FoodOrder::select('id', 'created_at')
+                        ->whereIn('food_id', $restaurants_foods)
+                        ->whereDate('created_at', '=', $date)
+                        ->get()
+                        ->count();
+                    $sales[$i] = [date('j M, Y', strtotime('-' . $i . ' days')) => $s_count]; // 18 Feb, 2021
+                }
+            } else
+                return $this->sendError("Restaurant doesn't have any foods", 404);
+        }catch (ValidatorException $e) {
             return($e->getMessage());
         }
         return $this->sendResponse($sales, 'Dates with sales retrieved successfully');
