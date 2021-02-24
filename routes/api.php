@@ -83,6 +83,8 @@ Route::middleware('auth:api')->group(function () {
             Route::get('show_cuisines/{id}', 'API\Manager\CuisineAPIController@show_all');
             Route::resource('restaurants', 'API\Manager\RestaurantAPIController');
             /* --- */
+
+
             Route::resource('drivers', 'API\DriverAPIController');
 
             Route::resource('earnings', 'API\EarningAPIController');

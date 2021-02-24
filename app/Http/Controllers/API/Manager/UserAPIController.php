@@ -42,6 +42,7 @@ class UserAPIController extends Controller
                 'password' => 'required',
             ]);
             if (auth()->attempt(['email' => $request->input('email'), 'password' => $request->input('password')])) {
+
                 // Authentication passed...
                 $user = auth()->user();
                 if (!$user->hasRole('manager')) {
@@ -50,6 +51,8 @@ class UserAPIController extends Controller
                 $user->device_token = $request->input('device_token', '');
                 $user->save();
                 return $this->sendResponse($user, 'User retrieved successfully');
+            } else {
+                return $this->sendError("Incorrect username or password", 401);
             }
         } catch (\Exception $e) {
             return $this->sendError($e->getMessage(), 401);
