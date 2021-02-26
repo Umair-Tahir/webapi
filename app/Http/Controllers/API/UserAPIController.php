@@ -12,6 +12,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use PhpParser\Node\Stmt\TryCatch;
+use Prettus\Repository\Criteria\RequestCriteria;
 use Prettus\Validator\Exceptions\ValidatorException;
 
 class UserAPIController extends Controller
@@ -116,6 +117,7 @@ class UserAPIController extends Controller
 
     function user(Request $request)
     {
+        $this->userRepository->pushCriteria(new RequestCriteria($request));
         $user = $this->userRepository->findByField('api_token', $request->input('api_token'))->first();
 
         if (!$user) {
