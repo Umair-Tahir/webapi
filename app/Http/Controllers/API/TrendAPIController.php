@@ -5,6 +5,7 @@ namespace App\Http\Controllers\API;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\FoodOrder;
+use App\Models\Food;
 use App\Repositories\FoodRepository;
 use Carbon\Carbon;
 use PhpParser\Node\Expr\Array_;
@@ -39,40 +40,25 @@ class TrendAPIController extends Controller
             return $this->sendResponse($food, 'Showing Trending Foods');
         }
         else{
-            $food_orders =  FoodOrder::inRandomOrder()->select('food_id')
-                ->groupBy('food_id')->orderByRaw('COUNT(*) DESC')
+            $foods =  Food::inRandomOrder()
                 ->limit(5)
                 ->get();
-            $i=0;
-            $food=Array();
-            foreach ($food_orders as $fid) {
-                $food[$i] = $this->foodRepository->findWithoutFail($fid['food_id']);
-                $i++;
             }
-            return $this->sendResponse($food, 'Showing Random Foods');
+            return $this->sendResponse($foods, 'Showing Random Foods');
         }
-
-
-    }
 
 
     //Function to get Month Popular Foods
     public function popular_foods(){
-        $food_orders = FoodOrder::select('food_id')->where( 'created_at', '>', Carbon::now()->subDays(30))->groupBy('food_id')->orderByRaw('COUNT(*) DESC')->limit(5)->get();
+        $food_orders = FoodOrder::select('food_id')
+            ->where( 'created_at', '>', Carbon::now()->subDays(30))
+            ->groupBy('food_id')->orderByRaw('COUNT(*) DESC')
+            ->limit(5)
+            ->get();
 
 //        select('name')>groupBy('name')->orderByRaw('COUNT(*) DESC')->limit(1)->get();
 
-
-        if($food_orders){
-
-            if(count($food_orders)==0){
-                $food_orders =  FoodOrder::inRandomOrder()->select('food_id')
-                    ->groupBy('food_id')->orderByRaw('COUNT(*) DESC')
-                    ->limit(5)
-                    ->get();
-
-            }
-
+        if(!$food_orders->isEmpty()){
             $i=0;
             $food=Array();
             foreach ($food_orders as $fid) {
@@ -82,7 +68,10 @@ class TrendAPIController extends Controller
             return $this->sendResponse($food, 'Showing Popular foods');
 
         }else{
-            return $this->sendError('No food list to display as No orders exist yet.', 401);
+            $foods = Food::inRandomOrder()
+                ->limit(5)
+                ->get();
         }
+        return $this->sendResponse($foods, 'Showing Random Popular Foods');
     }
 }
