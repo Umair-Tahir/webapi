@@ -5,7 +5,9 @@ namespace App\Http\Controllers\API;
 use App\Events\OrderChangedEvent;
 use App\Http\Controllers\Controller;
 use App\Mail\OrderNotificationEmail;
+use App\Models\FoodOrder;
 use App\Models\Order;
+use App\Models\Restaurant;
 use App\Notifications\NewOrder;
 use App\Notifications\StatusChangedOrder;
 use App\Repositories\CartRepository;
@@ -14,6 +16,7 @@ use App\Repositories\OrderRepository;
 use App\Repositories\PaymentRepository;
 use App\Repositories\FoodOrderRepository;
 use App\Repositories\UserRepository;
+use App\Models\Food;
 use Braintree\Gateway;
 use Flash;
 use Illuminate\Http\Request;
@@ -87,6 +90,7 @@ class OrderAPIController extends Controller
 
     /**
      * Display the specified Order.
+     * Order -> FoodOrder -> Foods
      * GET|HEAD /orders/{id}
      *
      * @param int $id
@@ -103,19 +107,35 @@ class OrderAPIController extends Controller
             } catch (RepositoryException $e) {
                 Flash::error($e->getMessage());
             }
+
             $order = $this->orderRepository->findWithoutFail($id);
+
+            if (!empty($order)) {
+                $food_order = FoodOrder::select('*')
+                    ->where('order_id', $order->id)
+                    ->get();
+
+                $foods = array();
+                foreach ($food_order as $key => $singlefood) {
+                    $food_array = Food::where('id', $singlefood->food_id)->get()->toArray();
+                    $foods[$key] = $food_array[0];
+                }
+                $data = [
+                    'order' => $order,
+                    'food_order' => $food_order,
+                    'foods' => $foods,
+                ];
+            }
         }
 
         if (empty($order)) {
             return $this->sendError('Order not found');
         }
 
-        return $this->sendResponse($order->toArray(), 'Order retrieved successfully');
-
-
+        return $this->sendResponse($data, 'Order retrieved successfully');
     }
 
-    /**
+    /** Currently Not Working
      * Store a newly created Order in storage.
      *
      * @param Request $request
@@ -135,7 +155,7 @@ class OrderAPIController extends Controller
         }
     }
 
-    /**
+    /** Currently Not Working
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse|mixed
      */
@@ -195,7 +215,7 @@ class OrderAPIController extends Controller
         return $this->sendResponse($order->toArray(), __('lang.saved_successfully', ['operator' => __('lang.order')]));
     }
 
-    /**
+    /** Currently Not Working
      * @param Request $request
      * @return \Illuminate\Http\JsonResponse|mixed
      */
@@ -241,7 +261,7 @@ class OrderAPIController extends Controller
         return $this->sendResponse($order->toArray(), __('lang.saved_successfully', ['operator' => __('lang.order')]));
     }
 
-    /**
+    /** Currently Not Working
      * Update the specified Order in storage.
      *
      * @param int $id

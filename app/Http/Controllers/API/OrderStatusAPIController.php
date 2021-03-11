@@ -71,17 +71,18 @@ class OrderStatusAPIController extends Controller
         return $this->sendResponse($orderStatus->toArray(), 'Order Status retrieved successfully');
     }
 
-    /*Function to Show all User Orders Statuses*/
+    /*Function to Show User's all Orders grouped according to statuses*/
     public function user_orders(){
-        $user_id = auth()->user();
+        $user_id = auth()->user()->id;
         $order_status = OrderStatus::all()->pluck('id');
+
         $orders = Order::select('*')
             ->whereIn('order_status_id', $order_status)
-            ->where('user_id','=',$user_id->id)
+            ->where('user_id','=', '1')
             ->groupBy('order_status_id')
             ->get();
-
-        if($orders){
+        dd($orders);
+        if(!$orders->isEmpty()){
             return $this->sendResponse($orders->toArray(), 'Showing all orders of User');
         }
         else{
@@ -90,17 +91,20 @@ class OrderStatusAPIController extends Controller
 
     }
 
-    /* Function to show him his User single order */
+    /* Function to show User's order status*/
     public function current_order_status($id)
     {
-        $order = Order::select('*')
+        $order_status = Order::select('*')
             ->where('id', '=', $id)
-            ->get();
-        if ($order->count() > 0) {
-            return $this->sendResponse($order->toArray(), 'Showing Order');
+            ->pluck('order_status_id');
+        $status_name = OrderStatus::select('*')
+            ->where('id', '=', $order_status)
+            ->pluck('status');
+
+        if ($status_name->count() > 0) {
+            return $this->sendResponse($status_name, 'Showing Order');
         } else {
             return $this->sendError('No Order Found of such id');
         }
     }
-
 }
