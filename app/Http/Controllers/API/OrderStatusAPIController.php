@@ -72,16 +72,14 @@ class OrderStatusAPIController extends Controller
     }
 
     /*Function to Show User's all Orders grouped according to statuses*/
-    public function user_orders(){
+    public function userOrders(){
         $user_id = auth()->user()->id;
-        $order_status = OrderStatus::all()->pluck('id');
+//        $order_status = OrderStatus::all()->pluck('id');
 
         $orders = Order::select('*')
-            ->whereIn('order_status_id', $order_status)
-            ->where('user_id','=', '1')
-            ->groupBy('order_status_id')
+            ->where('user_id','=',$user_id)
+            ->OrderBy('order_status_id')
             ->get();
-
         if(!$orders->isEmpty()){
             return $this->sendResponse($orders->toArray(), 'Showing all orders of User');
         }
@@ -92,7 +90,7 @@ class OrderStatusAPIController extends Controller
     }
 
     /* Function to show User's order status*/
-    public function current_order_status($id)
+    public function currentOrderStatus($id)
     {
         $order_status = Order::select('*')
             ->where('id', '=', $id)

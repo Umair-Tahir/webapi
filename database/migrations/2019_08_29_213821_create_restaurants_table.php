@@ -26,7 +26,7 @@ class CreateRestaurantsTable extends Migration
             $table->double('delivery_fee', 8, 2)->nullable()->default(0);
             $table->double('delivery_range', 8, 2)->nullable()->default(0);//added
             $table->double('default_tax', 8, 2)->nullable()->default(0); // //added
-            $table->boolean('closed')->nullable()->default(0); // //added
+            $table->boolean('closed')->nullable()->default(1); // //added
             $table->boolean('available_for_delivery')->nullable()->default(1); //added
             $table->timestamps();
         });

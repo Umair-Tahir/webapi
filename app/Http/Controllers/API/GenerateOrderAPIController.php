@@ -63,12 +63,13 @@ class GenerateOrderAPIController extends Controller
     public function order_payment(Request $request)
     {
         $input = $request->all();
+
         /* Validation Rules & Validation */
         $rules=[
             'credit_card'   => 'required',
             'expiry_month'   => 'required',
             'expiry_year'   => 'required',
-//            'cvc_code'   => 'required',
+            'cvc_code'   => 'required',
             "user_id"       => 'required',
             "delivery_address_id" => 'required',
             "delivery_fee"        => 'required',
@@ -97,7 +98,6 @@ class GenerateOrderAPIController extends Controller
                     /************** optional Instantiation    ***************/
 
                     $gateway_env= getenv("Live_ENV_MONERIS");
-
                     if ($gateway_env === true) {
                         $store_id = getenv("Live_MONERIS_STORE_ID");
                         $api_token = getenv("Live_MONERIS_API_TOKEN");
@@ -109,11 +109,11 @@ class GenerateOrderAPIController extends Controller
                     }else{
                         $store_id = getenv("Local_MONERIS_STORE_ID");
                         $api_token = getenv("Local_MONERIS_API_TOKEN");
-
                         $params = [
                             'environment' => Moneris::ENV_TESTING, // default: Moneris::ENV_LIVE
                             'cvd' => false,
                         ];
+                        $input['grand_total']='1.00';
                     }
 
                     $gateway = (new Moneris($store_id, $api_token, $params))->connect();
@@ -121,7 +121,7 @@ class GenerateOrderAPIController extends Controller
 
                     /**************** Purchase ****************/
                     $params = [
-//                        'cvd' => $input['cvc_code'],
+                        'cvd' => $input['cvc_code'],
                         'order_id' => uniqid('1234-56789', true).'_'.date('Y-m-d'),
                         'amount' => $input['grand_total'],
                         'credit_card' => str_replace(' ', '', $input['credit_card']),//'4242424242424242',
@@ -143,7 +143,6 @@ class GenerateOrderAPIController extends Controller
 
 
                     $response = $gateway->purchase($params);
-                    //dd($response);
 
                     if ($response->successful) {
                         //Save Payment and sending response if payment is successful

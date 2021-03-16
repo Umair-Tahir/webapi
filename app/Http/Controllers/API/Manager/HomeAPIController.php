@@ -34,7 +34,13 @@ class HomeAPIController extends Controller
                     $total += $price;
             }
             else{
-                return $this->sendResponse('0','No Orders were made in last 14 days');
+                $orderResponse=[
+                    'total_orders ' => 0,
+                    'total_sales' => '$'.'0',
+                    'future_payouts' => '$'.'0'
+                ];
+
+                return $this->sendResponse($orderResponse,'No Orders were made in last 14 days');
             }
 
             $orderResponse=[

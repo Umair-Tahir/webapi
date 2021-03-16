@@ -108,8 +108,8 @@ Route::middleware('auth:api')->group(function () {
 
     Route::post('users/{id}', 'API\UserAPIController@update');
 
-    Route::get('order_statuses/get_order_status/{id}', 'API\OrderStatusAPIController@current_order_status');
-    Route::get('order_statuses/all_orders_statuses', 'API\OrderStatusAPIController@user_orders');
+    Route::get('order_statuses/get_order_status/{id}', 'API\OrderStatusAPIController@currentOrderStatus');
+    Route::get('order_statuses/all_orders_statuses', 'API\OrderStatusAPIController@userOrders');
     Route::resource('order_statuses', 'API\OrderStatusAPIController');
 
     Route::get('payments/byMonth', 'API\PaymentAPIController@byMonth')->name('payments.byMonth');
