@@ -98,7 +98,7 @@ class GenerateOrderAPIController extends Controller
                     /************** optional Instantiation    ***************/
 
                     $gateway_env= getenv("Live_ENV_MONERIS");
-                    if ($gateway_env == true) {
+                    if ($gateway_env === true) {
                         $store_id = getenv("Live_MONERIS_STORE_ID");
                         $api_token = getenv("Live_MONERIS_API_TOKEN");
                         $params = [
@@ -110,8 +110,9 @@ class GenerateOrderAPIController extends Controller
                         $api_token = getenv("Local_MONERIS_API_TOKEN");
                         $params = [
                             'environment' => Moneris::ENV_TESTING, // default: Moneris::ENV_LIVE
-                            'cvd' => true,
+                            'cvd' => false,
                         ];
+                        $input['grand_total']='1.00';
                     }
 
                     $gateway = (new Moneris($store_id, $api_token, $params))->connect();
