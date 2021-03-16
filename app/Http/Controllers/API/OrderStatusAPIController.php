@@ -81,7 +81,7 @@ class OrderStatusAPIController extends Controller
             ->where('user_id','=', '1')
             ->groupBy('order_status_id')
             ->get();
-        dd($orders);
+
         if(!$orders->isEmpty()){
             return $this->sendResponse($orders->toArray(), 'Showing all orders of User');
         }
