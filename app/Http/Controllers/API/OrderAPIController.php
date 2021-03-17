@@ -18,6 +18,7 @@ use App\Repositories\FoodOrderRepository;
 use App\Repositories\UserRepository;
 use App\Models\Food;
 use Braintree\Gateway;
+use Illuminate\Support\Facades\DB;
 use Flash;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
@@ -115,24 +116,18 @@ class OrderAPIController extends Controller
                     ->where('order_id', $order->id)
                     ->get();
 
-                $foods = array();
                 foreach ($food_order as $key => $singlefood) {
-                    $food_array = Food::where('id', $singlefood->food_id)->get()->toArray();
-                    $foods[$key] = $food_array[0];
+                    $food_array = Food::where('id', $singlefood->food_id)->get();
+                    $singlefood['food'] = $food_array[0];
                 }
-                $data = [
-                    'order' => $order,
-                    'food_order' => $food_order,
-                    'foods' => $foods,
-                ];
+                $order['food_order'] = $food_order;
             }
         }
-
         if (empty($order)) {
             return $this->sendError('Order not found');
         }
 
-        return $this->sendResponse($data, 'Order retrieved successfully');
+        return $this->sendResponse($order, 'Order retrieved successfully');
     }
 
     /** Currently Not Working
