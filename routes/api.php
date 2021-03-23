@@ -81,6 +81,7 @@ Route::middleware('auth:api')->group(function () {
             Route::get('SalesChart/{days}', 'API\Manager\TrendsAPIController@sales_chart');
             Route::get('best_seller/{id}', 'API\Manager\TrendsAPIController@best_seller');
             Route::get('show_cuisines/{id}', 'API\Manager\CuisineAPIController@show_all');
+            Route::get('showRestaurants', 'API\Manager\RestaurantAPIController@showRestaurants');
             Route::resource('restaurants', 'API\Manager\RestaurantAPIController');
             /* --- */
 
