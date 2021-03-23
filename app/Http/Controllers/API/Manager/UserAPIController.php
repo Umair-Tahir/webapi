@@ -116,8 +116,6 @@ class UserAPIController extends Controller
             return $this->sendError($e->getMessage(), 401);
         }
 
-
-//        return $this->sendResponse($user, 'User retrieved successfully');
     }
 
     function logout(Request $request)
@@ -133,6 +131,44 @@ class UserAPIController extends Controller
         }
         return $this->sendResponse($user['name'], 'User logout successfully');
 
+    }
+
+
+    /**
+     * Update the specified User in storage.
+     *
+     * @param int $id
+     * @param Request $request
+     *
+     */
+    public function update($id, Request $request)
+    {
+        $user = $this->userRepository->findWithoutFail($id);
+
+        if (empty($user)) {
+            return $this->sendResponse([
+                'error' => true,
+                'code' => 404,
+            ], 'User not found');
+        }
+        $input = $request->except(['password', 'api_token']);
+        try {
+            if ($request->has('device_token')) {
+                $user = $this->userRepository->update($request->only('device_token'), $id);
+            } else {
+                $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->userRepository->model());
+                $user = $this->userRepository->update($input, $id);
+
+                foreach (getCustomFieldsValues($customFields, $request) as $value) {
+                    $user->customFieldsValues()
+                        ->updateOrCreate(['custom_field_id' => $value['custom_field_id']], $value);
+                }
+            }
+        } catch (ValidatorException $e) {
+            return $this->sendError($e->getMessage(), 401);
+        }
+
+        return $this->sendResponse($user, __('lang.updated_successfully', ['operator' => __('lang.user')]));
     }
 
     function user(Request $request)
@@ -178,43 +214,6 @@ class UserAPIController extends Controller
         }
 
         return $this->sendResponse($settings, 'Settings retrieved successfully');
-    }
-
-    /**
-     * Update the specified User in storage.
-     *
-     * @param int $id
-     * @param Request $request
-     *
-     */
-    public function update($id, Request $request)
-    {
-        $user = $this->userRepository->findWithoutFail($id);
-
-        if (empty($user)) {
-            return $this->sendResponse([
-                'error' => true,
-                'code' => 404,
-            ], 'User not found');
-        }
-        $input = $request->except(['password', 'api_token']);
-        try {
-            if ($request->has('device_token')) {
-                $user = $this->userRepository->update($request->only('device_token'), $id);
-            } else {
-                $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->userRepository->model());
-                $user = $this->userRepository->update($input, $id);
-
-                foreach (getCustomFieldsValues($customFields, $request) as $value) {
-                    $user->customFieldsValues()
-                        ->updateOrCreate(['custom_field_id' => $value['custom_field_id']], $value);
-                }
-            }
-        } catch (ValidatorException $e) {
-            return $this->sendError($e->getMessage(), 401);
-        }
-
-        return $this->sendResponse($user, __('lang.updated_successfully', ['operator' => __('lang.user')]));
     }
 
     function sendResetLinkEmail(Request $request)

@@ -76,7 +76,7 @@ Route::middleware('auth:api')->group(function () {
     });
     Route::group(['middleware' => ['role:manager']], function () {
         Route::prefix('manager')->group(function () {
-            /* Manager Routes */
+            /*Live Manager Routes */
             Route::get('Home/{id}', 'API\Manager\HomeAPIController@show');
             Route::get('SalesChart/{days}', 'API\Manager\TrendsAPIController@sales_chart');
             Route::get('best_seller/{id}', 'API\Manager\TrendsAPIController@best_seller');
@@ -98,26 +98,29 @@ Route::middleware('auth:api')->group(function () {
         });
     });
 
-    /* Manager Routes */
+    /* Local Manager Routes */
     Route::get('manager/Home/{id}', 'API\Manager\HomeAPIController@show');
     Route::get('manager/SalesChart/{days}', 'API\Manager\TrendsAPIController@sales_chart');
     Route::get('manager/best_seller/{id}', 'API\Manager\TrendsAPIController@best_seller');
     Route::get('manager/show_cuisines/{id}', 'API\Manager\CuisineAPIController@show_all');
+    Route::get('manager/showRestaurants', 'API\Manager\RestaurantAPIController@showRestaurants');
     Route::resource('manager/restaurants', 'API\Manager\RestaurantAPIController');
+
     /* --- */
 
     Route::post('users/{id}', 'API\UserAPIController@update');
 
-    Route::get('order_statuses/get_order_status/{id}', 'API\OrderStatusAPIController@currentOrderStatus');
-    Route::get('order_statuses/all_orders_statuses', 'API\OrderStatusAPIController@userOrders');
-    Route::resource('order_statuses', 'API\OrderStatusAPIController');
-
+    /************* Order Statuses ************/
+    Route::get('orderStatuses/getOrderStatus/{id}', 'API\OrderStatusAPIController@currentOrderStatus');
+    Route::get('orderStatuses/allOrdersStatuses', 'API\OrderStatusAPIController@userOrders');
+    Route::resource('orderStatuses', 'API\OrderStatusAPIController');
+    /************* Payments ************/
     Route::get('payments/byMonth', 'API\PaymentAPIController@byMonth')->name('payments.byMonth');
     Route::resource('payments', 'API\PaymentAPIController');
-
+    /************* Favorites ************/
     Route::get('favorites/exist', 'API\FavoriteAPIController@exist');
     Route::resource('favorites', 'API\FavoriteAPIController');
-
+    /************* Orders ************/
     Route::resource('orders', 'API\OrderAPIController');
 
     Route::post('generate_order', 'API\GenerateOrderAPIController@order_payment');

@@ -267,6 +267,7 @@ class OrderAPIController extends Controller
     public function update($id, Request $request)
     {
         $oldOrder = $this->orderRepository->findWithoutFail($id);
+
         if (empty($oldOrder)) {
             return $this->sendError('Order not found');
         }

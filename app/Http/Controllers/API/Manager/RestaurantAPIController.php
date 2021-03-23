@@ -9,6 +9,8 @@ use App\Models\Restaurant;
 use App\Repositories\CustomFieldRepository;
 use App\Repositories\RestaurantRepository;
 use App\Repositories\UploadRepository;
+use Illuminate\Support\Facades\DB;
+use App\Models\User;
 use InfyOm\Generator\Criteria\LimitOffsetCriteria;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Prettus\Repository\Exceptions\RepositoryException;
@@ -142,5 +144,28 @@ class RestaurantAPIController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    /*
+        Function to show All restaurants of a manager
+    */
+    public function showRestaurants(){
+        $user = auth()->user();
+        $restaurants = $user->restaurants;
+
+            //If User has restaurants
+        if(!empty($restaurants)){
+            foreach ($restaurants as $restaurant){
+                $foods = Restaurant::where('restaurants.id', $restaurant->id)
+                    ->join('foods', 'foods.restaurant_id', '=', 'restaurants.id')
+                    ->select('foods.*')->get();
+
+                $restaurant['foods'] = $foods;
+            }
+        }
+        else
+            return $this->sendError("User don't have any restaurants", 404);
+
+        return $this->sendResponse($restaurants, 'success');
     }
 }
