@@ -5,9 +5,9 @@ namespace Doctrine\DBAL\Driver\IBMDB2;
 use Doctrine\DBAL\Driver\AbstractDB2Driver;
 
 /**
- * IBM DB2 Driver.
+ * IBM DB2 Client.
  *
- * @deprecated Use {@link Driver} instead
+ * @deprecated Use {@link Client} instead
  */
 class DB2Driver extends AbstractDB2Driver
 {

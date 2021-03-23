@@ -172,8 +172,8 @@
 @endcan
 
 @can('payments.index')
-    <li class="nav-item has-treeview {{ Request::is('drivers*') || Request::is('earnings*') || Request::is('driversPayouts*') || Request::is('restaurantsPayouts*') || Request::is('payments*') ? 'menu-open' : '' }}">
-        <a href="#" class="nav-link {{ Request::is('drivers*') || Request::is('earnings*') || Request::is('driversPayouts*') || Request::is('restaurantsPayouts*') || Request::is('payments*') ? 'active' : '' }}"> @if($icons)
+    <li class="nav-item has-treeview {{ Request::is('earnings*')|| Request::is('restaurantsPayouts*') || Request::is('payments*') ? 'menu-open' : '' }}">
+        <a href="#" class="nav-link {{ Request::is('earnings*') || Request::is('restaurantsPayouts*') || Request::is('payments*') ? 'active' : '' }}"> @if($icons)
                 <i class="nav-icon fa fa-credit-card"></i>@endif
             <p>{{trans('lang.payment_plural')}}<i class="right fa fa-angle-left"></i>
             </p>
@@ -187,11 +187,6 @@
                 </li>
             @endcan
 
-            @can('drivers.index')
-                <li class="nav-item">
-                    <a class="nav-link {{ Request::is('drivers*') ? 'active' : '' }}" href="{!! route('drivers.index') !!}">@if($icons)<i class="nav-icon fa fa-car"></i>@endif<p>{{trans('lang.driver_plural')}} <span class="right badge badge-danger">New</span> </p></a>
-                </li>
-            @endcan
 
             @can('earnings.index')
                 <li class="nav-item">
@@ -199,11 +194,6 @@
                 </li>
             @endcan
 
-            @can('driversPayouts.index')
-                <li class="nav-item">
-                    <a class="nav-link {{ Request::is('driversPayouts*') ? 'active' : '' }}" href="{!! route('driversPayouts.index') !!}">@if($icons)<i class="nav-icon fa fa-dollar"></i>@endif<p>{{trans('lang.drivers_payout_plural')}}</p></a>
-                </li>
-            @endcan
 
             @can('restaurantsPayouts.index')
                 <li class="nav-item">

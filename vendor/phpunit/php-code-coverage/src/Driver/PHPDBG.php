@@ -12,7 +12,7 @@ namespace SebastianBergmann\CodeCoverage\Driver;
 use SebastianBergmann\CodeCoverage\RuntimeException;
 
 /**
- * Driver for PHPDBG's code coverage functionality.
+ * Client for PHPDBG's code coverage functionality.
  *
  * @codeCoverageIgnore
  */

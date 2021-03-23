@@ -50,7 +50,7 @@ return [
         // Child Tables
 */
         [
-            'model' => 'Driver',
+            'model' => 'Client',
             'fieldsFile' => 'schema/drivers.json',
             'api' => true,
         ],

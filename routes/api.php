@@ -13,16 +13,16 @@
 
 
 
-//Driver Routes
+//Client Routes
 
 
-Route::prefix('driver')->group(function () {
-    Route::post('login', 'API\Driver\UserAPIController@login');
-    Route::post('register', 'API\Driver\UserAPIController@register');
-    Route::get('user', 'API\Driver\UserAPIController@user');
-    Route::get('logout', 'API\Driver\UserAPIController@logout');
-    Route::get('settings', 'API\Driver\UserAPIController@settings');
-    Route::post('phone_verify', 'API\Driver\UserAPIController@phoneVerify');
+Route::prefix('client')->group(function () {
+    Route::post('login', 'API\Client\UserAPIController@login');
+    Route::post('register', 'API\Client\UserAPIController@register');
+    Route::get('user', 'API\Client\UserAPIController@user');
+    Route::get('logout', 'API\Client\UserAPIController@logout');
+    Route::get('settings', 'API\Client\UserAPIController@settings');
+    Route::post('phone_verify', 'API\Client\UserAPIController@phoneVerify');
 
 });
 
@@ -85,11 +85,11 @@ Route::middleware('auth:api')->group(function () {
             /* --- */
 
 
-            Route::resource('drivers', 'API\DriverAPIController');
+            Route::resource('drivers', 'API\ClientAPIController');
 
             Route::resource('earnings', 'API\EarningAPIController');
 
-            Route::resource('driversPayouts', 'API\DriversPayoutAPIController');
+            Route::resource('driversPayouts', 'API\ClientsPayoutAPIController');
 
             Route::resource('restaurantsPayouts', 'API\RestaurantsPayoutAPIController');
 

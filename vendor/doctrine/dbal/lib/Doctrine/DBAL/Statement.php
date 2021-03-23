@@ -19,7 +19,7 @@ use function is_array;
 use function is_string;
 
 /**
- * A thin wrapper around a Doctrine\DBAL\Driver\Statement that adds support
+ * A thin wrapper around a Doctrine\DBAL\Client\Statement that adds support
  * for logging, DBAL mapping types, etc.
  */
 class Statement implements IteratorAggregate, DriverStatement, Result

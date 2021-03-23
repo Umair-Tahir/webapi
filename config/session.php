@@ -4,7 +4,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Default Session Driver
+    | Default Session Client
     |--------------------------------------------------------------------------
     |
     | This option controls the default session "driver" that will be used on

@@ -95,7 +95,7 @@
             <errorLevel type="suppress">
                 <!--
                     This one is clearly deliberate; it's a hack to adapt \PDO to
-                    Doctrine\DBAL\Driver\Connection
+                    Doctrine\DClientiver\Connection
                 -->
                 <file name="lib/Doctrine/DBAL/Driver/PDOConnection.php"/>
                 <file name="lib/Doctrine/DBAL/Driver/PDOQueryImplementation.php"/>

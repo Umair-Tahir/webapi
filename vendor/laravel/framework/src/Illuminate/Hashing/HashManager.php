@@ -8,7 +8,7 @@ use Illuminate\Contracts\Hashing\Hasher;
 class HashManager extends Manager implements Hasher
 {
     /**
-     * Create an instance of the Bcrypt hash Driver.
+     * Create an instance of the Bcrypt hash Client.
      *
      * @return \Illuminate\Hashing\BcryptHasher
      */
@@ -18,7 +18,7 @@ class HashManager extends Manager implements Hasher
     }
 
     /**
-     * Create an instance of the Argon2i hash Driver.
+     * Create an instance of the Argon2i hash Client.
      *
      * @return \Illuminate\Hashing\ArgonHasher
      */
@@ -28,7 +28,7 @@ class HashManager extends Manager implements Hasher
     }
 
     /**
-     * Create an instance of the Argon2id hash Driver.
+     * Create an instance of the Argon2id hash Client.
      *
      * @return \Illuminate\Hashing\Argon2IdHasher
      */

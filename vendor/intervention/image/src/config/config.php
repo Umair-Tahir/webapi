@@ -4,7 +4,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Image Driver
+    | Image Client
     |--------------------------------------------------------------------------
     |
     | Intervention Image supports "GD Library" and "Imagick" to process images

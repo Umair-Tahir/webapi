@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Doctrine\DBAL\Driver;
 
 /**
- * Driver-level result statement execution result.
+ * Client-level result statement execution result.
  */
 interface Result
 {
