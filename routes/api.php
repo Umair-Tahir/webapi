@@ -10,21 +10,11 @@
 |
 */
 
+/* Controllers currently not working */
+Route::post('sendInvoice/{id}', 'API\OrderAPIController@generateInvoice');
+/*************************/
 
 
-
-//Driver Routes
-
-
-Route::prefix('driver')->group(function () {
-    Route::post('login', 'API\Driver\UserAPIController@login');
-    Route::post('register', 'API\Driver\UserAPIController@register');
-    Route::get('user', 'API\Driver\UserAPIController@user');
-    Route::get('logout', 'API\Driver\UserAPIController@logout');
-    Route::get('settings', 'API\Driver\UserAPIController@settings');
-    Route::post('phone_verify', 'API\Driver\UserAPIController@phoneVerify');
-
-});
 
 
 //Manager public routes
@@ -35,9 +25,7 @@ Route::prefix('manager')->group(function () {
     Route::get('logout', 'API\Manager\UserAPIController@logout');
 });
 
-
-Route::post('paymentz', 'API\UserAPIController@paymentM');
-Route::post('sendInvoice/{id}', 'API\OrderAPIController@generateInvoice');
+/* User */
 Route::post('login', 'API\UserAPIController@login');
 Route::post('register', 'API\UserAPIController@register');
 Route::post('send_reset_link_email', 'API\UserAPIController@sendResetLinkEmail');
@@ -45,10 +33,12 @@ Route::get('user', 'API\UserAPIController@user');
 Route::get('logout', 'API\UserAPIController@logout');
 Route::get('settings', 'API\UserAPIController@settings');
 Route::post('changeEmailSettings', 'API\UserAPIController@changeEmailSettings');
+/*********************************/
 
 Route::resource('cuisines', 'API\CuisineAPIController');
+
 Route::resource('categories', 'API\CategoryAPIController');
-Route::post('restaurants/wordpress', 'API\RestaurantAPIController@wp_restaurant');
+
 Route::resource('restaurants', 'API\RestaurantAPIController');
 
 Route::resource('faq_categories', 'API\FaqCategoryAPIController');
@@ -85,7 +75,6 @@ Route::middleware('auth:api')->group(function () {
             Route::resource('restaurants', 'API\Manager\RestaurantAPIController');
             /* --- */
 
-
             Route::resource('drivers', 'API\DriverAPIController');
 
             Route::resource('earnings', 'API\EarningAPIController');
@@ -93,8 +82,6 @@ Route::middleware('auth:api')->group(function () {
             Route::resource('driversPayouts', 'API\DriversPayoutAPIController');
 
             Route::resource('restaurantsPayouts', 'API\RestaurantsPayoutAPIController');
-
-
 
         });
     });
@@ -106,7 +93,6 @@ Route::middleware('auth:api')->group(function () {
     Route::get('manager/show_cuisines/{id}', 'API\Manager\CuisineAPIController@show_all');
     Route::get('manager/showRestaurants', 'API\Manager\RestaurantAPIController@showRestaurants');
     Route::resource('manager/restaurants', 'API\Manager\RestaurantAPIController');
-
     /* --- */
 
     Route::post('users/{id}', 'API\UserAPIController@update');
@@ -126,8 +112,6 @@ Route::middleware('auth:api')->group(function () {
 
     Route::post('generate_order', 'API\GenerateOrderAPIController@order_payment');
 
-
-
     //Route::post('generate_payment', 'API\GenerateOrderAPIController@moneris_payment');
 
     Route::resource('food_orders', 'API\FoodOrderAPIController');
@@ -139,7 +123,9 @@ Route::middleware('auth:api')->group(function () {
 
     Route::resource('delivery_addresses', 'API\DeliveryAddressAPIController');
 
-
 });
 
+/************* Wordpress ************/
+Route::post('restaurants/wordpress', 'API\RestaurantAPIController@wp_restaurant');
+/*************************/
 Route::post('partner-register', 'CustomController@createPartner');

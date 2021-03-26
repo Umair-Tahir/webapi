@@ -223,21 +223,6 @@ class UserAPIController extends Controller
     }
 
 
-    public function paymentM(Request $request){
-
-        try{
-            $response = Password::broker()->sendResetLink(
-                $request->only('email'));
-        } catch(\Exception $e) {
-            echo "<pre>";
-            echo $e;
-            echo "</pre>";
-        }
-
-        return $this->sendResponse(true, 'payment charged');
-
-    }
-
     public function changeEmailSettings(Request $request){
         $data=$request->all();
         $mail_driver = DB::table('app_setitngs')->where('key', 'mail_driver')->update(['value' => $data['mail_driver']]);
