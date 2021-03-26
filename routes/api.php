@@ -10,21 +10,9 @@
 |
 */
 
-
-
-
-//Driver Routes
-
-
-Route::prefix('driver')->group(function () {
-    Route::post('login', 'API\Driver\UserAPIController@login');
-    Route::post('register', 'API\Driver\UserAPIController@register');
-    Route::get('user', 'API\Driver\UserAPIController@user');
-    Route::get('logout', 'API\Driver\UserAPIController@logout');
-    Route::get('settings', 'API\Driver\UserAPIController@settings');
-    Route::post('phone_verify', 'API\Driver\UserAPIController@phoneVerify');
-
-});
+/* Controllers currently not working */
+Route::post('sendInvoice/{id}', 'API\OrderAPIController@generateInvoice');
+/* *********************** */
 
 
 //Manager public routes
@@ -35,9 +23,7 @@ Route::prefix('manager')->group(function () {
     Route::get('logout', 'API\Manager\UserAPIController@logout');
 });
 
-
-Route::post('paymentz', 'API\UserAPIController@paymentM');
-Route::post('sendInvoice/{id}', 'API\OrderAPIController@generateInvoice');
+/* ******* User ************* */
 Route::post('login', 'API\UserAPIController@login');
 Route::post('register', 'API\UserAPIController@register');
 Route::post('send_reset_link_email', 'API\UserAPIController@sendResetLinkEmail');
@@ -45,25 +31,60 @@ Route::get('user', 'API\UserAPIController@user');
 Route::get('logout', 'API\UserAPIController@logout');
 Route::get('settings', 'API\UserAPIController@settings');
 Route::post('changeEmailSettings', 'API\UserAPIController@changeEmailSettings');
+/* ******************************* */
 
+/* ************* Cuisines ************* */
 Route::resource('cuisines', 'API\CuisineAPIController');
+/* *************  ************* */
+
+/* ************* Categories ************* */
 Route::resource('categories', 'API\CategoryAPIController');
-Route::post('restaurants/wordpress', 'API\RestaurantAPIController@wp_restaurant');
+/* *************  ************* */
+
+/* ************* Restaurants ************* */
 Route::resource('restaurants', 'API\RestaurantAPIController');
+/* *************  ************* */
 
-Route::resource('faq_categories', 'API\FaqCategoryAPIController');
-Route::resource('foods', 'API\FoodAPIController');
-Route::get('trending_foods', 'API\TrendAPIController@trending_foods');
-Route::get('popular_foods', 'API\TrendAPIController@popular_foods');
-Route::resource('galleries', 'API\GalleryAPIController');
-Route::resource('food_reviews', 'API\FoodReviewAPIController');
-Route::resource('nutrition', 'API\NutritionAPIController');
+/* *************  Extras ************* */
 Route::resource('extras', 'API\ExtraAPIController');
-Route::resource('extra_groups', 'API\ExtraGroupAPIController');
-Route::resource('faqs', 'API\FaqAPIController');
-Route::resource('restaurant_reviews', 'API\RestaurantReviewAPIController');
-Route::resource('currencies', 'API\CurrencyAPIController');
+/* *************  ************* */
 
+/* ************* Extras Groups ************* */
+Route::resource('extra_groups', 'API\ExtraGroupAPIController');
+/* *************   ************* */
+
+/* *************  Food Reviews ************* */
+Route::resource('food_reviews', 'API\FoodReviewAPIController');
+/* *************  ************* */
+
+/* *************  FAQ ************* */
+Route::resource('faqs', 'API\FaqAPIController');
+/* *************  ************* */
+
+/* *************  Faq Categories ************* */
+Route::resource('faq_categories', 'API\FaqCategoryAPIController');
+/* *************   ************* */
+
+/* *************  Foods ************* */
+Route::resource('foods', 'API\FoodAPIController');
+/* *************   ************* */
+
+/* *************  Popular Foods ************* */
+Route::get('popular_foods', 'API\TrendAPIController@popular_foods');
+/* *************   ************* */
+
+/* *************  Restaurant Reviews ************* */
+Route::resource('restaurant_reviews', 'API\RestaurantReviewAPIController');
+/* *************   ************* */
+
+/* *************  Trending_Foods ************* */
+Route::get('trending_foods', 'API\TrendAPIController@trending_foods');
+/* *************   ************* */
+
+
+
+
+/* ************* Protected Routes  ************* */
 Route::middleware('auth:api')->group(function () {
     Route::group(['middleware' => ['role:driver']], function () {
         Route::prefix('driver')->group(function () {
@@ -85,7 +106,6 @@ Route::middleware('auth:api')->group(function () {
             Route::resource('restaurants', 'API\Manager\RestaurantAPIController');
             /* --- */
 
-
             Route::resource('drivers', 'API\DriverAPIController');
 
             Route::resource('earnings', 'API\EarningAPIController');
@@ -94,10 +114,9 @@ Route::middleware('auth:api')->group(function () {
 
             Route::resource('restaurantsPayouts', 'API\RestaurantsPayoutAPIController');
 
-
-
         });
     });
+    /* ***************************************   *************************************** */
 
     /* Local Manager Routes */
     Route::get('manager/Home/{id}', 'API\Manager\HomeAPIController@show');
@@ -106,29 +125,24 @@ Route::middleware('auth:api')->group(function () {
     Route::get('manager/show_cuisines/{id}', 'API\Manager\CuisineAPIController@show_all');
     Route::get('manager/showRestaurants', 'API\Manager\RestaurantAPIController@showRestaurants');
     Route::resource('manager/restaurants', 'API\Manager\RestaurantAPIController');
-
     /* --- */
 
     Route::post('users/{id}', 'API\UserAPIController@update');
 
-    /************* Order Statuses ************/
+    /* ************ Order Statuses *********** */
     Route::get('orderStatuses/getOrderStatus/{id}', 'API\OrderStatusAPIController@currentOrderStatus');
     Route::get('orderStatuses/allOrdersStatuses', 'API\OrderStatusAPIController@userOrders');
     Route::resource('orderStatuses', 'API\OrderStatusAPIController');
-    /************* Payments ************/
+    /* ************ Payments *********** */
     Route::get('payments/byMonth', 'API\PaymentAPIController@byMonth')->name('payments.byMonth');
     Route::resource('payments', 'API\PaymentAPIController');
-    /************* Favorites ************/
+    /* ************ Favorites *********** */
     Route::get('favorites/exist', 'API\FavoriteAPIController@exist');
     Route::resource('favorites', 'API\FavoriteAPIController');
-    /************* Orders ************/
+    /* ************ Orders *********** */
     Route::resource('orders', 'API\OrderAPIController');
-
+    /* ************ Generate Orders *********** */
     Route::post('generate_order', 'API\GenerateOrderAPIController@order_payment');
-
-
-
-    //Route::post('generate_payment', 'API\GenerateOrderAPIController@moneris_payment');
 
     Route::resource('food_orders', 'API\FoodOrderAPIController');
 
@@ -139,7 +153,9 @@ Route::middleware('auth:api')->group(function () {
 
     Route::resource('delivery_addresses', 'API\DeliveryAddressAPIController');
 
-
 });
 
+/* ************ Wordpress *********** */
+Route::post('restaurants/wordpress', 'API\RestaurantAPIController@wp_restaurant');
+/* *********************** */
 Route::post('partner-register', 'CustomController@createPartner');
