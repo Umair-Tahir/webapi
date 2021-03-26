@@ -29,7 +29,7 @@ class DriverAPIController extends Controller
     }
 
     /**
-     * Display a listing of the Driver.
+     * Display a listing of the Client.
      * GET|HEAD /drivers
      *
      * @param Request $request
@@ -49,7 +49,7 @@ class DriverAPIController extends Controller
     }
 
     /**
-     * Display the specified Driver.
+     * Display the specified Client.
      * GET|HEAD /drivers/{id}
      *
      * @param  int $id
@@ -64,9 +64,9 @@ class DriverAPIController extends Controller
         }
 
         if (empty($driver)) {
-            return $this->sendError('Driver not found');
+            return $this->sendError('Client not found');
         }
 
-        return $this->sendResponse($driver->toArray(), 'Driver retrieved successfully');
+        return $this->sendResponse($driver->toArray(), 'Client retrieved successfully');
     }
 }

@@ -200,7 +200,7 @@ class TransportManager extends Manager
     }
 
     /**
-     * Create an instance of the Array Swift Transport Driver.
+     * Create an instance of the Array Swift Transport Client.
      *
      * @return \Illuminate\Mail\Transport\ArrayTransport
      */

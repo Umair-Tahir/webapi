@@ -90,13 +90,13 @@ abstract class Manager
         if (isset($this->customCreators[$driver])) {
             return $this->callCustomCreator($driver);
         } else {
-            $method = 'create'.Str::studly($driver).'Driver';
+            $method = 'create'.Str::studly($driver).'Client';
 
             if (method_exists($this, $method)) {
                 return $this->$method();
             }
         }
-        throw new InvalidArgumentException("Driver [$driver] not supported.");
+        throw new InvalidArgumentException("Client [$driver] not supported.");
     }
 
     /**

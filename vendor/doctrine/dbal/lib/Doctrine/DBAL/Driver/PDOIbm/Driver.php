@@ -6,7 +6,7 @@ use Doctrine\DBAL\Driver\AbstractDB2Driver;
 use Doctrine\DBAL\Driver\PDO\Connection;
 
 /**
- * Driver for the PDO IBM extension.
+ * Client for the PDO IBM extension.
  *
  * @deprecated Use the driver based on the ibm_db2 extension instead.
  */

@@ -6,7 +6,7 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Schema\AbstractSchemaManager;
 
 /**
- * Driver interface.
+ * Client interface.
  * Interface that all DBAL drivers must implement.
  */
 interface Driver

@@ -10,7 +10,7 @@ use PDOException;
 /**
  * PDO Oracle driver.
  *
- * @deprecated Use {@link PDO\OCI\Driver} instead.
+ * @deprecated Use {@link PDO\OCI\Client} instead.
  */
 class Driver extends AbstractOracleDriver
 {

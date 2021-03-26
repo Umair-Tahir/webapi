@@ -10,9 +10,9 @@ use PDOException;
 use function defined;
 
 /**
- * Driver that connects through pdo_pgsql.
+ * Client that connects through pdo_pgsql.
  *
- * @deprecated Use {@link PDO\PgSQL\Driver} instead.
+ * @deprecated Use {@link PDO\PgSQL\Client} instead.
  */
 class Driver extends AbstractPostgreSQLDriver
 {

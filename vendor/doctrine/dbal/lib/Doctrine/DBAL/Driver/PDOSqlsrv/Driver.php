@@ -12,7 +12,7 @@ use function sprintf;
 /**
  * The PDO-based Sqlsrv driver.
  *
- * @deprecated Use {@link PDO\SQLSrv\Driver} instead.
+ * @deprecated Use {@link PDO\SQLSrv\Client} instead.
  */
 class Driver extends AbstractSQLServerDriver
 {

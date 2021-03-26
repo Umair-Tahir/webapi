@@ -28,7 +28,7 @@
 namespace Org_Heigl\Ghostscript\Device;
 
 /**
- * This class defines interfaces for the PNG-Driver family for Ghostscript
+ * This class defines interfaces for the PNG-Client family for Ghostscript
  *
  * @author     Andreas Heigl <a.heigl@wdv.de>
  * @copyright  2008-2009 Andreas Heigl

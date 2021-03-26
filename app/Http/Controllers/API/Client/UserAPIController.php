@@ -1,5 +1,5 @@
 <?php
-namespace App\Http\Controllers\API\Driver;
+namespace App\Http\Controllers\API\Client;
 
 use App\Events\UserRoleChangedEvent;
 use App\Http\Controllers\Controller;

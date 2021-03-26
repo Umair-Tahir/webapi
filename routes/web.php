@@ -166,17 +166,12 @@ Route::middleware('auth')->group(function () {
         'show'
     ]);
 
-    Route::resource('drivers', 'DriverController')->except([
-        'show', 'edit', 'update'
-    ]);
+
 
     Route::resource('earnings', 'EarningController')->except([
         'show', 'edit', 'update'
     ]);
 
-    Route::resource('driversPayouts', 'DriversPayoutController')->except([
-        'show', 'edit', 'update'
-    ]);
 
     Route::resource('restaurantsPayouts', 'RestaurantsPayoutController')->except([
         'show', 'edit', 'update'

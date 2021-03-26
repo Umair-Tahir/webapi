@@ -30,7 +30,7 @@ use function preg_match;
 use function version_compare;
 
 /**
- * Abstract base implementation of the {@link Driver} interface for SAP Sybase SQL Anywhere based drivers.
+ * Abstract base implementation of the {@link Client} interface for SAP Sybase SQL Anywhere based drivers.
  */
 abstract class AbstractSQLAnywhereDriver implements Driver, ExceptionConverterDriver, VersionAwarePlatformDriver
 {

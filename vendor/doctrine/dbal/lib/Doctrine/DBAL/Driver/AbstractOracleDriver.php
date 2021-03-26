@@ -20,7 +20,7 @@ use Doctrine\DBAL\Platforms\OraclePlatform;
 use Doctrine\DBAL\Schema\OracleSchemaManager;
 
 /**
- * Abstract base implementation of the {@link Driver} interface for Oracle based drivers.
+ * Abstract base implementation of the {@link Client} interface for Oracle based drivers.
  */
 abstract class AbstractOracleDriver implements Driver, ExceptionConverterDriver
 {

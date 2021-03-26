@@ -106,14 +106,14 @@ class ImageManager
     {
         if (is_string($this->config['driver'])) {
             $drivername = ucfirst($this->config['driver']);
-            $driverclass = sprintf('Intervention\\Image\\%s\\Driver', $drivername);
+            $driverclass = sprintf('Intervention\\Image\\%s\\Client', $drivername);
 
             if (class_exists($driverclass)) {
                 return new $driverclass;
             }
 
             throw new NotSupportedException(
-                "Driver ({$drivername}) could not be instantiated."
+                "Client ({$drivername}) could not be instantiated."
             );
         }
 

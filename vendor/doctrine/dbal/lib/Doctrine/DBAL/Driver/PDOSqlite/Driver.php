@@ -13,7 +13,7 @@ use function array_merge;
 /**
  * The PDO Sqlite driver.
  *
- * @deprecated Use {@link PDO\SQLite\Driver} instead.
+ * @deprecated Use {@link PDO\SQLite\Client} instead.
  */
 class Driver extends AbstractSQLiteDriver
 {

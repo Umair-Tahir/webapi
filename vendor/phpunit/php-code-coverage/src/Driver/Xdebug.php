@@ -13,7 +13,7 @@ use SebastianBergmann\CodeCoverage\Filter;
 use SebastianBergmann\CodeCoverage\RuntimeException;
 
 /**
- * Driver for Xdebug's code coverage functionality.
+ * Client for Xdebug's code coverage functionality.
  *
  * @codeCoverageIgnore
  */
