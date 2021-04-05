@@ -30,11 +30,12 @@ class Order extends Model
         'order_status_id',
         'tax',
         'hint',
+        'delivery_address',
         'payment_id',
+        'delivery_type_id',
         'delivery_address_id',
         'delivery_fee',
         'active',
-        'driver_id',
         'expected_delivery_time',
         'vendor_shared_price',
         'eezly_shared_price',
@@ -53,12 +54,13 @@ class Order extends Model
         'tax' => 'double',
         'tip' => 'double',
         'hint' => 'string',
+        'delivery_address' => 'string',
         'status' => 'string',
         'payment_id' => 'integer',
+        'delivery_type_id' => 'integer',
         'delivery_address_id' => 'integer',
         'delivery_fee'=>'double',
         'active'=>'boolean',
-        'driver_id' => 'integer',
     ];
 
     /**
@@ -69,8 +71,8 @@ class Order extends Model
     public static $rules = [
         'user_id' => 'required|exists:users,id',
         'order_status_id' => 'required|exists:order_statuses,id',
+        'delivery_type_id' => 'required|exists:delivery_types,id',
         'payment_id' => 'exists:payments,id',
-        'driver_id' => 'nullable|exists:users,id',
     ];
 
     /**
@@ -110,13 +112,6 @@ class Order extends Model
         return $this->belongsTo(\App\Models\User::class, 'user_id', 'id');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function driver()
-    {
-        return $this->belongsTo(\App\Models\User::class, 'driver_id', 'id');
-    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -149,5 +144,12 @@ class Order extends Model
     {
         return $this->belongsTo(\App\Models\DeliveryAddress::class, 'delivery_address_id', 'id');
     }
-    
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function deliveryType()
+    {
+        return $this->belongsTo(\App\Models\DeliveryType::class, 'delivery_type_id', 'id');
+    }
 }

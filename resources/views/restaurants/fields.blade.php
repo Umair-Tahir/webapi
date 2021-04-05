@@ -15,13 +15,13 @@
 
     @hasanyrole('admin|manager')
     <!-- Users Field -->
-    <div class="form-group row ">
-        {!! Form::label('drivers[]', trans("lang.restaurant_drivers"),['class' => 'col-3 control-label text-right']) !!}
-        <div class="col-9">
-            {!! Form::select('drivers[]', $drivers, $driversSelected, ['class' => 'select2 form-control' , 'multiple'=>'multiple']) !!}
-            <div class="form-text text-muted">{{ trans("lang.restaurant_drivers_help") }}</div>
-        </div>
-    </div>
+    {{--<div class="form-group row ">--}}
+        {{--{!! Form::label('drivers[]', trans("lang.restaurant_drivers"),['class' => 'col-3 control-label text-right']) !!}--}}
+        {{--<div class="col-9">--}}
+            {{--{!! Form::select('drivers[]', $drivers, $driversSelected, ['class' => 'select2 form-control' , 'multiple'=>'multiple']) !!}--}}
+            {{--<div class="form-text text-muted">{{ trans("lang.restaurant_drivers_help") }}</div>--}}
+        {{--</div>--}}
+    {{--</div>--}}
     <!-- delivery_fee Field -->
     <div class="form-group row ">
         {!! Form::label('delivery_fee', trans("lang.restaurant_delivery_fee"), ['class' => 'col-3 control-label text-right']) !!}
@@ -288,6 +288,14 @@
                 <div class="form-text text-muted">
                     {{ trans("lang.restaurant_admin_commission_help") }}
                 </div>
+            </div>
+        </div>
+        <!-- delivery_type Field -->
+        <div class="form-group row ">
+            {!! Form::label('deliveryTypes[]', trans("lang.restaurant_delivery_types"),['class' => 'col-3 control-label text-right']) !!}
+            <div class="col-9">
+                {!! Form::select('deliveryTypes[]', $deliveryType, $deliveryTypesSelected, ['class' => 'select2 form-control' , 'multiple'=>'multiple']) !!}
+                <div class="form-text text-muted">{{ trans("lang.restaurant_delivery_types_help") }}</div>
             </div>
         </div>
     </div>

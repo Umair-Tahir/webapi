@@ -94,6 +94,9 @@ Route::middleware('auth')->group(function () {
     Route::resource('cuisines', 'CuisineController')->except([
         'show'
     ]);
+    Route::resource('deliveryTypes', 'DeliveryTypeController')->except([
+        'show'
+    ]);
 
     Route::post('restaurants/remove-media', 'RestaurantController@removeMedia');
     Route::resource('restaurants', 'RestaurantController')->except([

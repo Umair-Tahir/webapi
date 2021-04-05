@@ -152,11 +152,6 @@ class OrderDataTable extends DataTable
                 ->where('orders.user_id', auth()->id())
                 ->groupBy('orders.id')
                 ->select('orders.*');
-        } else if (auth()->user()->hasRole('driver')) {
-            return $model->newQuery()->with("user")->with("orderStatus")->with('payment')
-                ->where('orders.driver_id', auth()->id())
-                ->groupBy('orders.id')
-                ->select('orders.*');
         } else {
             return $model->newQuery()->with("user")->with("orderStatus")->with('payment');
         }

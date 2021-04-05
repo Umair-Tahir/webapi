@@ -67,13 +67,14 @@ class GenerateOrderAPIController extends Controller
         /* Validation Rules & Validation */
         $rules=[
             'credit_card'   => 'required',
+            'delivery_address'   => 'required',
             'expiry_month'   => 'required',
             'expiry_year'   => 'required',
             'cvc_code'   => 'required',
             "user_id"       => 'required',
-            "delivery_address_id" => 'required',
+            "delivery_type_id"       => 'required',
+//            "delivery_address_id" => 'required',
             "delivery_fee"        => 'required',
-            "driver_id"           => 'required',
             'is_french'           => 'required',
             'tax'                 => 'required',
             'expected_delivery_time' => 'required',
@@ -172,10 +173,10 @@ class GenerateOrderAPIController extends Controller
                             $toRestaurant=false;
                             $order=$order_response['order'];
                             //Send email invoice to customer $order->user->email
-                          //  Mail::to($order->user->email)->send(new OrderNotificationEmail($order,$isFrench,$toRestaurant));
+                            Mail::to($order->user->email)->send(new OrderNotificationEmail($order,$isFrench,$toRestaurant));
                             $toRestaurant=true;
                             //Send email invoice to restaurant $order->foodOrders[0]->food->restaurant->users[0]->email
-                         //   Mail::to('phil@eezly.com')->send(new OrderNotificationEmail($order,$isFrench,$toRestaurant));
+                            Mail::to('phil@eezly.com')->send(new OrderNotificationEmail($order,$isFrench,$toRestaurant));
 
                             return $this->sendResponse($order_response, 'Payment and order are successfully created');
                         } else {
@@ -206,11 +207,11 @@ class GenerateOrderAPIController extends Controller
         try {
             $order = $this->orderRepository->create([
                 'user_id' => $input['user_id'],
-                "delivery_address_id" => $input['delivery_address_id'],
+                "delivery_address_id" => null,
                 "delivery_fee" => $input['delivery_fee'],
-                "driver_id" => $input['driver_id'],
                 'is_french' => $input['is_french'],
                 'hint' => $input['hint'],
+                'delivery_address' => $input['delivery_address'],
                 'order_status_id' => 1,
                 'active' => 1,
                 'tax' => $input['tax'],
@@ -218,6 +219,7 @@ class GenerateOrderAPIController extends Controller
                 'vendor_shared_price' => $input['vendor_shared_price'],
                 'eezly_shared_price' => $input['eezly_shared_price'],
                 'grand_total' => $input['grand_total'],
+                'delivery_type_id' => $input['delivery_type_id'],
                 'payment_id' => $input['payment_id']
             ]);
          /******** Making Food Order  ***/

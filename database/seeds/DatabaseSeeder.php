@@ -16,6 +16,7 @@ class DatabaseSeeder extends Seeder
         $this->call(CustomFieldValuesTableSeeder::class);
         $this->call(AppSettingsTableSeeder::class);
         $this->call(CuisinesTableSeeder::class);
+        $this->call(DeliveryTypesTableSeeder::class);
         $this->call(RestaurantsTableSeeder::class);
         $this->call(CategoriesTableSeeder::class);
         $this->call(FaqCategoriesTableSeeder::class);

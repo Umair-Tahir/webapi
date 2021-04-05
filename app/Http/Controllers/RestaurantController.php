@@ -10,6 +10,7 @@ use App\Http\Requests\CreateRestaurantRequest;
 use App\Http\Requests\UpdateRestaurantRequest;
 use App\Repositories\CustomFieldRepository;
 use App\Repositories\CuisineRepository;
+use App\Repositories\DeliveryTypeRepository;
 use App\Repositories\RestaurantRepository;
 use App\Repositories\UploadRepository;
 use App\Repositories\UserRepository;
@@ -42,7 +43,10 @@ class RestaurantController extends Controller
      */
     private $cuisineRepository;
 
-    public function __construct(RestaurantRepository $restaurantRepo, CustomFieldRepository $customFieldRepo, UploadRepository $uploadRepo, UserRepository $userRepo, CuisineRepository $cuisineRepository)
+    /** @var  DeliveryTypeRepository */
+    private $deliveryTypeRepository;
+
+    public function __construct(RestaurantRepository $restaurantRepo, CustomFieldRepository $customFieldRepo, UploadRepository $uploadRepo, UserRepository $userRepo,DeliveryTypeRepository $deliveryTypeRepo, CuisineRepository $cuisineRepository)
     {
         parent::__construct();
         $this->restaurantRepository = $restaurantRepo;
@@ -50,6 +54,7 @@ class RestaurantController extends Controller
         $this->uploadRepository = $uploadRepo;
         $this->userRepository = $userRepo;
         $this->cuisineRepository = $cuisineRepository;
+        $this->deliveryTypeRepository = $deliveryTypeRepo;
     }
 
     /**
@@ -72,17 +77,17 @@ class RestaurantController extends Controller
     {
 
         $user = $this->userRepository->getByCriteria(new ManagersCriteria())->pluck('name', 'id');
-        $drivers = $this->userRepository->getByCriteria(new DriversCriteria())->pluck('name', 'id');
+        $deliveryType = $this->deliveryTypeRepository->pluck('name', 'id');
         $cuisine = $this->cuisineRepository->pluck('name', 'id');
         $usersSelected = [];
-        $driversSelected = [];
+        $deliveryTypesSelected = [];
         $cuisinesSelected = [];
         $hasCustomField = in_array($this->restaurantRepository->model(), setting('custom_field_models', []));
         if ($hasCustomField) {
             $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->restaurantRepository->model());
             $html = generateCustomField($customFields);
         }
-        return view('restaurants.create')->with("customFields", isset($html) ? $html : false)->with("user", $user)->with("drivers", $drivers)->with("usersSelected", $usersSelected)->with("driversSelected", $driversSelected)->with('cuisine', $cuisine)->with('cuisinesSelected', $cuisinesSelected);
+        return view('restaurants.create')->with("customFields", isset($html) ? $html : false)->with("user", $user)->with("usersSelected", $usersSelected)->with('cuisine', $cuisine)->with('cuisinesSelected', $cuisinesSelected)->with('deliveryType', $deliveryType)->with('deliveryTypesSelected', $deliveryTypesSelected);
     }
 
     /**
@@ -158,13 +163,12 @@ class RestaurantController extends Controller
         }
 
         $user = $this->userRepository->getByCriteria(new ManagersCriteria())->pluck('name', 'id');
-        $drivers = $this->userRepository->getByCriteria(new DriversCriteria())->pluck('name', 'id');
+        $deliveryType = $this->deliveryTypeRepository->pluck('name', 'id');
         $cuisine = $this->cuisineRepository->pluck('name', 'id');
 
-
         $usersSelected = $restaurant->users()->pluck('users.id')->toArray();
-        $driversSelected = $restaurant->drivers()->pluck('users.id')->toArray();
         $cuisinesSelected = $restaurant->cuisines()->pluck('cuisines.id')->toArray();
+        $deliveryTypesSelected = $restaurant->deliveryTypes()->pluck('delivery_types.id')->toArray();
 
         $customFieldsValues = $restaurant->customFieldsValues()->with('customField')->get();
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->restaurantRepository->model());
@@ -173,7 +177,7 @@ class RestaurantController extends Controller
             $html = generateCustomField($customFields, $customFieldsValues);
         }
 
-        return view('restaurants.edit')->with('restaurant', $restaurant)->with("customFields", isset($html) ? $html : false)->with("user", $user)->with("drivers", $drivers)->with("usersSelected", $usersSelected)->with("driversSelected", $driversSelected)->with('cuisine', $cuisine)->with('cuisinesSelected', $cuisinesSelected);
+        return view('restaurants.edit')->with('restaurant', $restaurant)->with("customFields", isset($html) ? $html : false)->with("user", $user)->with("usersSelected", $usersSelected)->with('cuisine', $cuisine)->with('cuisinesSelected', $cuisinesSelected)->with('deliveryType', $deliveryType)->with('deliveryTypesSelected', $deliveryTypesSelected);
     }
 
     /**

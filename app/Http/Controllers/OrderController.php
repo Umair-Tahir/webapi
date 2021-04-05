@@ -3,8 +3,6 @@ namespace App\Http\Controllers;
 
 use App\Criteria\Orders\OrdersOfUserCriteria;
 use App\Criteria\Users\ClientsCriteria;
-use App\Criteria\Users\DriversCriteria;
-use App\Criteria\Users\DriversOfRestaurantCriteria;
 use App\DataTables\OrderDataTable;
 use App\DataTables\FoodOrderDataTable;
 use App\Events\OrderChangedEvent;
@@ -79,7 +77,6 @@ class OrderController extends Controller
     public function create()
     {
         $user = $this->userRepository->getByCriteria(new ClientsCriteria())->pluck('name', 'id');
-        $driver = $this->userRepository->getByCriteria(new DriversCriteria())->pluck('name', 'id');
 
         $orderStatus = $this->orderStatusRepository->pluck('status', 'id');
 
@@ -88,7 +85,7 @@ class OrderController extends Controller
             $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->orderRepository->model());
             $html = generateCustomField($customFields);
         }
-        return view('orders.create')->with("customFields", isset($html) ? $html : false)->with("user", $user)->with("driver", $driver)->with("orderStatus", $orderStatus);
+        return view('orders.create')->with("customFields", isset($html) ? $html : false)->with("user", $user)->with("orderStatus", $orderStatus);
     }
 
     /**
@@ -169,7 +166,6 @@ class OrderController extends Controller
         $restaurant = isset($restaurant) ? $restaurant->food['restaurant_id'] : 0;
 
         $user = $this->userRepository->getByCriteria(new ClientsCriteria())->pluck('name', 'id');
-        $driver = $this->userRepository->getByCriteria(new DriversOfRestaurantCriteria($restaurant))->pluck('name', 'id');
         $orderStatus = $this->orderStatusRepository->pluck('status', 'id');
 
 
@@ -180,7 +176,7 @@ class OrderController extends Controller
             $html = generateCustomField($customFields, $customFieldsValues);
         }
 
-        return view('orders.edit')->with('order', $order)->with("customFields", isset($html) ? $html : false)->with("user", $user)->with("driver", $driver)->with("orderStatus", $orderStatus);
+        return view('orders.edit')->with('order', $order)->with("customFields", isset($html) ? $html : false)->with("user", $user)->with("orderStatus", $orderStatus);
     }
 
     /**
@@ -212,12 +208,6 @@ class OrderController extends Controller
                     Notification::send([$order->user], new StatusChangedOrder($order));
                 }
 
-                if (isset($input['driver_id']) && ($input['driver_id'] != $oldOrder['driver_id'])) {
-                    $driver = $this->userRepository->findWithoutFail($input['driver_id']);
-                    if (!empty($driver)) {
-                        Notification::send([$driver], new AssignedOrder($order));
-                    }
-                }
             }
 
             $this->paymentRepository->update([

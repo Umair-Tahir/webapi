@@ -231,13 +231,6 @@ class Restaurant extends Model implements HasMedia
         return $this->belongsToMany(\App\Models\User::class, 'user_restaurants');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
-     **/
-    public function drivers()
-    {
-        return $this->belongsToMany(\App\Models\User::class, 'driver_restaurants');
-    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
@@ -245,6 +238,14 @@ class Restaurant extends Model implements HasMedia
     public function cuisines()
     {
         return $this->belongsToMany(\App\Models\Cuisine::class, 'restaurant_cuisines');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     **/
+    public function deliveryTypes()
+    {
+        return $this->belongsToMany(\App\Models\DeliveryType::class, 'restaurant_delivery_types');
     }
 
 

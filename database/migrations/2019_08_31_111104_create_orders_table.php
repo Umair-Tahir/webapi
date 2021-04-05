@@ -19,14 +19,15 @@ class CreateOrdersTable extends Migration
             $table->double('tax', 5, 2)->nullable()->default(0);
             $table->double('delivery_fee', 5, 2)->nullable()->default(0);
             $table->text('hint')->nullable();
+            $table->text('delivery_address')->nullable();
             $table->boolean('active')->default(1); // added
-            $table->integer('driver_id')->nullable()->unsigned();
+//            $table->integer('driver_id')->nullable()->unsigned();
             $table->integer('delivery_address_id')->nullable()->unsigned();
             $table->integer('payment_id')->nullable()->unsigned();
             $table->timestamps();
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
             $table->foreign('order_status_id')->references('id')->on('order_statuses')->onDelete('cascade')->onUpdate('cascade');
-            $table->foreign('driver_id')->references('id')->on('users')->onDelete('set null')->onUpdate('set null');
+//            $table->foreign('driver_id')->references('id')->on('users')->onDelete('set null')->onUpdate('set null');
             $table->foreign('delivery_address_id')->references('id')->on('delivery_addresses')->onDelete('set null')->onUpdate('set null');
             $table->foreign('payment_id')->references('id')->on('payments')->onDelete('set null')->onUpdate('set null');
         });

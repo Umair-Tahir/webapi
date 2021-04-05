@@ -32,12 +32,14 @@ class UpdateRestaurantRequest extends FormRequest
         if (auth()->user()->hasRole('admin')) {
             $input['users'] = isset($input['users']) ? $input['users'] : [];
             $input['cuisines'] = isset($input['cuisines']) ? $input['cuisines'] : [];
+            $input['deliveryTypes'] = isset($input['deliveryTypes']) ? $input['deliveryTypes'] : [];
             $this->replace($input);
             return Restaurant::$adminRules;
 
         } else {
             unset($input['users']);
             unset($input['cuisines']);
+            unset($input['deliveryTypes']);
             $this->replace($input);
             return Restaurant::$managerRules;
         }

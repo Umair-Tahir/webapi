@@ -62,12 +62,6 @@ class RestaurantDataTable extends DataTable
                 ->where('user_restaurants.user_id', auth()->id())
                 ->groupBy("restaurants.id")
                 ->select("restaurants.*");
-        }else if(auth()->user()->hasRole('driver')){
-            return $model->newQuery()
-                ->join("driver_restaurants", "restaurant_id", "=", "restaurants.id")
-                ->where('driver_restaurants.user_id', auth()->id())
-                ->groupBy("restaurants.id")
-                ->select("restaurants.*");
         } else if (auth()->user()->hasRole('client')) {
             return $model->newQuery()
                 ->join("foods", "foods.restaurant_id", "=", "restaurants.id")

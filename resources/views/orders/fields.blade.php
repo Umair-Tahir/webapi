@@ -11,15 +11,6 @@
         </div>
     </div>
 
-    <!-- Driver Id Field -->
-    <div class="form-group row ">
-        {!! Form::label('driver_id', trans("lang.order_driver_id"),['class' => 'col-3 control-label text-right']) !!}
-        <div class="col-9">
-            {!! Form::select('driver_id', $driver, null, ['data-empty'=>trans("lang.order_driver_id_placeholder"),'class' => 'select2 not-required form-control']) !!}
-            <div class="form-text text-muted">{{ trans("lang.order_driver_id_help") }}</div>
-        </div>
-    </div>
-
     <!-- Order Status Id Field -->
     <div class="form-group row ">
         {!! Form::label('order_status_id', trans("lang.order_order_status_id"),['class' => 'col-3 control-label text-right']) !!}
