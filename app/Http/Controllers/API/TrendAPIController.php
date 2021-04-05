@@ -21,7 +21,7 @@ class TrendAPIController extends Controller
     }
 
     //Function to get Current Trending Foods
-    public function trending_foods() {
+    public function trendingFoods() {
 
       $date = \Carbon\Carbon::today()->subDays(-700);
       $food_orders =  FoodOrder::select('food_id')
