@@ -40,9 +40,9 @@
     <p>{!! $order->orderStatus->status  !!}</p>
   </div>
 
-    {!! Form::label('order_delivery_type_id', trans('lang.order_status_status'), ['class' => 'col-4 control-label']) !!}
+    {!! Form::label('order_delivery_type_id', trans('lang.order_delivery_type'), ['class' => 'col-4 control-label']) !!}
     <div class="col-8">
-        <p>{!! $order->deliveryType->name  !!}</p>
+        <p>{!!isset($order->deliveryType) ? $order->deliveryType->name : ''!!}</p>
     </div>
 
     {!! Form::label('active', trans('lang.order_active'), ['class' => 'col-4 control-label']) !!}

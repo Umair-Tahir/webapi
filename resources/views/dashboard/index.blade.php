@@ -50,7 +50,8 @@
                     <div class="icon">
                         <i class="fa fa-money"></i>
                     </div>
-                    <a href="{!! route('payments.index') !!}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+                    <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+                    {{--<a href="{!! route('payments.index') !!}" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>--}}
                 </div>
             </div>
             <!-- ./col -->
@@ -93,7 +94,8 @@
                     <div class="card-header no-border">
                         <div class="d-flex justify-content-between">
                             <h3 class="card-title">Earnings</h3>
-                            <a href="{!! route('payments.index') !!}">View All Payments</a>
+                            <a href="#">View All Payments</a>
+{{--                            <a href="{!! route('payments.index') !!}">View All Payments</a>--}}
                         </div>
                     </div>
                     <div class="card-body">
@@ -245,7 +247,8 @@
 
             var $salesChart = $('#sales-chart')
             $.ajax({
-                url: "{!! $ajaxEarningUrl !!}",
+                {{--url: "{!! $ajaxEarningUrl !!}",--}}
+                url: "#",
                 success: function (result) {
                     $("#loadingMessage").html("");
                     var data = result.data[0];
