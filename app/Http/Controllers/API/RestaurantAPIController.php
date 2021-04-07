@@ -196,8 +196,6 @@ class RestaurantAPIController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function wp_restaurant(Request $request){
-
-
         $input = $request->all();
         if ( $input['action'] = ['wp_form']) {
            $input['description'] = 'This restaurant via request received from Wordpress website';
@@ -205,7 +203,6 @@ class RestaurantAPIController extends Controller
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->restaurantRepository->model());
         try {
             $restaurant = $this->restaurantRepository->create($input);
-            dd($restaurant);
             $restaurant->customFieldsValues()->createMany(getCustomFieldsValues($customFields, $request));
 
         } catch (ValidatorException $e) {
