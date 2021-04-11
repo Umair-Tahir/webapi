@@ -159,6 +159,7 @@ class ComposerStaticInit6dc24fae20caa22311c7f26e01e00501
             'Symfony\\Component\\Debug\\' => 24,
             'Symfony\\Component\\CssSelector\\' => 30,
             'Symfony\\Component\\Console\\' => 26,
+            'Symfony\\Bridge\\PsrHttpMessage\\' => 30,
             'Svg\\' => 4,
             'Stripe\\' => 7,
             'Srmklive\\PayPal\\' => 16,
@@ -429,6 +430,10 @@ class ComposerStaticInit6dc24fae20caa22311c7f26e01e00501
         'Symfony\\Component\\Console\\' => 
         array (
             0 => __DIR__ . '/..' . '/symfony/console',
+        ),
+        'Symfony\\Bridge\\PsrHttpMessage\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/symfony/psr-http-message-bridge',
         ),
         'Svg\\' => 
         array (
@@ -840,6 +845,7 @@ class ComposerStaticInit6dc24fae20caa22311c7f26e01e00501
         'App\\Http\\Controllers\\API\\CuisineAPIController' => __DIR__ . '/../..' . '/app/Http/Controllers/API/CuisineAPIController.php',
         'App\\Http\\Controllers\\API\\CurrencyAPIController' => __DIR__ . '/../..' . '/app/Http/Controllers/API/CurrencyAPIController.php',
         'App\\Http\\Controllers\\API\\DeliveryAddressAPIController' => __DIR__ . '/../..' . '/app/Http/Controllers/API/DeliveryAddressAPIController.php',
+        'App\\Http\\Controllers\\API\\DeliveryService\\EvaAPIController' => __DIR__ . '/../..' . '/app/Http/Controllers/API/DeliveryService/EvaAPIController.php',
         'App\\Http\\Controllers\\API\\EarningAPIController' => __DIR__ . '/../..' . '/app/Http/Controllers/API/EarningAPIController.php',
         'App\\Http\\Controllers\\API\\ExtraAPIController' => __DIR__ . '/../..' . '/app/Http/Controllers/API/ExtraAPIController.php',
         'App\\Http\\Controllers\\API\\ExtraGroupAPIController' => __DIR__ . '/../..' . '/app/Http/Controllers/API/ExtraGroupAPIController.php',
@@ -5741,6 +5747,13 @@ class ComposerStaticInit6dc24fae20caa22311c7f26e01e00501
         'Svg\\Tag\\StyleTag' => __DIR__ . '/..' . '/phenx/php-svg-lib/src/Svg/Tag/StyleTag.php',
         'Svg\\Tag\\Text' => __DIR__ . '/..' . '/phenx/php-svg-lib/src/Svg/Tag/Text.php',
         'Svg\\Tag\\UseTag' => __DIR__ . '/..' . '/phenx/php-svg-lib/src/Svg/Tag/UseTag.php',
+        'Symfony\\Bridge\\PsrHttpMessage\\ArgumentValueResolver\\PsrServerRequestResolver' => __DIR__ . '/..' . '/symfony/psr-http-message-bridge/ArgumentValueResolver/PsrServerRequestResolver.php',
+        'Symfony\\Bridge\\PsrHttpMessage\\EventListener\\PsrResponseListener' => __DIR__ . '/..' . '/symfony/psr-http-message-bridge/EventListener/PsrResponseListener.php',
+        'Symfony\\Bridge\\PsrHttpMessage\\Factory\\HttpFoundationFactory' => __DIR__ . '/..' . '/symfony/psr-http-message-bridge/Factory/HttpFoundationFactory.php',
+        'Symfony\\Bridge\\PsrHttpMessage\\Factory\\PsrHttpFactory' => __DIR__ . '/..' . '/symfony/psr-http-message-bridge/Factory/PsrHttpFactory.php',
+        'Symfony\\Bridge\\PsrHttpMessage\\Factory\\UploadedFile' => __DIR__ . '/..' . '/symfony/psr-http-message-bridge/Factory/UploadedFile.php',
+        'Symfony\\Bridge\\PsrHttpMessage\\HttpFoundationFactoryInterface' => __DIR__ . '/..' . '/symfony/psr-http-message-bridge/HttpFoundationFactoryInterface.php',
+        'Symfony\\Bridge\\PsrHttpMessage\\HttpMessageFactoryInterface' => __DIR__ . '/..' . '/symfony/psr-http-message-bridge/HttpMessageFactoryInterface.php',
         'Symfony\\Component\\Console\\Application' => __DIR__ . '/..' . '/symfony/console/Application.php',
         'Symfony\\Component\\Console\\CommandLoader\\CommandLoaderInterface' => __DIR__ . '/..' . '/symfony/console/CommandLoader/CommandLoaderInterface.php',
         'Symfony\\Component\\Console\\CommandLoader\\ContainerCommandLoader' => __DIR__ . '/..' . '/symfony/console/CommandLoader/ContainerCommandLoader.php',

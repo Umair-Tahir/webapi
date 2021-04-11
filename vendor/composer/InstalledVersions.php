@@ -1,15 +1,5 @@
 <?php
 
-
-
-
-
-
-
-
-
-
-
 namespace Composer;
 
 use Composer\Semver\VersionParser;
@@ -29,7 +19,7 @@ private static $installed = array (
     'aliases' => 
     array (
     ),
-    'reference' => '6fc1e4132d01aa14f824bd508fd13eeb113ca1bb',
+    'reference' => '14c4143c2d237f72e7d810ea9c5f9f884f357436',
     'name' => 'laravel/laravel',
   ),
   'versions' => 
@@ -546,7 +536,7 @@ private static $installed = array (
       'aliases' => 
       array (
       ),
-      'reference' => '6fc1e4132d01aa14f824bd508fd13eeb113ca1bb',
+      'reference' => '14c4143c2d237f72e7d810ea9c5f9f884f357436',
     ),
     'laravel/socialite' => 
     array (
@@ -1472,6 +1462,15 @@ private static $installed = array (
       array (
       ),
       'reference' => '075316ff72233ce3d04a9743414292e834f2cb4a',
+    ),
+    'symfony/psr-http-message-bridge' => 
+    array (
+      'pretty_version' => 'v2.1.0',
+      'version' => '2.1.0.0',
+      'aliases' => 
+      array (
+      ),
+      'reference' => '81db2d4ae86e9f0049828d9343a72b9523884e5d',
     ),
     'symfony/routing' => 
     array (
