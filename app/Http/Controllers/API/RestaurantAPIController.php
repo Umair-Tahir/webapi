@@ -205,7 +205,6 @@ class RestaurantAPIController extends Controller
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->restaurantRepository->model());
         try {
             $restaurant = $this->restaurantRepository->create($input);
-            dd($restaurant);
             $restaurant->customFieldsValues()->createMany(getCustomFieldsValues($customFields, $request));
 
         } catch (ValidatorException $e) {

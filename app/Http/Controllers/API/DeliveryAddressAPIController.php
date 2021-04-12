@@ -4,6 +4,8 @@ namespace App\Http\Controllers\API;
 
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CreateDeliveryAddressRequest;
+use App\Http\Requests\UpdateDeliveryAddressRequest;
 use App\Models\DeliveryAddress;
 use App\Repositories\DeliveryAddressRepository;
 use Flash;
@@ -76,7 +78,7 @@ class DeliveryAddressAPIController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function store(Request $request)
+    public function store(CreateDeliveryAddressRequest $request)
     {
         $uniqueInput = $request->only("address");
         $otherInput = $request->except("address");
@@ -98,7 +100,7 @@ class DeliveryAddressAPIController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function update($id, Request $request)
+    public function update($id, UpdateDeliveryAddressRequest $request)
     {
         $deliveryAddress = $this->deliveryAddressRepository->findWithoutFail($id);
 

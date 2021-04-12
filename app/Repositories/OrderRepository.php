@@ -24,7 +24,6 @@ class OrderRepository extends BaseRepository
         'order_status_id',
         'tax',
         'hint',
-        'delivery_address',
         'payment_id',
         'delivery_type_id',
         'delivery_address_id',

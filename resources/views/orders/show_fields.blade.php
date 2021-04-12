@@ -15,15 +15,15 @@
     <p>{!! isset($order->user->custom_fields['phone']) ? $order->user->custom_fields['phone']['view'] : "" !!}</p>
   </div>
 
-    {!! Form::label('delivery_address', trans('lang.delivery_address'), ['class' => 'col-4 control-label']) !!}
-    <div class="col-8">
-    <p>{!! $order->delivery_address ? $order->delivery_address : '' !!}</p>
-  </div>
-
     {{--{!! Form::label('delivery_address', trans('lang.delivery_address'), ['class' => 'col-4 control-label']) !!}--}}
     {{--<div class="col-8">--}}
-    {{--<p>{!! $order->deliveryAddress ? $order->deliveryAddress->address : '' !!}</p>--}}
+    {{--<p>{!! $order->delivery_address ? $order->delivery_address : '' !!}</p>--}}
   {{--</div>--}}
+
+    {!! Form::label('delivery_address', trans('lang.delivery_address'), ['class' => 'col-4 control-label']) !!}
+    <div class="col-8">
+    <p>{!! $order->deliveryAddress ? $order->deliveryAddress->address : '' !!}</p>
+  </div>
 
     {!! Form::label('order_date', trans('lang.order_date'), ['class' => 'col-4 control-label']) !!}
     <div class="col-8">

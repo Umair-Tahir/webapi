@@ -53,9 +53,9 @@ class DeliveryType extends Model
      *
      * @var array
      */
-    protected $appends = [
-        'restaurants'
-    ];
+//    protected $appends = [
+//        'restaurants'
+//    ];
 
 
     public function restaurants()

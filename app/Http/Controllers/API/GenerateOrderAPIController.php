@@ -67,13 +67,13 @@ class GenerateOrderAPIController extends Controller
         /* Validation Rules & Validation */
         $rules=[
             'credit_card'   => 'required',
-            'delivery_address'   => 'required',
+//            'delivery_address'   => 'required',
             'expiry_month'   => 'required',
             'expiry_year'   => 'required',
             'cvc_code'   => 'required',
             "user_id"       => 'required',
             "delivery_type_id"       => 'required',
-//            "delivery_address_id" => 'required',
+            "delivery_address_id" => 'required',
             "delivery_fee"        => 'required',
             'is_french'           => 'required',
             'tax'                 => 'required',
@@ -207,7 +207,7 @@ class GenerateOrderAPIController extends Controller
         try {
             $order = $this->orderRepository->create([
                 'user_id' => $input['user_id'],
-                "delivery_address_id" => null,
+                "delivery_address_id" =>  $input['delivery_address_id'],
                 "delivery_fee" => $input['delivery_fee'],
                 'is_french' => $input['is_french'],
                 'hint' => $input['hint'],
