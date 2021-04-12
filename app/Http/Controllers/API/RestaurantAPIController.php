@@ -196,8 +196,6 @@ class RestaurantAPIController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function wp_restaurant(Request $request){
-
-
         $input = $request->all();
         if ( $input['action'] = ['wp_form']) {
            $input['description'] = 'This restaurant via request received from Wordpress website';
