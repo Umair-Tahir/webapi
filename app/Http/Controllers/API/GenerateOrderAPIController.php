@@ -99,7 +99,7 @@ class GenerateOrderAPIController extends Controller
                     /************** optional Instantiation    ***************/
 
                     $gateway_env= getenv("Live_ENV_MONERIS");
-                    if ($gateway_env === true) {
+                    if ($gateway_env === "true") {
                         $store_id = getenv("Live_MONERIS_STORE_ID");
                         $api_token = getenv("Live_MONERIS_API_TOKEN");
                         $params = [
