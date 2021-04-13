@@ -19,7 +19,6 @@ class CreateOrdersTable extends Migration
             $table->double('tax', 5, 2)->nullable()->default(0);
             $table->double('delivery_fee', 5, 2)->nullable()->default(0);
             $table->text('hint')->nullable();
-            $table->text('delivery_address')->nullable();
             $table->boolean('active')->default(1); // added
 //            $table->integer('driver_id')->nullable()->unsigned();
             $table->integer('delivery_address_id')->nullable()->unsigned();

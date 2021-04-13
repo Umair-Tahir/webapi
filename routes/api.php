@@ -66,7 +66,7 @@ Route::middleware('auth:api')->group(function () {
     Route::resource('categories', 'API\CategoryAPIController');
     /* *************  ************* */
 
-    /* ************* Categories ************* */
+    /* ************* Delivery Addresses ************* */
     Route::resource('delivery_addresses', 'API\DeliveryAddressAPIController');
     /* *************  ************* */
 
@@ -143,7 +143,7 @@ Route::middleware('auth:api')->group(function () {
     /* *************   ************* */
 
     /* *************  Trending_Foods ************* */
-    Route::get('trendingFoods', 'API\TrendAPIController@trendingFoods');
+    Route::get('trending_foods', 'API\TrendAPIController@trendingFoods');
     /* *************   ************* */
 
 });

@@ -30,7 +30,6 @@ class Order extends Model
         'order_status_id',
         'tax',
         'hint',
-        'delivery_address',
         'payment_id',
         'delivery_type_id',
         'delivery_address_id',
@@ -54,7 +53,6 @@ class Order extends Model
         'tax' => 'double',
         'tip' => 'double',
         'hint' => 'string',
-        'delivery_address' => 'string',
         'status' => 'string',
         'payment_id' => 'integer',
         'delivery_type_id' => 'integer',
@@ -72,6 +70,7 @@ class Order extends Model
         'user_id' => 'required|exists:users,id',
         'order_status_id' => 'required|exists:order_statuses,id',
         'delivery_type_id' => 'required|exists:delivery_types,id',
+        'delivery_address_id' => 'required|exists:delivery_addresses,id',
         'payment_id' => 'exists:payments,id',
     ];
 
