@@ -176,7 +176,7 @@ class GenerateOrderAPIController extends Controller
                             Mail::to($order->user->email)->send(new OrderNotificationEmail($order,$isFrench,$toRestaurant));
                             $toRestaurant=true;
                             //Send email invoice to restaurant $order->foodOrders[0]->food->restaurant->users[0]->email
-                            Mail::to('phil@eezly.com')->send(new OrderNotificationEmail($order,$isFrench,$toRestaurant));
+                            Mail::to('philippe.dallaire4@gmail.com')->send(new OrderNotificationEmail($order,$isFrench,$toRestaurant));
 
                             return $this->sendResponse($order_response, 'Payment and order are successfully created');
                         } else {
