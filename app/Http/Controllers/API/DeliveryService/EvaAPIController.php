@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\API\DeliveryService;
+
 use App\Models\DeliveryAddress;
 use App\Models\EvaDeliveryService;
 
@@ -31,8 +32,7 @@ class EvaAPIController extends Controller
 
         $responseBody = json_decode($response->getBody());
 
-        if($responseBody->availability === true)
-        {
+        if ($responseBody->availability === true) {
             //get Quote;
 //            $restaurant = Restaurant::find($restaurantID);
 //            $user = Auth::user();
@@ -58,11 +58,20 @@ class EvaAPIController extends Controller
 
         dd(json_decode($response->getBody()));
         $data = [
-            'distance(km)' =>  $response['distance'],
-            'duration(min)' =>  $response['duration'],
-            'total_charges_plus_tax' =>  ($response['total_charges_plus_tax']/100),
-            'total_tax' =>  ($response['total_tax']/100)
+            'distance(km)' => $response['distance'],
+            'duration(min)' => $response['duration'],
+            'total_charges_plus_tax' => ($response['total_charges_plus_tax'] / 100),
+            'total_tax' => ($response['total_tax'] / 100)
         ];
         return $this->sendResponse($data, '');
     }
+
+    /**
+     * Get Quote
+     **/
+    public function callRide(Request $request)
+    {
+        dd('behbhe');
+    }
+
 }

@@ -1,6 +1,8 @@
 <?php
 
+
 namespace App\Models;
+use Illuminate\Http\Request;
 use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Model;
 
@@ -47,109 +49,41 @@ class EvaDeliveryService extends Model
         Eva Get Quote Function
      **/
     public function getQuote($restaurant, $deliveryAddress) {
-
-        $data   = [
-            'to_latitude' => 45.600853,
-            'to_longitude' => 7631213,
-            'from_latitude' => 45.551676666666665,
-            'from_longitude' => 73.75928833333334,
-            'ride_service_type_id'  => 1,
-        ];
-
-
         try {
-//            $options = [
-//                'body' => [
-//                    'to_latitude' => 45.600853,
-//                    'to_longitude' => 7631213,
-//                    'from_latitude' => 45.551676666666665,
-//                    'from_longitude' => 73.75928833333334,
-//                    'ride_service_type_id'  => 1,
-//                    ]
-//            ];
-            $response = $this->client->post(
-                '/get_quote',
-                 [
-                        'headers' => ['Content-Type' => 'application/json'],
-                        'body' => json_encode($data)
-                    ]
-              );
 
-            dd($response);
-            //$request->setBody($options);
+            $req = new Client([
+                // Base URI is used with relative requests
+                'base_uri' => 'http://167.99.183.41:5000',
+                "headers" => [
+                    "Authorization" => "muyvhdyohhhanakrzilejspxuxfmnrsfudlbbdwn",
+                    'Content-Type'  =>  'application/json'
+                ],
+//            'exceptions' => false,
+            ]);
+            $options = [
+                'body' => [
+                    'from_latitude' => '45.551676666666665',
+                    'from_longitude' => '-73.75928833333334',
+                    'to_latitude' => '45.600853',
+                    'to_longitude' => '-73.7631213',
+                    'ride_service_type_id'  => 1,
+                ]
+            ];
+            $response = $req->post("/get_quote", $options);
 
-//            $response = $response = $request->send();
-//
-//            $response = $this->client->request('POST', '/get_quote', [
-//                'params' => [
-//                    'from_latitude' => '45.551676666666665',
-//                    'from_longitude' => '73.75928833333334',
-//                    'to_latitude' => '45.600853',
-//                    'to_longitude' => '7631213',
-//                    'ride_service_id'  => 1,
-//                ]
-//            ]);
+            dd($response->getBody());
+
+
         }catch (\GuzzleHttp\Exception\ClientException $e) {
             return $e->getResponse()->getStatusCode();
         }
-        dd(json_decode($response->getBody()));
+
+
+
         return $response;
     }
+
+    public function callRride(){
+
+    }
 }
-//
-//'form_params' => [
-//    'from_latitude' => $restaurant['latitude'],
-//    'from_longitude' => $restaurant['longitude'],
-//    'to_latitude' => $deliveryAddress['latitude'],
-//    'to_longitude' => $deliveryAddress['longitude'],
-//    'ride_service_id'  => 1,
-//]
-
-
-//            $response = Http::get('http://167.99.183.41:5000/get_quote', [
-//                "Authorization" => "muyvhdyohhhanakrzilejspxuxfmnrsfudlbbdwn",
-//                'body' => [
-//                    'from_latitude' => '45.551676666666665',
-//                    'from_longitude' => '73.75928833333334',
-//                    'to_latitude' => '45.600853',
-//                    'to_longitude' => '7631213',
-//                    'ride_service_id'  => 1,
-//                ]
-//        ]);
-//            dd($response);
-
-
-//            $response = $this->client->post('http://167.99.183.41:5000/get_quote', [
-//                'form_params' => [
-//                    'from_latitude' => '45.551676666666665',
-//                    'from_longitude' => '73.75928833333334',
-//                    'to_latitude' => '45.600853',
-//                    'to_longitude' => '7631213',
-//                    'ride_service_id'  => 1,
-//                ]
-//            ]);
-
-//$client = new \GuzzleHttp\Client();
-
-//$options = [
-//    'body' => [
-//        'to_latitude' => 45.600853,
-//        'to_longitude' => 7631213,
-//        'from_latitude' => 45.551676666666665,
-//        'from_longitude' => 73.75928833333334,
-//        'ride_service_type_id'  => 1,
-//    ]
-//];
-//$request = $this->client->post(
-//    '/get_quote',
-//    [
-//        "headers" => [
-//            "Authorization" => "muyvhdyohhhanakrzilejspxuxfmnrsfudlbbdwn",
-//            'content-type' => 'application/json',
-//            'Accept-Encoding' => 'gzip, deflate, br'
-//        ],
-//    ]
-//);
-//$request->setBody($options);
-//
-//$response = $response = $request->send();

@@ -70,12 +70,10 @@ Route::middleware('auth:api')->group(function () {
     Route::resource('delivery_addresses', 'API\DeliveryAddressAPIController');
     /* *************  ************* */
 
-    /* ************* Delivery Service Availability  ************* */
+    /* ************* EVA Delivery Service Availability ,Get Quote ,Call Ride ************* */
     Route::get('deliveryService/serviceAvailability/{deliveryAddressID}', 'API\DeliveryService\EvaAPIController@serviceAvailability');
-    /* *************  ************* */
-
-    /* ************* Delivery Service Get Quote************* */
     Route::post('deliveryService/getQuote', 'API\DeliveryService\EvaAPIController@getQuote');
+    Route::post('deliveryService/callRide', 'API\DeliveryService\EvaAPIController@callRride');
     /* *************  ************* */
 
     /* ************* Restaurants ************* */

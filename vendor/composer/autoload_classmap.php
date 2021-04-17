@@ -232,6 +232,7 @@ return array(
     'App\\Models\\Driver' => $baseDir . '/app/Models/Driver.php',
     'App\\Models\\DriversPayout' => $baseDir . '/app/Models/DriversPayout.php',
     'App\\Models\\Earning' => $baseDir . '/app/Models/Earning.php',
+    'App\\Models\\EvaDeliveryService' => $baseDir . '/app/Models/EvaDeliveryService.php',
     'App\\Models\\Extra' => $baseDir . '/app/Models/Extra.php',
     'App\\Models\\ExtraGroup' => $baseDir . '/app/Models/ExtraGroup.php',
     'App\\Models\\Faq' => $baseDir . '/app/Models/Faq.php',
