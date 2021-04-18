@@ -8,6 +8,7 @@ use App\Models\EvaDeliveryService;
 use App\Http\Controllers\Controller;
 use App\Models\Restaurant;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class EvaAPIController extends Controller
 {
@@ -47,31 +48,70 @@ class EvaAPIController extends Controller
      **/
     public function getQuote(Request $request)
     {
-        $restaurant = Restaurant::find($request['restaurantID']);
-        $deliveryAddress = DeliveryAddress::find($request['addressID']);
-        //dd($deliveryAddress);
+        $input = $request->all();
+
+        $restaurant = Restaurant::find($input['restaurantID']);
+        $deliveryAddress = DeliveryAddress::find($input['addressID']);
 
         if ($restaurant && $deliveryAddress) {
             $response = $this->eva->getQuote($restaurant, $deliveryAddress);
-        } else
-            return $this->sendError('Restaurant Address not found', 400);
+        } else if (!$restaurant)
+            return $this->sendError('Restaurant not found', 400);
+        else
+            return $this->sendError('Delivery Address not found', 400);
 
-        dd(json_decode($response->getBody()));
+        /* After Response */
+        $responseBody = json_decode($response->getBody());
+
+        if (!$responseBody) {
+            return $this->sendError('Quote cannot be calculated due to invalid parameters', 400);
+        }
+
         $data = [
-            'distance(km)' => $response['distance'],
-            'duration(min)' => $response['duration'],
-            'total_charges_plus_tax' => ($response['total_charges_plus_tax'] / 100),
-            'total_tax' => ($response['total_tax'] / 100)
+            'distance(km)' => $responseBody->distance,
+            'duration(min)' => $responseBody->duration,
+            'total_charges_plus_tax' => ($responseBody->total_charges_plus_tax / 100),
+            'total_tax' => ($responseBody->total_tax / 100)
         ];
-        return $this->sendResponse($data, '');
+        return $this->sendResponse($data, 'Successful');
     }
 
     /**
-     * Get Quote
+     * Call a Ride
      **/
     public function callRide(Request $request)
     {
-        dd('behbhe');
+        $input = $request->all();
+
+        $restaurant = Restaurant::find($input['restaurantID']);
+        $deliveryAddress = DeliveryAddress::find($input['addressID']);
+        $user = Auth::user();
+        /* Also need order id */
+
+        if ($restaurant && $deliveryAddress && $user) {
+            $response = $this->eva->callRide($restaurant, $deliveryAddress, $user);
+        } else if (!$restaurant)
+            return $this->sendError('Restaurant not found', 400);
+        else if (!$user)
+            return $this->sendError('No logged in user was found', 400);
+        else
+            return $this->sendError('Delivery Address not found', 400);
+
+
+        $responseBody = json_decode($response->getBody());
+
+        if (!$responseBody) {
+            return $this->sendError('Quote cannot be calculated due to invalid parameters', $response->getStatusCode());
+        }
+
+        /* Saving in table */
+        $evaDB = new EvaDeliveryService();
+        $evaDB->order_id = $input['order_id'];
+        $evaDB->save();
+
+        return $this->sendResponse($responseBody, 'Successful');
     }
+
+
 
 }

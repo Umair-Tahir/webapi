@@ -1044,6 +1044,7 @@ class ComposerStaticInit6dc24fae20caa22311c7f26e01e00501
         'App\\Repositories\\DriverRepository' => __DIR__ . '/../..' . '/app/Repositories/DriverRepository.php',
         'App\\Repositories\\DriversPayoutRepository' => __DIR__ . '/../..' . '/app/Repositories/DriversPayoutRepository.php',
         'App\\Repositories\\EarningRepository' => __DIR__ . '/../..' . '/app/Repositories/EarningRepository.php',
+        'App\\Repositories\\EvaDeliveryServiceRepository' => __DIR__ . '/../..' . '/app/Repositories/EvaDeliveryServiceRepository.php',
         'App\\Repositories\\ExtraGroupRepository' => __DIR__ . '/../..' . '/app/Repositories/ExtraGroupRepository.php',
         'App\\Repositories\\ExtraRepository' => __DIR__ . '/../..' . '/app/Repositories/ExtraRepository.php',
         'App\\Repositories\\FaqCategoryRepository' => __DIR__ . '/../..' . '/app/Repositories/FaqCategoryRepository.php',
