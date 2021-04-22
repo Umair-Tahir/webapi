@@ -42,7 +42,6 @@ class EvaDeliveryService extends Model
     ];
 
 
-
     public function __construct(array $attributes = array())
     {
         parent::__construct($attributes);
@@ -99,7 +98,12 @@ class EvaDeliveryService extends Model
         return $response;
     }
 
-    public function callRide($restaurant, $deliveryAddress, $user)
+
+    /**
+     * Eva Call Ride Function
+     **/
+
+    public function callRide($restaurant, $deliveryAddress, $user, $tip)
     {
         try {
             $response = $this->client->post("/call_ride", [
@@ -115,7 +119,7 @@ class EvaDeliveryService extends Model
                     "customer_phone" => $user['phone_number'],
                     "customer_email" => $user['email'],
                     'ride_service_type_id' => 1,
-                    "tip_token_charge" => 0
+                    "tip_token_charge" => $tip * 100
                 ]]);
         } catch (\GuzzleHttp\Exception\ClientException $e) {
             return $e->getResponse()->getStatusCode();
@@ -123,38 +127,29 @@ class EvaDeliveryService extends Model
         return $response;
     }
 
+    /**
+     * Save Parameters after payment is made
+     *But restaurant haven't called rider to pick food up
+     **/
+    public function createEvaFromOrder($data)
+    {
+
+        $evaDB = new EvaDeliveryService();
+
+        $evaDB->order_id = $data['order_id'];
+        $evaDB->restaurant_id = $data['restaurant_id'];
+        $evaDB->distance = $data['distance'];
+        $evaDB->total_charges_plus_tax = $data['total_charges_plus_tax'];
+        $evaDB->delivery_tax = $data['delivery_tax'];
+        $evaDB->tip_token_charge = $data['tip_token_charge'];
+        $response = $evaDB->save();
+
+        return $response;
+    }
+
+    /*One to One relationship with Order */
     public function order()
     {
         return $this->belongsTo(Order::class, 'order_id', 'id');
     }
 }
-
-//"to_latitude":45.4867,
-//"to_longitude":-73.5749,
-//"from_latitude":45.551676666666665,
-//"from_longitude":-73.75928833333334,
-//"from_address":"1695 Boulevard Curé-Labelle",
-//"to_address":"2005, Boulevard Dagenais Ouest",
-
-//"customer_first_name": "Raphaelz",
-//"customer_last_name": "Godosa",
-//"customer_phone": 14185405081,
-//"customer_email": "raphael.gaudreault@eva.coop",
-//"ride_service_id": 1,
-//"tip_token_charge": 200
-
-//[
-//    GuzzleHttp\RequestOptions::JSON => [
-//         'from_latitude' => $restaurant['latitude'],
-//'from_longitude' => $restaurant['longitude'],
-//                'to_latitude' => $deliveryAddress['latitude'],
-//                'to_longitude' => $deliveryAddress['longitude'],
-//                "from_address" => $restaurant['address'],
-//                "to_address" => $deliveryAddress['address'],
-//                "customer_first_name" => $user['name'],
-//                "customer_last_name" => '',
-//                "customer_phone" => $user['phone_number'],
-//                "customer_email" => $user['email'],
-//                'ride_service_type_id' => 1,
-//                "tip_token_charge" => 20
-//    ]]

@@ -6,7 +6,9 @@ use App\Models\DeliveryAddress;
 use App\Models\EvaDeliveryService;
 
 use App\Http\Controllers\Controller;
+use App\Models\Order;
 use App\Models\Restaurant;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -21,27 +23,53 @@ class EvaAPIController extends Controller
 
     /**
      * Check if service is available in user's location
+     * if true this function will request quotation from EVA
+     * and will return quotation result
      **/
-    public function serviceAvailability($addressID)
-    {
-        $deliveryAddress = DeliveryAddress::find($addressID);
 
-        if ($deliveryAddress) {
+    public function serviceAvailability(Request $request)
+    {
+
+        /**** Checking for request parameters ****/
+        $restaurant = Restaurant::find($request['restaurantId']);
+        $deliveryAddress = DeliveryAddress::find($request['addressId']);
+
+        if ($restaurant && $deliveryAddress) {
             $response = $this->eva->serviceAvailability($deliveryAddress);
-        } else
-            return $this->sendError('Restaurant Address not found', 400);
+        } else if (!$restaurant)
+            return $this->sendError('Restaurant not found', 400);
+        else
+            return $this->sendError('Delivery Address not found', 400);
+
 
         $responseBody = json_decode($response->getBody());
 
-        if ($responseBody->availability === true) {
-            //get Quote;
-//            $restaurant = Restaurant::find($restaurantID);
-//            $user = Auth::user();
-//            $this->eva->GetQuote($restaurant);
+        /**** Get Quote ****/
+        if ($responseBody->availability != true) {
+            $QuoteResponse = $this->eva->getQuote($restaurant, $deliveryAddress);
+        } else
+            return $this->sendResponse($responseBody, 'Service not available');
+
+
+        /** Quotation Process  ***/
+        $QuoteResponse = json_decode($QuoteResponse->getBody());
+
+        if (!$QuoteResponse) {
+            return $this->sendError('Quote cannot be calculated due to invalid parameters', 400);
         }
 
-        return $this->sendResponse(json_decode($response->getBody()), '');
+        /**** Sending Quotation data ****/
+        $data = [
+            'Service Availability' => $responseBody->availability,
+            'distance(km)' => $QuoteResponse->distance,
+            'duration(min)' => $QuoteResponse->duration,
+            'total_charges_plus_tax' => ($QuoteResponse->total_charges_plus_tax / 100),
+            'total_tax' => ($QuoteResponse->total_tax / 100)
+        ];
+
+        return $this->sendResponse($data, 'Successful');
     }
+
 
     /**
      * Get Quote
@@ -50,8 +78,8 @@ class EvaAPIController extends Controller
     {
         $input = $request->all();
 
-        $restaurant = Restaurant::find($input['restaurantID']);
-        $deliveryAddress = DeliveryAddress::find($input['addressID']);
+        $restaurant = Restaurant::find($input['restaurantId']);
+        $deliveryAddress = DeliveryAddress::find($input['addressId']);
 
         if ($restaurant && $deliveryAddress) {
             $response = $this->eva->getQuote($restaurant, $deliveryAddress);
@@ -81,37 +109,97 @@ class EvaAPIController extends Controller
      **/
     public function callRide(Request $request)
     {
-        $input = $request->all();
+        $tip = $request['tip_token_charge'];
 
-        $restaurant = Restaurant::find($input['restaurantID']);
-        $deliveryAddress = DeliveryAddress::find($input['addressID']);
+
+        $validated = $request->validate([
+            'tip_token_charge' => 'required',
+            'restaurantId' => 'required',
+            'addressId' => 'required',
+            "order_id" => 'required',
+            "distance" => 'required',
+            "total_charges_plus_tax" => 'required',
+            "delivery_tax" => 'required',
+        ]);
+
+        $restaurant = Restaurant::find($request['restaurantId']);
+        $deliveryAddress = DeliveryAddress::find($request['addressId']);
         $user = Auth::user();
         /* Also need order id */
 
-        if ($restaurant && $deliveryAddress && $user) {
-            $response = $this->eva->callRide($restaurant, $deliveryAddress, $user);
-        } else if (!$restaurant)
-            return $this->sendError('Restaurant not found', 400);
-        else if (!$user)
+        if ($user) {
+            $response = $this->eva->callRide($restaurant, $deliveryAddress, $user, $request['tip_token_charge']);
+        } else
             return $this->sendError('No logged in user was found', 400);
-        else
-            return $this->sendError('Delivery Address not found', 400);
 
 
         $responseBody = json_decode($response->getBody());
-
         if (!$responseBody) {
-            return $this->sendError('Quote cannot be calculated due to invalid parameters', $response->getStatusCode());
+            return $this->sendError('Ride cannot be called as EVA is currently not available', $response->getStatusCode());
         }
 
         /* Saving in table */
         $evaDB = new EvaDeliveryService();
-        $evaDB->order_id = $input['order_id'];
+        $evaDB->order_id = $request['order_id'];
+        $evaDB->restaurant_id = $request['restaurantId'];
+        $evaDB->distance = $request['distance'];
+        $evaDB->total_charges_plus_tax = $request['total_charges_plus_tax'];
+        $evaDB->delivery_tax = $request['delivery_tax'];
+        $evaDB->tracking_id = $responseBody->tracking_id;
+        $evaDB->tip_token_charge = $request['tip_token_charge'];
+        $evaDB->service_type_id = 1;
+
         $evaDB->save();
 
         return $this->sendResponse($responseBody, 'Successful');
     }
 
 
+    public function restaurantCallRide(Request $request)
+    {
+        $validated = $request->validate([
+            'orderId' => 'required'
+        ]);
+
+        $evaDs = EvaDeliveryService::where('order_id', $request['orderId'])->first();//find($request['orderId'], 'order_id');
+
+        if ($evaDs) {
+            $order = Order::find($evaDs->order_id);
+            $restaurant = Restaurant::find($evaDs->restaurant_id);
+
+            if (!$order)
+                return $this->sendError('Order Not Found', 404);
+
+            $deliveryAddress = DeliveryAddress::find($order->delivery_address_id);
+            $user = User::find($order->user_id);
+
+
+            $response = $this->eva->callRide($restaurant, $deliveryAddress, $user, $evaDs->tip_token_charge);
+
+            $responseBody = json_decode($response->getBody());
+
+            if (!$responseBody) {
+                return $this->sendError('Ride cannot be called as EVA is currently not available', $response->getStatusCode());
+            }
+        } else
+            return $this->sendError('EVA record Not Found', 404);
+
+        return $this->sendResponse($responseBody, 'Successful');
+    }
+
 
 }
+
+
+
+//
+//$deliveryAddress = DeliveryAddress::find($addressID);
+//
+//if ($deliveryAddress) {
+//    $response = $this->eva->serviceAvailability($deliveryAddress);
+//} else
+//    return $this->sendError('Restaurant Address not found', 400);
+//
+//$responseBody = json_decode($response->getBody());
+//
+//if ($responseBody->availability === true) {

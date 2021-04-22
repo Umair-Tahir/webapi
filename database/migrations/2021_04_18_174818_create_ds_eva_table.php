@@ -14,10 +14,15 @@ class CreateDsEvaTable extends Migration
     public function up()
     {
         Schema::create('ds_eva', function (Blueprint $table) {
-            $table->bigIncrements('id');
+            $table->increments('id');
             $table->integer('order_id')->unsigned();
+            $table->integer('restaurant_id')->unsigned();
+            $table->string('distance')->nullable();
+            $table->double('total_charges_plus_tax', 5, 2)->nullable()->default(0);
+            $table->double('delivery_tax', 5, 3)->nullable()->default(0);
             $table->integer('service_type_id')->unsigned()->default(1);
-            $table->integer('tip_token_charge')->unsigned()->default(0);
+            $table->double('tip_token_charge')->unsigned()->default(0);
+            $table->string('tracking_id')->nullable();
             $table->timestamps();
         });
     }
