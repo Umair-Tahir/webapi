@@ -1002,6 +1002,7 @@ class ComposerStaticInit6dc24fae20caa22311c7f26e01e00501
         'App\\Models\\Driver' => __DIR__ . '/../..' . '/app/Models/Driver.php',
         'App\\Models\\DriversPayout' => __DIR__ . '/../..' . '/app/Models/DriversPayout.php',
         'App\\Models\\Earning' => __DIR__ . '/../..' . '/app/Models/Earning.php',
+        'App\\Models\\EvaDeliveryService' => __DIR__ . '/../..' . '/app/Models/EvaDeliveryService.php',
         'App\\Models\\Extra' => __DIR__ . '/../..' . '/app/Models/Extra.php',
         'App\\Models\\ExtraGroup' => __DIR__ . '/../..' . '/app/Models/ExtraGroup.php',
         'App\\Models\\Faq' => __DIR__ . '/../..' . '/app/Models/Faq.php',
