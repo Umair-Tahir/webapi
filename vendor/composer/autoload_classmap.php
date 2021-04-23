@@ -274,6 +274,7 @@ return array(
     'App\\Repositories\\DriverRepository' => $baseDir . '/app/Repositories/DriverRepository.php',
     'App\\Repositories\\DriversPayoutRepository' => $baseDir . '/app/Repositories/DriversPayoutRepository.php',
     'App\\Repositories\\EarningRepository' => $baseDir . '/app/Repositories/EarningRepository.php',
+    'App\\Repositories\\EvaDeliveryServiceRepository' => $baseDir . '/app/Repositories/EvaDeliveryServiceRepository.php',
     'App\\Repositories\\ExtraGroupRepository' => $baseDir . '/app/Repositories/ExtraGroupRepository.php',
     'App\\Repositories\\ExtraRepository' => $baseDir . '/app/Repositories/ExtraRepository.php',
     'App\\Repositories\\FaqCategoryRepository' => $baseDir . '/app/Repositories/FaqCategoryRepository.php',

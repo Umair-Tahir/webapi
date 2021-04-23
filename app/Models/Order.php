@@ -151,4 +151,8 @@ class Order extends Model
     {
         return $this->belongsTo(\App\Models\DeliveryType::class, 'delivery_type_id', 'id');
     }
+
+    public function evadeliveryservice(){
+        return $this->hasOne(EvaDeliveryService::class);
+    }
 }
