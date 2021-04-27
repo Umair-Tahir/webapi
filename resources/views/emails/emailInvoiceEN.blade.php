@@ -194,7 +194,7 @@
                                                                     <td class="tableitem"><p class="itemtext">${{$order->eezly_shared_price}}</p></td>
                                                                 </tr>
                                                             @endif
-                                                            @if(isset($order->tip) && $order->tip!=0)
+                                                            @if(isset($order->tip))
                                                                 <tr class="service">
                                                                     <td class="tableitem"><p class="itemtext"></p></td>
                                                                     <td class="tableitem" colspan="2"><p class="itemtext">Tip</p></td>

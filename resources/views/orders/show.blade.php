@@ -58,7 +58,10 @@
               <th class="text-right">{{trans('lang.order_tax')}} ({!!$order->tax!!}%) </th>
               <td>{!! getPrice($subtotal * $order->tax/100)!!}</td>
             </tr>
-
+            <tr>
+              <th class="text-right">{{trans('lang.order_tip')}} </th>
+              <td>{!! getPrice($order->tip)!!}</td>
+            </tr>
             <tr>
               <th class="text-right">{{trans('lang.order_total')}}</th>
               <td>{!!getPrice($total)!!}</td>

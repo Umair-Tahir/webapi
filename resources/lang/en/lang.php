@@ -716,6 +716,7 @@ return [
     'order_subtotal' => 'Subtotal',
     'order_table' => 'Orders List',
     'order_tax' => 'Tax',
+    'order_tip' => 'Tip',
     'order_tax_help' => 'Insert Tax',
     'order_tax_placeholder' => 'Insert Tax',
     'order_total' => 'Total',
