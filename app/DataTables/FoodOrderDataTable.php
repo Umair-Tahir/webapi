@@ -36,6 +36,8 @@ class FoodOrderDataTable extends DataTable
             })
             ->editColumn('price', function ($foodOrder) {
                 return getPriceColumn($foodOrder);
+            }) ->addColumn('food_total', function ($foodOrder) {
+                 return $foodOrder->price*$foodOrder->quantity;
             })
 //            ->addColumn('action', 'food_orders.datatables_actions')
             ->rawColumns(array_merge($columns));
@@ -107,6 +109,12 @@ class FoodOrderDataTable extends DataTable
             [
                 'data' => 'quantity',
                 'title' => trans('lang.food_order_quantity'),
+                'orderable' => false,
+
+            ],
+            [
+                'data' => 'food_total',
+                'title' => "Food Total",
                 'orderable' => false,
 
             ]

@@ -124,7 +124,7 @@
                                                     <div class="info">
                                                         <h2>@if(isset($order->user->name)) {{$order->user->name}}  @endif</h2>
                                                         <p> @if(isset($order->user->phone_number)) {{$order->user->phone_number}}  @endif </br>
-                                                            {!! $order->deliveryAddress ? $order->deliveryAddress->address : '' !!}
+                                                            {!! isset($order->deliveryAddress) ? $order->deliveryAddress->address : '' !!}
 {{--                                                            @if(isset($order->delivery_address)) {{$order->delivery_address}}  @endif--}}
 {{--                                                            @if(isset($order->deliveryAddress->address)) {{$order->deliveryAddress->address}}  @endif--}}
                                                         </p>

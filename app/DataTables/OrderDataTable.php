@@ -27,6 +27,7 @@ class OrderDataTable extends DataTable
         $dataTable = new EloquentDataTable($query);
         $columns = array_column($this->getColumns(), 'data');
         $dataTable = $dataTable
+
             ->editColumn('id', function ($order) {
                 return "#".$order->id;
             })
@@ -36,8 +37,11 @@ class OrderDataTable extends DataTable
             ->editColumn('delivery_fee', function ($order) {
                 return getPriceColumn($order, 'delivery_fee');
             })
+            ->editColumn('grand_total', function ($order) {
+                return getPriceColumn($order, 'grand_total');
+            })
             ->editColumn('tax', function ($order) {
-                return $order->tax . "%";
+                return getPriceColumn($order,'tax');
             })
             ->editColumn('payment.status', function ($order) {
                 return getPayment($order->payment,'status');
@@ -71,6 +75,12 @@ class OrderDataTable extends DataTable
 
             ],
             [
+                'data' => 'restaurant_name',
+                'name' => 'restaurant_name',
+                'title' => trans('lang.restaurant'),
+
+            ],
+            [
                 'data' => 'order_status.status',
                 'name' => 'orderStatus.status',
                 'title' => trans('lang.order_order_status_id'),
@@ -85,6 +95,12 @@ class OrderDataTable extends DataTable
             [
                 'data' => 'delivery_fee',
                 'title' => trans('lang.order_delivery_fee'),
+                'searchable' => false,
+
+            ],
+            [
+                'data' => 'grand_total',
+                'title' => trans('lang.order_total'),
                 'searchable' => false,
 
             ],
@@ -138,7 +154,12 @@ class OrderDataTable extends DataTable
     public function query(Order $model)
     {
         if (auth()->user()->hasRole('admin')) {
-            return $model->newQuery()->with("user")->with("orderStatus")->with('payment');
+            return $model->newQuery()->with("user")->with("orderStatus")->with('payment')
+                ->join("food_orders", "orders.id", "=", "food_orders.order_id")
+                ->join("foods", "foods.id", "=", "food_orders.food_id")
+                ->join("restaurants", "restaurants.id", "=", "foods.restaurant_id")
+                ->groupBy('orders.id')
+                ->select('orders.*','restaurants.id AS restaurant_id','restaurants.name AS restaurant_name');
         } else if (auth()->user()->hasRole('manager')) {
             return $model->newQuery()->with("user")->with("orderStatus")->with('payment')
                 ->join("food_orders", "orders.id", "=", "food_orders.order_id")

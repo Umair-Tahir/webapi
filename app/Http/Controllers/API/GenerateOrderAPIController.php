@@ -231,7 +231,7 @@ class GenerateOrderAPIController extends Controller
                 'is_french' => $input['is_french'],
                 'hint' => $input['hint'],
                 //'delivery_address' => $input['delivery_address'],
-                'order_status_id' => 1,
+                'order_status_id' => 6,
                 'active' => 1,
                 'tax' => $input['tax'],
                 'expected_delivery_time' => $input['expected_delivery_time'],

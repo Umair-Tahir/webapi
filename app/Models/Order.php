@@ -128,6 +128,11 @@ class Order extends Model
         return $this->hasMany(\App\Models\FoodOrder::class);
     }
 
+    public function restaurant()
+    {
+        return $this->foodOrders()->first()->food->restaurant;
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
