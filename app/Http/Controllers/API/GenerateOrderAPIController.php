@@ -73,20 +73,21 @@ class GenerateOrderAPIController extends Controller
 //            'cvc_code'   => 'required',
             "user_id" => 'required',
             "delivery_type_id" => 'required',
-            "delivery_address_id" => 'required',
-            "delivery_fee" => 'required',
+//            "delivery_address_id" => 'required',
+//            "delivery_fee" => 'required',
             'is_french' => 'required',
             'tax' => 'required',
             'expected_delivery_time' => 'required',
             'vendor_shared_price' => 'required',
             'eezly_shared_price' => 'required',
             'grand_total' => 'required',
-            "distance" => 'required',
-            "total_charges_plus_tax" => 'required',
-            "delivery_tax" => 'required',
-            "tip_token_charge" => 'required'
+//            "distance" => 'required',
+//            "total_charges_plus_tax" => 'required',
+//            "delivery_tax" => 'required',
+//            "tip_token_charge" => 'required',
         ];
         $validator = Validator::make($input, $rules);
+
 
         if ($validator->fails()) {      //pass validator errors
             return response()->json(['errors' => $validator->errors()]);
@@ -173,28 +174,29 @@ class GenerateOrderAPIController extends Controller
                         /******** If else for store_order function **********/
                         if ($order_response['status'] == 'success') {
 
-                            /* Adding Data in EVA Ds table */
-                            $foodId = $request->foods[0]['food_id'];
-                            $foodRestaurant = Food::find($foodId)->restaurant;
-                            $evaParams = [
-                                'order_id' => $order_response['order']->id,
-                                'restaurant_id' => $foodRestaurant->id,
-                                'distance' => $input['distance'],
-                                'delivery_tax' => $input['delivery_tax'],
-                                'total_charges_plus_tax' => $input['distance'],
-                                'tip_token_charge' => $input['distance']
-                            ];
-                            $evaModal = new EvaDeliveryService();
-                            $evaResponse = $evaModal->createEvaFromOrder($evaParams);
-
+                            if($request['delivery_type_id'] == 3) {
+                                /* Adding Data in EVA Ds table */
+                                $foodId = $request->foods[0]['food_id'];
+                                $foodRestaurant = Food::find($foodId)->restaurant;
+                                $evaParams = [
+                                    'order_id' => $order_response['order']->id,
+                                    'restaurant_id' => $foodRestaurant->id,
+                                    'distance' => $input['distance'],
+                                    'delivery_tax' => $input['delivery_tax'],
+                                    'total_charges_plus_tax' => $input['distance'],
+                                    'tip_token_charge' => $input['distance']
+                                ];
+                                $evaModal = new EvaDeliveryService();
+                                $evaResponse = $evaModal->createEvaFromOrder($evaParams);
+                            }
                             $isFrench = $input['is_french'];
                             $toRestaurant = false;
                             $order = $order_response['order'];
                             //Send email invoice to customer $order->user->email
-                            //Mail::to($order->user->email)->send(new OrderNotificationEmail($order,$isFrench,$toRestaurant));
+                            Mail::to($order->user->email)->send(new OrderNotificationEmail($order,$isFrench,$toRestaurant));
                             $toRestaurant = true;
                             //Send email invoice to restaurant $order->foodOrders[0]->food->restaurant->users[0]->email
-                            //Mail::to('philippe.dallaire4@gmail.com')->send(new OrderNotificationEmail($order,$isFrench,$toRestaurant));
+                            Mail::to('philippe.dallaire4@gmail.com')->send(new OrderNotificationEmail($order,$isFrench,$toRestaurant));
 
                             return $this->sendResponse($order_response, 'Payment and order are successfully created');
                         } else {
@@ -222,15 +224,16 @@ class GenerateOrderAPIController extends Controller
     {
         $input = $request->all();
 
+
         /************* Create Order *****/
         try {
             $order = $this->orderRepository->create([
                 'user_id' => $input['user_id'],
-                "delivery_address_id" => $input['delivery_address_id'],
+                "delivery_address_id" => (isset($input['delivery_address_id'])) ? $input['delivery_address_id'] : null,
                 "delivery_fee" => $input['delivery_fee'],
                 'is_french' => $input['is_french'],
                 'hint' => $input['hint'],
-                //'delivery_address' => $input['delivery_address'],
+//                'delivery_address' => $input['delivery_address'],
                 'order_status_id' => 6,
                 'active' => 1,
                 'tax' => $input['tax'],

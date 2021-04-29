@@ -103,23 +103,28 @@ class EvaDeliveryService extends Model
      * Eva Call Ride Function
      **/
 
-    public function callRide($restaurant, $deliveryAddress, $user, $tip)
+    public function callRide($order_id, $restaurant, $deliveryAddress, $user, $tip)
     {
+
+
         try {
             $response = $this->client->post("/call_ride", [
                 GuzzleHttp\RequestOptions::JSON => [
+                    'order_id' => "O-".$order_id,
                     'from_latitude' => $restaurant['latitude'],
                     'from_longitude' => $restaurant['longitude'],
                     'to_latitude' => $deliveryAddress['latitude'],
+                    "pick_up_company_name" => $restaurant['name'],
                     'to_longitude' => $deliveryAddress['longitude'],
                     "from_address" => $restaurant['address'],
+                    "customer_last_name" => $user['name'],
+                    "pickup_phone " => $restaurant['phone'],
                     "to_address" => $deliveryAddress['address'],
                     "customer_first_name" => $user['name'],
-                    "customer_last_name" => '',
                     "customer_phone" => $user['phone_number'],
                     "customer_email" => $user['email'],
                     'ride_service_type_id' => 1,
-                    "tip_token_charge" => $tip * 100
+                    "tip_token_amount" => $tip * 100
                 ]]);
         } catch (\GuzzleHttp\Exception\ClientException $e) {
             return $e->getResponse()->getStatusCode();

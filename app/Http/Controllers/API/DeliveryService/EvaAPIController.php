@@ -128,7 +128,7 @@ class EvaAPIController extends Controller
         /* Also need order id */
 
         if ($user) {
-            $response = $this->eva->callRide($restaurant, $deliveryAddress, $user, $request['tip_token_charge']);
+            $response = $this->eva->callRide($request['order_id'], $restaurant, $deliveryAddress, $user, $request['tip_token_charge']);
         } else
             return $this->sendError('No logged in user was found', 400);
 
