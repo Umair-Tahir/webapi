@@ -117,6 +117,8 @@ Route::middleware('auth:api')->group(function () {
 
     /* ************ Generate Orders *********** */
     Route::post('generate_order', 'API\GenerateOrderAPIController@order_payment');
+    Route::post('TypeOneGenerateOrder', 'API\GenerateOrderAPIController@pickupOrder');
+    Route::post('TypeTwoGenerateOrder', 'API\GenerateOrderAPIController@deliveryServiceOrder');
     /* *************   ************* */
 
     /* ************ Notifications *********** */

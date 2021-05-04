@@ -105,8 +105,6 @@ class EvaDeliveryService extends Model
 
     public function callRide($order_id, $restaurant, $deliveryAddress, $user, $tip)
     {
-
-
         try {
             $response = $this->client->post("/call_ride", [
                 GuzzleHttp\RequestOptions::JSON => [
