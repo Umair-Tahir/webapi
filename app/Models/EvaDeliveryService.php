@@ -108,7 +108,7 @@ class EvaDeliveryService extends Model
         try {
             $response = $this->client->post("/call_ride", [
                 GuzzleHttp\RequestOptions::JSON => [
-                    'order_id' => "O-".$order_id,
+                    'order_number' => "O-".$order_id,
                     'from_latitude' => $restaurant['latitude'],
                     'from_longitude' => $restaurant['longitude'],
                     'to_latitude' => $deliveryAddress['latitude'],
@@ -116,7 +116,7 @@ class EvaDeliveryService extends Model
                     'to_longitude' => $deliveryAddress['longitude'],
                     "from_address" => $restaurant['address'],
                     "customer_last_name" => $user['name'],
-                    "pickup_phone " => $restaurant['phone'],
+                    "pickup_phone" => preg_replace( '/[^0-9]/', '', $restaurant['phone'] ),
                     "to_address" => $deliveryAddress['address'],
                     "customer_first_name" => $user['name'],
                     "customer_phone" => $user['phone_number'],

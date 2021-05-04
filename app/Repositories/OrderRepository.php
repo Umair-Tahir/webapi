@@ -27,6 +27,7 @@ class OrderRepository extends BaseRepository
         'payment_id',
         'delivery_type_id',
         'delivery_address_id',
+        'restaurant_id',
         'active',
         'expected_delivery_time',
         'vendor_shared_price',

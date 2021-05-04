@@ -44,7 +44,7 @@ class OrderNotificationEmail extends Mailable
                 ]);
         }else{
             return $this->from("noreply@eezly.com", "eezly")->view($view)
-                ->subject("New Order #".$this->order->id." to ".$this->order->foodOrders[0]->food->restaurant->name)
+                ->subject("New Order #".$this->order->id." to ".$this->order->restaurant->name)
                 ->with([
                     "order" => $this->order,
                     "toRestaurant" => $this->toRestaurant

@@ -31,6 +31,7 @@ class Order extends Model
         'tax',
         'hint',
         'payment_id',
+        'restaurant_id',
         'delivery_type_id',
         'delivery_address_id',
         'delivery_fee',
@@ -57,6 +58,7 @@ class Order extends Model
         'payment_id' => 'integer',
         'delivery_type_id' => 'integer',
         'delivery_address_id' => 'integer',
+        'restaurant_id' => 'integer',
         'delivery_fee'=>'double',
         'active'=>'boolean',
     ];
@@ -71,6 +73,7 @@ class Order extends Model
         'order_status_id' => 'required|exists:order_statuses,id',
         'delivery_type_id' => 'required|exists:delivery_types,id',
         'delivery_address_id' => 'required|exists:delivery_addresses,id',
+        'restaurant_id' => 'required|exists:restaurants,id',
         'payment_id' => 'exists:payments,id',
     ];
 
@@ -110,7 +113,13 @@ class Order extends Model
     {
         return $this->belongsTo(\App\Models\User::class, 'user_id', 'id');
     }
-
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function restaurant()
+    {
+        return $this->belongsTo(\App\Models\Restaurant::class, 'restaurant_id', 'id');
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
@@ -127,6 +136,8 @@ class Order extends Model
     {
         return $this->hasMany(\App\Models\FoodOrder::class);
     }
+
+
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

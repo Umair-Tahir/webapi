@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\API\Manager;
 
 use App\Events\UserRoleChangedEvent;
@@ -9,6 +10,7 @@ use App\Repositories\RoleRepository;
 use App\Repositories\UploadRepository;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Password;
 use Prettus\Validator\Exceptions\ValidatorException;
@@ -73,20 +75,12 @@ class UserAPIController extends Controller
                 'name' => 'required',
                 'email' => 'required|unique:users|email',
                 'password' => 'required',
-                'phone_number' => 'required|unique:users|min:8'
+                'phone_number' => 'required|unique:users|min:8|numeric'
             ]);
             $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->userRepository->model());
+            $sendOtp=$this->userRepository->otpSend($request->input('phone_number'));
 
-                    /* Get credentials from .env */
-        $token = getenv("TWILIO_AUTH_TOKEN");
-        $twilio_sid = getenv("TWILIO_SID");
-        $twilio_verify_sid = getenv("TWILIO_VERIFY_SID");
-        $twilio = new Client($twilio_sid, $token);
-
-            $twilio->verify->v2->services($twilio_verify_sid)
-                ->verifications
-                ->create('+'.$request->input('phone_number'), "sms");
-            if($twilio){
+            if ($sendOtp) {
                 $user = new User;
                 $user->name = $request->input('name');
                 $user->email = $request->input('email');
@@ -106,7 +100,7 @@ class UserAPIController extends Controller
                 }
                 event(new UserRoleChangedEvent($user));
                 return $this->sendResponse($user, 'User retrieved successfully');
-            }else{
+            } else {
                 return $this->sendError('Failed to generate OTP. Please enter correct phone number.', 401);
 
             }
@@ -237,35 +231,39 @@ class UserAPIController extends Controller
 
     function phoneVerify(Request $request)
     {
-
-//        code to verify OTP
-
-        $data = $request->validate([
-            'verification_code' => ['required', 'numeric'],
-            'phone_number' => ['required', 'string', 'min:8'],
-        ]);
-
-        /* Get credentials from .env */
-        $token = getenv("TWILIO_AUTH_TOKEN");
-        $twilio_sid = getenv("TWILIO_SID");
-        $twilio_verify_sid = getenv("TWILIO_VERIFY_SID");
-        $twilio = new Client($twilio_sid, $token);
-        $verification = $twilio->verify->v2->services($twilio_verify_sid)
-            ->verificationChecks
-            ->create($data['verification_code'], array('to' => '+'.$data['phone_number']));
-
-        if ($verification->valid) {
-            $user = tap(User::where('phone_number', $data['phone_number']))->update(['isVerified' => true]);
-            if (!$user) {
-                return $this->sendError('User not found', 401);
+        try {
+            $data = $request->validate([
+                'verification_code' => ['required', 'numeric']
+            ]);
+            $user = Auth::user();
+            $verifyOtp=$this->userRepository->verifyOtp($data['verification_code'],$user->phone_number);
+            if ($verifyOtp->valid) {
+                $user=$user->update(['isVerified' => true]);
+                return $this->sendResponse($user, 'Phone verified Successfully.');
             }
-            $user=User::where('phone_number', $data['phone_number'])->first();
-            return $this->sendResponse($user, 'Phone verified Successfully.');
+            else{
+                return $this->sendError( 'Invalid verification code entered!', 401);
+            }
+        } catch (\Exception $e) {
+            return $this->sendError($e->getMessage(), 401);
         }
-        else{
-            return $this->sendError([
-                'error' => 'Invalid verification code entered!',
-            ], 'Invalid verification code entered');
+
+    }
+
+
+    public function reset_otp(Request $request)
+    {
+        try {
+            $user = Auth::user();
+
+            $sendOtp=$this->userRepository->otpSend($user->phone_number);
+            if ($sendOtp) {
+                return $this->sendResponse($user, 'OTP reset successfully');
+            }else{
+                return $this->sendError('Critical Server error', 401);
+            }
+        } catch (\Exception $e) {
+            return $this->sendError($e->getMessage(), 401);
         }
     }
 }

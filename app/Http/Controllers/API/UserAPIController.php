@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\Controllers\API;
 
+use App\Events\UserRoleChangedEvent;
 use App\Http\Controllers\Controller;
 use App\Models\User;
 use App\Repositories\CustomFieldRepository;
@@ -14,6 +15,7 @@ use Illuminate\Support\Facades\Password;
 use PhpParser\Node\Stmt\TryCatch;
 use Prettus\Repository\Criteria\RequestCriteria;
 use Prettus\Validator\Exceptions\ValidatorException;
+use Twilio\Rest\Client;
 
 class UserAPIController extends Controller
 {
@@ -67,37 +69,48 @@ class UserAPIController extends Controller
     function register(Request $request)
     {
         try {
-            $this->validate($request, [
-                'name' => 'required',
-                'email' => 'required|unique:users|email',
-                'password' => 'required',
-            ]);
-            $user = new User;
-            $user->name = $request->input('name');
-            $user->email = $request->input('email');
-            $user->device_token = $request->input('device_token', '');
-            $user->password = Hash::make($request->input('password'));
-            $user->api_token = str_random(60);
-            $user->save();
 
-            $defaultRoles = $this->roleRepository->findByField('default', '1');
-            $defaultRoles = $defaultRoles->pluck('name')->toArray();
-            $user->assignRole($defaultRoles);
+                $this->validate($request, [
+                    'name' => 'required',
+                    'email' => 'required|unique:users|email',
+                    'password' => 'required',
+                    'phone_number' => 'required|unique:users|min:8|numeric'
+                ]);
+                $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->userRepository->model());
+
+            $sendOtp=$this->userRepository->otpSend($request->input('phone_number'));
+
+            if($sendOtp){
+                    $user = new User;
+                    $user->name = $request->input('name');
+                    $user->email = $request->input('email');
+                    $user->device_token = $request->input('device_token', '');
+                    $user->phone_number = $request->input('phone_number');
+                    $user->password = Hash::make($request->input('password'));
+                    $user->api_token = str_random(60);
+                    $user->save();
+                    $user->customFieldsValues()->createMany(getCustomFieldsValues($customFields, $request));
+
+                    $defaultRoles = $this->roleRepository->findByField('default', '1');
+                    $defaultRoles = $defaultRoles->pluck('name')->toArray();
+                    $user->assignRole($defaultRoles);
+
+                    if (copy(public_path('images/avatar_default.png'), public_path('images/avatar_default_temp.png'))) {
+                        $user->addMedia(public_path('images/avatar_default_temp.png'))
+                            ->withCustomProperties(['uuid' => bcrypt(str_random())])
+                            ->toMediaCollection('avatar');
+                    }
+                    event(new UserRoleChangedEvent($user));
+                    return $this->sendResponse($user, 'User retrieved successfully');
+                }else{
+                    return $this->sendError('Failed to generate OTP. Please enter correct phone number.', 401);
+
+                }
 
 
-            if (copy(public_path('images/avatar_default.png'), public_path('images/avatar_default_temp.png'))) {
-                $user->addMedia(public_path('images/avatar_default_temp.png'))
-                    ->withCustomProperties(['uuid' => bcrypt(str_random())])
-                    ->toMediaCollection('avatar');
+            } catch (\Exception $e) {
+                return $this->sendError($e->getMessage(), 401);
             }
-        } catch (\Exception $e) {
-            return $this->sendError($e->getMessage(), 401);
-        }
-
-
-
-
-        return $this->sendResponse($user, 'User retrieved successfully');
     }
 
     function logout(Request $request)

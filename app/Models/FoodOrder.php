@@ -61,7 +61,8 @@ class FoodOrder extends Model
      */
     protected $appends = [
         'custom_fields',
-        'extras'
+        'extras',
+        'food'
     ];
 
     public function customFieldsValues()
@@ -112,5 +113,13 @@ class FoodOrder extends Model
     public function getExtrasAttribute()
     {
         return $this->extras()->get(['extras.id', 'extras.name']);
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
+    public function getFoodAttribute()
+    {
+        return $this->food()->get(['foods.id', 'foods.name','foods.price','foods.unit','foods.weight']);
     }
 }

@@ -148,6 +148,16 @@ Route::middleware('auth:api')->group(function () {
     Route::get('trending_foods', 'API\TrendAPIController@trendingFoods');
     /* *************   ************* */
 
+
+    /* *************  Resend OTP ************* */
+    Route::get('reset_otp', 'API\Manager\UserAPIController@reset_otp');
+    /* *************   ************* */
+
+
+    /* *************  Verify Phone ************* */
+    Route::post('phone_verify', 'API\Manager\UserAPIController@phoneVerify');
+    /* *************   ************* */
+
 });
 
 /* ************************ Public routes *********************** */
@@ -167,7 +177,6 @@ Route::post('send_reset_link_email', 'API\UserAPIController@sendResetLinkEmail')
 Route::get('user', 'API\UserAPIController@user');
 Route::get('logout', 'API\UserAPIController@logout');
 Route::get('settings', 'API\UserAPIController@settings');
-Route::post('phone_verify', 'API\Manager\UserAPIController@phoneVerify');
 Route::post('changeEmailSettings', 'API\UserAPIController@changeEmailSettings');
 /* ******************************* */
 
