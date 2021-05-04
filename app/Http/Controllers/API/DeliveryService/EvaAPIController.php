@@ -174,7 +174,7 @@ class EvaAPIController extends Controller
             $user = User::find($order->user_id);
 
 
-            $response = $this->eva->callRide($restaurant, $deliveryAddress, $user, $evaDs->tip_token_charge);
+            $response = $this->eva->callRide($restaurant, $deliveryAddress, $user, $evaDs->tip_token_charge,$order->tip);
 
             $responseBody = json_decode($response->getBody());
 

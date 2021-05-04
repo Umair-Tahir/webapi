@@ -158,7 +158,6 @@ function getLinksColumnByRouteName($array = [], $routeName, $idAttribute = 'id',
         $replace = preg_replace('/\$\{title\}/', $link[$titleAttribute], $replace);
         $result[] = $replace;
     }
-    dd($html);
     return implode(', ', $result);
 }
 

@@ -12,7 +12,8 @@
 
     {!! Form::label('order_client_phone', trans('lang.order_client_phone'), ['class' => 'col-4 control-label']) !!}
     <div class="col-8">
-    <p>{!! isset($order->user->custom_fields['phone']) ? $order->user->custom_fields['phone']['view'] : "" !!}</p>
+    <p>{!! isset($order->user->phone_number) ? $order->user->phone_number : "" !!}</p>
+{{--    <p>{!! isset($order->user->custom_fields['phone']) ? $order->user->custom_fields['phone']['view'] : "" !!}</p>--}}
   </div>
 
     {{--{!! Form::label('delivery_address', trans('lang.delivery_address'), ['class' => 'col-4 control-label']) !!}--}}
@@ -69,27 +70,26 @@
     </div>
 
 </div>
-
 <!-- Id Field -->
 <div class="form-group row col-md-4 col-sm-12">
     {!! Form::label('restaurant', trans('lang.restaurant'), ['class' => 'col-4 control-label']) !!}
     <div class="col-8">
         @if(isset($order->foodOrders[0]))
-            <p>{!! $order->foodOrders[0]->food->restaurant->name !!}</p>
+            <p>{!! $order->restaurant->name !!}</p>
         @endif
     </div>
 
     {!! Form::label('restaurant_address', trans('lang.restaurant_address'), ['class' => 'col-4 control-label']) !!}
     <div class="col-8">
         @if(isset($order->foodOrders[0]))
-            <p>{!! $order->foodOrders[0]->food->restaurant->address !!}</p>
+            <p>{!! $order->restaurant->address !!}</p>
         @endif
     </div>
 
     {!! Form::label('restaurant_phone', trans('lang.restaurant_phone'), ['class' => 'col-4 control-label']) !!}
     <div class="col-8">
         @if(isset($order->foodOrders[0]))
-            <p>{!! $order->foodOrders[0]->food->restaurant->phone !!}</p>
+            <p>{!! $order->restaurant->phone !!}</p>
         @endif
     </div>
 

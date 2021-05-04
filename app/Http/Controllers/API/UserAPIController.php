@@ -74,20 +74,13 @@ class UserAPIController extends Controller
                     'name' => 'required',
                     'email' => 'required|unique:users|email',
                     'password' => 'required',
-                    'phone_number' => 'required|unique:users|min:8'
+                    'phone_number' => 'required|unique:users|min:8|numeric'
                 ]);
                 $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->userRepository->model());
 
-                /* Get credentials from .env */
-                $token = getenv("TWILIO_AUTH_TOKEN");
-                $twilio_sid = getenv("TWILIO_SID");
-                $twilio_verify_sid = getenv("TWILIO_VERIFY_SID");
-                $twilio = new Client($twilio_sid, $token);
+            $sendOtp=$this->userRepository->otpSend($request->input('phone_number'));
 
-                $twilio->verify->v2->services($twilio_verify_sid)
-                    ->verifications
-                    ->create('+'.$request->input('phone_number'), "sms");
-                if($twilio){
+            if($sendOtp){
                     $user = new User;
                     $user->name = $request->input('name');
                     $user->email = $request->input('email');

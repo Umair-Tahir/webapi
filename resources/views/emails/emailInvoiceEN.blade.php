@@ -105,7 +105,7 @@
                     <tbody><tr>
                         <td style="font-family:Avenir,Helvetica,sans-serif;box-sizing:border-box;padding:25px 0;text-align:center;background-color: #ffc107 !important">
                             <a href="https://www.eezly.com" style="font-family:Avenir,Helvetica,sans-serif;box-sizing:border-box;color:#bbbfc3;font-size:19px;font-weight:bold;text-decoration:none" target="_blank" data-saferedirecturl="https://www.google.com/url?q=https://www.eezly.com&amp;source=gmail&amp;ust=1608897117682000&amp;usg=AFQjCNGQHshUo80mqTF_EDsvyRdOmFiYaw">
-                                <image  src="https://eezly.com/images/logo_default.png" />
+                                <image  src="https://ally.eezly.com/images/logo_default.png" />
                             </a>
                         </td>
                     </tr>
@@ -138,12 +138,11 @@
                                                 </div><!--End InvoiceTop-->
 
 
-
                                                 <div id="invoice-mid">
                                                     <div class="info">
-                                                        <h2>@if(isset($order->foodOrders[0]->food->restaurant->name)){{$order->foodOrders[0]->food->restaurant->name}}  @endif</h2>
-                                                        <p> @if(isset($order->foodOrders[0]->food->restaurant->phone)){{$order->foodOrders[0]->food->restaurant->phone}} @endif</br>
-                                                            @if(isset($order->foodOrders[0]->food->restaurant->address))  {{$order->foodOrders[0]->food->restaurant->address}} @endif
+                                                        <h2>@if(isset($order->restaurant->name)){{$order->restaurant->name}}  @endif</h2>
+                                                        <p> @if(isset($order->restaurant->phone)){{$order->restaurant->phone}} @endif</br>
+                                                            @if(isset($order->restaurant->address))  {{$order->restaurant->address}} @endif
                                                         </p>
                                                     </div>
 
@@ -166,13 +165,14 @@
                                                             @if(isset($order))
                                                                 @foreach($order->foodOrders as $foodOrder)
                                                                     <tr class="service">
-                                                                        <td class="tableitem"><p class="itemtext">{{$foodOrder->food->name}}</p></td>
+                                                                        <td class="tableitem"><p class="itemtext">{{$foodOrder->food->first()->name}}</p></td>
                                                                         <td class="tableitem"><p class="itemtext">{{$foodOrder->quantity}}</p></td>
-                                                                        <td class="tableitem"><p class="itemtext">${{$foodOrder->food->price}}</p></td>
+                                                                        <td class="tableitem"><p class="itemtext">${{$foodOrder->food->first()->price}}</p></td>
                                                                         <td class="tableitem"><p class="itemtext">${{$foodOrder->price}}</p></td>
                                                                     </tr>
                                                                 @endforeach
                                                             @endif
+
                                                             @if(isset($order->delivery_fee) && $order->delivery_fee!=0)
                                                                 <tr class="service">
                                                                     <td class="tableitem"><p class="itemtext"></p></td>
@@ -230,7 +230,7 @@
                                                 </div><!--End InvoiceBot-->
                                             </div><!--End Invoice-->
                                         </div><!-- End Invoice Holder-->
-                                        <H3 style="font-family:Avenir,Helvetica,sans-serif;box-sizing:border-box;color:#74787e;font-size:16px;line-height:1.5em;margin-top:0;text-align:left">Feel free to reach out for any concerns and queries.</H3>
+                                        <H3 style="font-family:Avenir,Helvetica,sans-serif;box-sizing:border-box;color:#74787e;font-size:16px;line-height:1.5em;margin-top:0;text-align:left">Feel free to reach out for any concerns and queries by email at <a  href="mailto:hello@eezly.com">hello@eezly.com</a> or by phone at 1-888-693-3959.</H3>
                                         <H1 style="font-family:Avenir,Helvetica,sans-serif;box-sizing:border-box;font-size:16px;line-height:1.5em;margin-top:0;text-align:left"><span style="color:#74787e;font-size: 14px;">Regards,</span><br>eezly</H1>
                                     </td>
                                 </tr>

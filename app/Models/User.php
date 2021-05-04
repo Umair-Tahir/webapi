@@ -9,6 +9,7 @@ use Spatie\Image\Manipulations;
 use Spatie\MediaLibrary\HasMedia\HasMedia;
 use Spatie\MediaLibrary\HasMedia\HasMediaTrait;
 use Spatie\Permission\Traits\HasRoles;
+use Twilio\Rest\Client;
 
 /**
  * Class User
@@ -177,5 +178,36 @@ class User extends Authenticatable implements HasMedia
     public function deliveryAddresses()
     {
         return $this->belongsTo(\App\Models\DeliveryAddress::class);
+    }
+
+
+    public function otpSend($phone_number){
+
+        /* Get credentials from .env */
+        $token = getenv("TWILIO_AUTH_TOKEN");
+        $twilio_sid = getenv("TWILIO_SID");
+        $twilio_verify_sid = getenv("TWILIO_VERIFY_SID");
+        $twilio = new Client($twilio_sid, $token);
+
+        $twilio->verify->v2->services($twilio_verify_sid)
+            ->verifications
+            ->create('+' . preg_replace( '/[^0-9]/', '', $phone_number ), "sms");
+
+       return $twilio;
+
+    }
+
+    public function verifyOtp($verification_code,$phone_number){
+
+        /* Get credentials from .env */
+        $token = getenv("TWILIO_AUTH_TOKEN");
+        $twilio_sid = getenv("TWILIO_SID");
+        $twilio_verify_sid = getenv("TWILIO_VERIFY_SID");
+        $twilio = new Client($twilio_sid, $token);
+        $verification = $twilio->verify->v2->services($twilio_verify_sid)
+            ->verificationChecks
+            ->create($verification_code, array('to' => '+' . preg_replace( '/[^0-9]/', '', $phone_number )));
+
+        return $verification;
     }
 }

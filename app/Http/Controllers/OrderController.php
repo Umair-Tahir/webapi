@@ -66,6 +66,7 @@ class OrderController extends Controller
      */
     public function index(OrderDataTable $orderDataTable)
     {
+
         return $orderDataTable->render('orders.index');
     }
 
