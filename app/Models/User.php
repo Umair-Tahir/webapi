@@ -54,7 +54,9 @@ class User extends Authenticatable implements HasMedia
         'api_token',
         'device_token',
         'isVerified',
-        'phone_number'
+        'phone_number',
+        'address',
+        'bio',
 
     ];
     /**
