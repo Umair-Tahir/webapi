@@ -45,7 +45,7 @@ class EvaAPIController extends Controller
         $responseBody = json_decode($response->getBody());
 
         /**** Get Quote ****/
-        if ($responseBody->availability != true) {
+        if ($responseBody->availability == true) {
             $QuoteResponse = $this->eva->getQuote($restaurant, $deliveryAddress);
         } else
             return $this->sendResponse($responseBody, 'Service not available');
@@ -158,10 +158,10 @@ class EvaAPIController extends Controller
     public function restaurantCallRide(Request $request)
     {
         $validated = $request->validate([
-            'orderId' => 'required'
+            'order_id' => 'required'
         ]);
 
-        $evaDs = EvaDeliveryService::where('order_id', $request['orderId'])->first();//find($request['orderId'], 'order_id');
+        $evaDs = EvaDeliveryService::where('order_id', $request['order_id'])->first();//find($request['orderId'], 'order_id');
 
         if ($evaDs) {
             $order = Order::find($evaDs->order_id);
@@ -174,7 +174,7 @@ class EvaAPIController extends Controller
             $user = User::find($order->user_id);
 
 
-            $response = $this->eva->callRide($restaurant, $deliveryAddress, $user, $evaDs->tip_token_charge,$order->tip);
+            $response = $this->eva->callRide($order->id, $restaurant, $deliveryAddress, $user, $evaDs->tip_token_charge);
 
             $responseBody = json_decode($response->getBody());
 
@@ -184,6 +184,16 @@ class EvaAPIController extends Controller
         } else
             return $this->sendError('EVA record Not Found', 404);
 
+        /************ Store Tracking ID ****************/
+        $evaDs->tracking_id = $responseBody->tracking_id;
+
+        if ($responseBody->business_tracking_id)
+            $evaDs->business_tracking_id = $responseBody->business_tracking_id;
+
+        $evaDs->save();
+        $tracking_link = 'https://business.eva.cab/public/live_tracker?tracking_id='.$responseBody->tracking_id;
+
+        $responseBody->tracking_link = $tracking_link;
         return $this->sendResponse($responseBody, 'Successful');
     }
 

@@ -71,10 +71,10 @@ Route::middleware('auth:api')->group(function () {
     /* *************  ************* */
 
     /* ************* EVA Delivery Service Availability ,Get Quote ,Call Ride ************* */
-    Route::post('deliveryService/serviceAvailability', 'API\DeliveryService\EvaAPIController@serviceAvailability');
-    Route::post('deliveryService/getQuote', 'API\DeliveryService\EvaAPIController@getQuote');
-    Route::post('deliveryService/callRide', 'API\DeliveryService\EvaAPIController@callRide');
-    Route::post('deliveryService/restaurantCallRide', 'API\DeliveryService\EvaAPIController@restaurantCallRide');
+    Route::post('delivery_service/service_availability', 'API\DeliveryService\EvaAPIController@serviceAvailability');
+    Route::post('delivery_service/get_quote', 'API\DeliveryService\EvaAPIController@getQuote');
+    Route::post('delivery_service/call_ride', 'API\DeliveryService\EvaAPIController@callRide');
+    Route::post('delivery_service/restaurant_call_ride', 'API\DeliveryService\EvaAPIController@restaurantCallRide');
 
     /* *************  ************* */
 
@@ -117,6 +117,9 @@ Route::middleware('auth:api')->group(function () {
 
     /* ************ Generate Orders *********** */
     Route::post('generate_order', 'API\GenerateOrderAPIController@order_payment');
+    Route::post('order/pickup', 'API\GenerateOrderAPIController@pickupOrder');
+    Route::post('order/eva_ds', 'API\GenerateOrderAPIController@deliveryServiceOrder');
+    Route::post('order/restaurantds', 'API\GenerateOrderAPIController@deliveryServiceOrder');
     /* *************   ************* */
 
     /* ************ Notifications *********** */

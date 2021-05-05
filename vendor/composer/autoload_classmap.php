@@ -243,6 +243,7 @@ return array(
     'App\\Models\\FoodReview' => $baseDir . '/app/Models/FoodReview.php',
     'App\\Models\\Gallery' => $baseDir . '/app/Models/Gallery.php',
     'App\\Models\\Media' => $baseDir . '/app/Models/Media.php',
+    'App\\Models\\MonerisPaymentService' => $baseDir . '/app/Models/MonerisPaymentService.php',
     'App\\Models\\Notification' => $baseDir . '/app/Models/Notification.php',
     'App\\Models\\NotificationType' => $baseDir . '/app/Models/NotificationType.php',
     'App\\Models\\Nutrition' => $baseDir . '/app/Models/Nutrition.php',

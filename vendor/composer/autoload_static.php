@@ -1026,6 +1026,7 @@ class ComposerStaticInit6dc24fae20caa22311c7f26e01e00501
         'App\\Models\\FoodReview' => __DIR__ . '/../..' . '/app/Models/FoodReview.php',
         'App\\Models\\Gallery' => __DIR__ . '/../..' . '/app/Models/Gallery.php',
         'App\\Models\\Media' => __DIR__ . '/../..' . '/app/Models/Media.php',
+        'App\\Models\\MonerisPaymentService' => __DIR__ . '/../..' . '/app/Models/MonerisPaymentService.php',
         'App\\Models\\Notification' => __DIR__ . '/../..' . '/app/Models/Notification.php',
         'App\\Models\\NotificationType' => __DIR__ . '/../..' . '/app/Models/NotificationType.php',
         'App\\Models\\Nutrition' => __DIR__ . '/../..' . '/app/Models/Nutrition.php',

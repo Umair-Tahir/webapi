@@ -18,7 +18,9 @@ class EvaDeliveryService extends Model
     public $fillable = [
         'order_id',
         'service_type_id',
-        'tip_token_charge'
+        'tip_token_charge',
+        'tracking_id',
+        'business_tracking_id'
     ];
 
     /**
@@ -29,7 +31,9 @@ class EvaDeliveryService extends Model
     protected $casts = [
         'service_type_id' => 'integer',
         'tip_token_charge' => 'integer',
-        'order_id' => 'integer'
+        'order_id' => 'integer',
+        'tracking_id'=> 'string',
+        'business_tracking_id'=> 'string'
     ];
 
     /**
@@ -49,9 +53,12 @@ class EvaDeliveryService extends Model
         //Setting Client URL and other Necessary parameters
         $this->client = new Client([
             // Base URI is used with relative requests
-            'base_uri' => 'http://167.99.183.41:5000',
+//            'base_uri' => 'http://167.99.183.41:5000',
+            'base_uri' => 'https://api.montreal.eva.cab/',
+
             "headers" => [
-                "Authorization" => "muyvhdyohhhanakrzilejspxuxfmnrsfudlbbdwn",
+//                "Authorization" => "muyvhdyohhhanakrzilejspxuxfmnrsfudlbbdwn", //Local
+                "Authorization" => 'ymbabljvgbxtlpgrughwawginziswxmlvxwuwhsd',
                 'Content-Type' => 'application/json'
             ],
             'exceptions' => false,
@@ -105,8 +112,6 @@ class EvaDeliveryService extends Model
 
     public function callRide($order_id, $restaurant, $deliveryAddress, $user, $tip)
     {
-
-
         try {
             $response = $this->client->post("/call_ride", [
                 GuzzleHttp\RequestOptions::JSON => [
