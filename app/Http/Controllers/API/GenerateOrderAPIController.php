@@ -64,7 +64,6 @@ class GenerateOrderAPIController extends Controller
     public function pickupOrder(Request $request)
     {
         $input = $request->all();
-        dd($input);
         $rules = [
 //            'cvc_code'   => 'required',
             'credit_card' => 'required',
@@ -73,7 +72,6 @@ class GenerateOrderAPIController extends Controller
             "user_id" => 'required',
             'is_french' => 'required',
             'tax' => 'required',
-            'expected_delivery_time' => 'required',
             'vendor_shared_price' => 'required',
             'eezly_shared_price' => 'required',
             'grand_total' => 'required'
@@ -242,8 +240,9 @@ class GenerateOrderAPIController extends Controller
         $input = $request->all();
 
         /* Validation Rules & Validation */
-        $rules = [
-            'credit_card' => 'required',
+        $rules=[
+            'credit_card'   => 'required',
+            'restaurant_id' => 'required',
 //            'delivery_address'   => 'required',
             'expiry_month'   => 'required',
             'expiry_year'   => 'required',
