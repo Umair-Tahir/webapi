@@ -5,33 +5,22 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Middleware\App;
 use App\Mail\OrderNotificationEmail;
-use App\Models\Payment;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Events\OrderChangedEvent;
-use App\Models\Order;
 use App\Models\MonerisPaymentService;
-use App\Notifications\NewOrder;
-use App\Notifications\StatusChangedOrder;
 use App\Repositories\CartRepository;
 use App\Repositories\NotificationRepository;
 use App\Repositories\OrderRepository;
 use App\Repositories\PaymentRepository;
 use App\Repositories\FoodOrderRepository;
 use App\Repositories\UserRepository;
+use App\Models\EvaDeliveryService;
 
 use Flash;
-use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Support\Facades\Notification;
-use InfyOm\Generator\Criteria\LimitOffsetCriteria;
-use Prettus\Repository\Criteria\RequestCriteria;
-use Prettus\Repository\Exceptions\RepositoryException;
 use Prettus\Validator\Exceptions\ValidatorException;
-use Stripe\Token;
 use Illuminate\Support\Facades\Validator;
 use CraigPaul\Moneris\Moneris;
-use function Symfony\Component\VarDumper\Dumper\esc;
 
 class GenerateOrderAPIController extends Controller
 {
@@ -45,7 +34,7 @@ class GenerateOrderAPIController extends Controller
     private $userRepository;
     /** @var  PaymentRepository */
     private $paymentRepository;
-    /* @var  NotificationRepository  */
+    /* @var  NotificationRepository */
     private $notificationRepository;
 
     public function __construct(OrderRepository $orderRepo, FoodOrderRepository $foodOrderRepository, CartRepository $cartRepo, PaymentRepository $paymentRepo, NotificationRepository $notificationRepo, UserRepository $userRepository)
@@ -74,15 +63,16 @@ class GenerateOrderAPIController extends Controller
             'tax' => 'required',
             'vendor_shared_price' => 'required',
             'eezly_shared_price' => 'required',
-            'grand_total' => 'required'
+            "restaurant_id" => 'required',
+            'grand_total' => 'required',
         ];
         $validator = Validator::make($input, $rules);
-        $request['delivery_type_id'] = 1;
-        $request['delivery_address_id'] = null;
-        $request['expected_delivery_time'] = null;
-        $request['delivery_type_id'] = null;
-        $request['delivery_fee'] = null;
-        $request['tip'] = null;
+        $input['delivery_type_id'] = 1;
+        $input['delivery_address_id'] = null;
+        $input['expected_delivery_time'] = null;
+        $input['delivery_type_id'] = null;
+        $input['delivery_fee'] = null;
+        $input ['tip'] = null;
 
 
         if ($validator->fails()) {
@@ -124,7 +114,8 @@ class GenerateOrderAPIController extends Controller
                         'moneris_order_id' => $receipt->read('id'),
                         'moneris_receipt' => $receipt->read('reference')
                     ]);
-                    $request['payment_id'] = $payment->id;
+                    $input['payment_id'] = $payment->id;
+
 
                     /**************** Store Order Function ****************/
                     $orderResponse = $this->store_order($input);
@@ -146,7 +137,7 @@ class GenerateOrderAPIController extends Controller
         }
     }
 
-    /************* Delivery Service order request *************/
+    /*************EVA Delivery Service order request *************/
     public function deliveryServiceOrder(Request $request)
     {
         $input = $request->all();
@@ -162,17 +153,17 @@ class GenerateOrderAPIController extends Controller
             'vendor_shared_price' => 'required',
             'eezly_shared_price' => 'required',
             'grand_total' => 'required',
-
+            "restaurant_id" => 'required',
             "delivery_address_id" => 'required',
             "delivery_fee" => 'required',
             'expected_delivery_time' => 'required',
             "distance" => 'required',
             "total_charges_plus_tax" => 'required',
             "delivery_tax" => 'required',
-            "tip_token_charge" => 'required',
+            "tip" => 'required',
         ];
         $validator = Validator::make($input, $rules);
-        $request['delivery_type_id'] = 2;
+        $input['delivery_type_id'] = 3;
 
         if ($validator->fails()) {
             return response()->json(['errors' => $validator->errors()]);
@@ -212,14 +203,23 @@ class GenerateOrderAPIController extends Controller
                         'moneris_order_id' => $receipt->read('id'),
                         'moneris_receipt' => $receipt->read('reference')
                     ]);
-                    $request['payment_id'] = $payment->id;
+                    $input['payment_id'] = $payment->id;
 
-                    dd($input);
                     /**************** Store Order Function ****************/
                     $orderResponse = $this->store_order($input);
 
-
                     if ($orderResponse['status'] == 'success') {
+                        /************ Creating EVA Ds ****************/
+                        $evaParams = [
+                            'order_id' => $orderResponse['order']->id,
+                            'restaurant_id' => $input['restaurant_id'],
+                            'distance' => $input['distance'],
+                            'delivery_tax' => $input['delivery_tax'],
+                            'total_charges_plus_tax' => $input['total_charges_plus_tax'],
+                            'tip_token_charge' => $input['tip'],
+                        ];
+                        $evaModal = new EvaDeliveryService();
+                        $evaModal->createEvaFromOrder($evaParams);
 
                         /************ Send Email ****************/
                         $this->PSmoneris->sendOrderEmail($input['is_french'], $orderResponse['order']);
@@ -227,8 +227,12 @@ class GenerateOrderAPIController extends Controller
                     } else {
                         return ($orderResponse);
                     }
+                } elseif ($response->errors) {
+                    $errors = $response->errors;
+                    return $this->sendError($errors);
+                } else {
+                    return $this->sendError('Payment was not successful due to false parameters. Check for payment credentials');
                 }
-
             }
         }
 
@@ -240,23 +244,23 @@ class GenerateOrderAPIController extends Controller
         $input = $request->all();
 
         /* Validation Rules & Validation */
-        $rules=[
-            'credit_card'   => 'required',
+        $rules = [
+            'credit_card' => 'required',
             'restaurant_id' => 'required',
 //            'delivery_address'   => 'required',
-            'expiry_month'   => 'required',
-            'expiry_year'   => 'required',
-            'cvc_code'   => 'required',
-            "user_id"       => 'required',
-            "delivery_type_id"       => 'required',
+            'expiry_month' => 'required',
+            'expiry_year' => 'required',
+            'cvc_code' => 'required',
+            "user_id" => 'required',
+            "delivery_type_id" => 'required',
             "delivery_address_id" => 'required',
-            "delivery_fee"        => 'required',
-            'is_french'           => 'required',
-            'tax'                 => 'required',
+            "delivery_fee" => 'required',
+            'is_french' => 'required',
+            'tax' => 'required',
             'expected_delivery_time' => 'required',
-            'vendor_shared_price'    => 'required',
-            'eezly_shared_price'     => 'required',
-            'grand_total'            => 'required'
+            'vendor_shared_price' => 'required',
+            'eezly_shared_price' => 'required',
+            'grand_total' => 'required'
         ];
         $validator = Validator::make($input, $rules);
 
@@ -275,7 +279,7 @@ class GenerateOrderAPIController extends Controller
                      ***********************/
                     /************** optional Instantiation    ***************/
 
-                    $gateway_env= getenv("Live_ENV_MONERIS");
+                    $gateway_env = getenv("Live_ENV_MONERIS");
                     if ($gateway_env === "true") {
                         $store_id = getenv("Live_MONERIS_STORE_ID");
                         $api_token = getenv("Live_MONERIS_API_TOKEN");
@@ -283,16 +287,16 @@ class GenerateOrderAPIController extends Controller
                             'environment' => Moneris::ENV_LIVE, // default: Moneris::ENV_LIVE
                             'cvd' => true,
                         ];
-                    $gateway_env = getenv("Live_ENV_MONERIS");
+                        $gateway_env = getenv("Live_ENV_MONERIS");
 
-                    }else{
+                    } else {
                         $store_id = getenv("Local_MONERIS_STORE_ID");
                         $api_token = getenv("Local_MONERIS_API_TOKEN");
                         $params = [
                             'environment' => Moneris::ENV_TESTING, // default: Moneris::ENV_LIVE
                             'cvd' => false,
                         ];
-                        $input['grand_total']='1.00';
+                        $input['grand_total'] = '1.00';
                     }
                     /* Setting Moneris Pre Request params */
                     $statusResponse = $this->PSmoneris->monerisStatus($gateway_env);
@@ -319,13 +323,13 @@ class GenerateOrderAPIController extends Controller
                         $receipt = $response->receipt();
                         $receipt_json = json_encode($receipt);
 
-                        $variable= $receipt->read('message');
-                        $variable = substr((string)$variable, 0, strpos( (string)$variable, "  "));
+                        $variable = $receipt->read('message');
+                        $variable = substr((string)$variable, 0, strpos((string)$variable, "  "));
 
                         $payment = $this->paymentRepository->create([
                             "price" => $receipt->read('amount'),
                             "user_id" => $input['user_id'],
-                            "status" =>  $variable,
+                            "status" => $variable,
                             "method" => 'moneris',
                             'moneris_order_id' => $receipt->read('id'),
                             'moneris_receipt' => $receipt->read('reference')
@@ -339,9 +343,9 @@ class GenerateOrderAPIController extends Controller
                         //dd($order_response);
                         if ($order_response['status'] == 'success') {
 
-                            $isFrench=$input['is_french'];
-                            $toRestaurant=false;
-                            $order=$order_response['order'];
+                            $isFrench = $input['is_french'];
+                            $toRestaurant = false;
+                            $order = $order_response['order'];
                             if ($request['delivery_type_id'] == 3) {
                                 /* Adding Data in EVA Ds table */
                                 $foodId = $request->foods[0]['food_id'];
@@ -361,12 +365,9 @@ class GenerateOrderAPIController extends Controller
                             $toRestaurant = false;
                             $order = $order_response['order'];
                             //Send email invoice to customer $order->user->email
-                            Mail::to($order->user->email)->send(new OrderNotificationEmail($order,$isFrench,$toRestaurant));
-                            $toRestaurant=true;
                             Mail::to($order->user->email)->send(new OrderNotificationEmail($order, $isFrench, $toRestaurant));
                             $toRestaurant = true;
                             //Send email invoice to restaurant $order->foodOrders[0]->food->restaurant->users[0]->email
-                            Mail::to('philippe.dallaire4@gmail.com')->send(new OrderNotificationEmail($order,$isFrench,$toRestaurant));
                             Mail::to('philippe.dallaire4@gmail.com')->send(new OrderNotificationEmail($order, $isFrench, $toRestaurant));
 
                             return $this->sendResponse($order_response, 'Payment and order are successfully created');
@@ -397,21 +398,21 @@ class GenerateOrderAPIController extends Controller
         try {
             $order = $this->orderRepository->create([
                 'user_id' => $input['user_id'],
-                'restaurant_id' => $input['restaurant_id'],
-                "delivery_address_id" =>  $input['delivery_address_id'],
                 'order_status_id' => 1,
                 'tax' => $input['tax'],
-                "delivery_fee" => $input['delivery_fee'],
                 'hint' => $input['hint'],
                 'active' => 1,
                 'payment_id' => $input['payment_id'],
-                "delivery_address_id" => $input['delivery_address_id'],
                 'tip' => $input['tip'],
-                'expected_delivery_time' => $input['expected_delivery_time'],
                 'vendor_shared_price' => $input['vendor_shared_price'],
                 'eezly_shared_price' => $input['eezly_shared_price'],
                 'grand_total' => $input['grand_total'],
                 'is_french' => $input['is_french'],
+
+                'restaurant_id' => $input['restaurant_id'],
+                "delivery_address_id" => $input['delivery_address_id'],
+                'expected_delivery_time' => $input['expected_delivery_time'],
+                "delivery_fee" => $input['delivery_fee'],
                 'delivery_type_id' => $input['delivery_type_id'],
             ]);
 
@@ -421,12 +422,12 @@ class GenerateOrderAPIController extends Controller
                 $this->foodOrderRepository->create($foodOrder);
             }
 
-            $orderResponse=[
+            $orderResponse = [
                 'status' => 'success',
                 'order' => $order
             ];
         } catch (ValidatorException $e) {
-            return($e->getMessage());
+            return ($e->getMessage());
         }
 
         return $orderResponse;

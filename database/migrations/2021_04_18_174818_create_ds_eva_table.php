@@ -23,6 +23,7 @@ class CreateDsEvaTable extends Migration
             $table->integer('service_type_id')->unsigned()->default(1);
             $table->double('tip_token_charge')->unsigned()->default(0);
             $table->string('tracking_id')->nullable();
+            $table->string('business_tracking_id')->nullable();
             $table->timestamps();
         });
     }
