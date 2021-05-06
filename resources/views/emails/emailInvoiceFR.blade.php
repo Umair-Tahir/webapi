@@ -229,6 +229,21 @@
                                                                 Votre commande devrait être livrée dans les <strong id="deliveryTime">@if(isset($order->expected_delivery_time) && !is_null($order->expected_delivery_time))  {{$order->expected_delivery_time}} mins  @endif</strong>.
                                                                 Veuillez contacter le restaurant pour toute question concernant la commande.</p>
                                                         @endif
+
+                                                            @if($toRestaurant)
+                                                                @if($order->delivery_type_id=1)
+                                                                    <p class="legal"><strong>Merci d'utiliser eezly!</strong>  La commande devrait être récupérée dans les <strong id="deliveryTime">@if(isset($order->expected_delivery_time) && !is_null($order->expected_delivery_time))  {{$order->expected_delivery_time}} prochaines minutes  @endif</strong>.Veuillez contacter le client via le numéro de téléphone fourni si un retard est prévu dans la livraison.</p>
+
+                                                                @else
+                                                                    <p class="legal"><strong>Merci d'utiliser eezly!</strong>  La commande devrait être livrée dans les <strong id="deliveryTime">@if(isset($order->expected_delivery_time) && !is_null($order->expected_delivery_time))  {{$order->expected_delivery_time}} prochaines minutes  @endif</strong>.Veuillez contacter le client via le numéro de téléphone fourni si un retard est prévu dans la livraison.</p>
+                                                                @endif
+                                                            @else
+                                                                @if($order->delivery_type_id=1)
+                                                                    <p class="legal"><strong>Merci d'utiliser eezly!</strong>  Votre commande sera prête à être récupérée d'ici les <strong id="deliveryTime">@if(isset($order->expected_delivery_time) && !is_null($order->expected_delivery_time))  {{$order->expected_delivery_time}} prochaines minutes  @endif</strong>.Veuillez nous contacter si vous avez des questions concernant votre commande.</p>
+                                                                @else
+                                                                    <p class="legal"><strong>Merci d'utiliser eezly!</strong>  Votre commande sera livrée dans les  <strong id="deliveryTime">@if(isset($order->expected_delivery_time) && !is_null($order->expected_delivery_time))  {{$order->expected_delivery_time}} prochaines minutes.  @endif</strong>.Veuillez nous contacter si vous avez des questions concernant votre commande.</p>
+                                                                @endif
+                                                            @endif
                                                     </div>
 
                                                 </div><!--End InvoiceBot-->

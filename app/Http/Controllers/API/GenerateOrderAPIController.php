@@ -4,6 +4,9 @@ namespace App\Http\Controllers\API;
 
 
 use App\Http\Middleware\App;
+use App\Http\Requests\CreateOrderEvaDeliveryRequest;
+use App\Http\Requests\CreateOrderPickUpRequest;
+use App\Http\Requests\CreateOrderRestaurantDeliveryRequest;
 use App\Mail\OrderNotificationEmail;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -37,6 +40,7 @@ class GenerateOrderAPIController extends Controller
     /* @var  NotificationRepository */
     private $notificationRepository;
 
+    private $monerisPaymentService;
     public function __construct(OrderRepository $orderRepo, FoodOrderRepository $foodOrderRepository, CartRepository $cartRepo, PaymentRepository $paymentRepo, NotificationRepository $notificationRepo, UserRepository $userRepository)
     {
         $this->orderRepository = $orderRepo;
@@ -45,39 +49,21 @@ class GenerateOrderAPIController extends Controller
         $this->userRepository = $userRepository;
         $this->paymentRepository = $paymentRepo;
         $this->notificationRepository = $notificationRepo;
-        $this->PSmoneris = new MonerisPaymentService();
+        $this->monerisPaymentService = new MonerisPaymentService();
     }
 
 
-    /* PickUp order request */
-    public function pickupOrder(Request $request)
+    /*************Pickup Food order request *************/
+    public function pickupOrder(CreateOrderPickUpRequest $request)
     {
+        try {
         $input = $request->all();
-        $rules = [
-//            'cvc_code'   => 'required',
-            'credit_card' => 'required',
-            'expiry_month' => 'required',
-            'expiry_year' => 'required',
-            "user_id" => 'required',
-            'is_french' => 'required',
-            'tax' => 'required',
-            'vendor_shared_price' => 'required',
-            'eezly_shared_price' => 'required',
-            "restaurant_id" => 'required',
-            'grand_total' => 'required',
-        ];
-        $validator = Validator::make($input, $rules);
         $input['delivery_type_id'] = 1;
         $input['delivery_address_id'] = null;
-        $input['expected_delivery_time'] = null;
-        $input['delivery_type_id'] = null;
         $input['delivery_fee'] = null;
         $input ['tip'] = null;
 
-
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()]);
-        } else {
+        
             /******  Find User ******/
             $user = $this->userRepository->findWithoutFail($input['user_id']);
             if (empty($user)) {
@@ -87,7 +73,7 @@ class GenerateOrderAPIController extends Controller
                 $gateway_env = getenv("Live_ENV_MONERIS");
 
                 /***** Setting Moneris Pre Request params *****/
-                $statusResponse = $this->PSmoneris->monerisStatus($gateway_env);
+                $statusResponse = $this->monerisPaymentService->monerisStatus($gateway_env);
 
                 /**************** Purchase ****************/
                 $params = [
@@ -122,7 +108,7 @@ class GenerateOrderAPIController extends Controller
                     if ($orderResponse['status'] == 'success') {
 
                         /************ Send Email ****************/
-                        $this->PSmoneris->sendOrderEmail($input['is_french'], $orderResponse['order']);
+                        $this->monerisPaymentService->sendOrderEmail($input['is_french'], $orderResponse['order']);
                         return $this->sendResponse($orderResponse, 'Payment and order are successfully created');
                     } else {
                         return ($orderResponse);
@@ -134,40 +120,19 @@ class GenerateOrderAPIController extends Controller
                     return $this->sendError('Payment was not successful due to false parameters. Check for payment credentials');
                 }
             }
+        } catch (\Exception $e) {
+            return $this->sendError($e->getMessage(), 401);
         }
     }
 
-    /*************EVA Delivery Service order request *************/
-    public function deliveryServiceOrder(Request $request)
-    {
-        $input = $request->all();
+    /*************Restaurant Delivery order request *************/
 
-        $rules = [
-//            'cvc_code'   => 'required',
-            'credit_card' => 'required',
-            'expiry_month' => 'required',
-            'expiry_year' => 'required',
-            "user_id" => 'required',
-            'is_french' => 'required',
-            'tax' => 'required',
-            'vendor_shared_price' => 'required',
-            'eezly_shared_price' => 'required',
-            'grand_total' => 'required',
-            "restaurant_id" => 'required',
-            "delivery_address_id" => 'required',
-            "delivery_fee" => 'required',
-            'expected_delivery_time' => 'required',
-            "distance" => 'required',
-            "total_charges_plus_tax" => 'required',
-            "delivery_tax" => 'required',
-            "tip" => 'required',
-        ];
-        $validator = Validator::make($input, $rules);
-        $input['delivery_type_id'] = 3;
+    public function restaurantDeliveryOrder(CreateOrderRestaurantDeliveryRequest $request){
 
-        if ($validator->fails()) {
-            return response()->json(['errors' => $validator->errors()]);
-        } else {
+        try {
+            $input = $request->all();
+            $input['delivery_type_id'] = 2;
+
             /******  Find User ******/
             $user = $this->userRepository->findWithoutFail($input['user_id']);
             if (empty($user)) {
@@ -176,7 +141,77 @@ class GenerateOrderAPIController extends Controller
                 /***** Moneris Setup *****/
                 $gateway_env = getenv("Live_ENV_MONERIS");
                 /***** Setting Moneris Pre Request params *****/
-                $statusResponse = $this->PSmoneris->monerisStatus($gateway_env);
+                $statusResponse = $this->monerisPaymentService->monerisStatus($gateway_env);
+
+                /**************** Purchase ****************/
+                $params = [
+                    'cvd' => $input['cvc_code'],
+                    'order_id' => uniqid('1234-56789', true) . '_' . date('Y-m-d'),
+                    'amount' => $input['grand_total'],
+                    'credit_card' => str_replace(' ', '', $input['credit_card']),
+                    'expiry_month' => $input['expiry_month'],
+                    'expiry_year' => $input['expiry_year'],
+                ];
+                $response = $statusResponse['gateway']->purchase($params);
+
+                /**************** Purchase Successfully ****************/
+                if ($response->successful) {
+                    $receipt = $response->receipt();
+                    $receipt_json = json_encode($receipt);
+                    $variable = $receipt->read('message');
+                    $variable = substr((string)$variable, 0, strpos((string)$variable, "  "));
+                    $payment = $this->paymentRepository->create([
+                        "price" => $receipt->read('amount'),
+                        "user_id" => $input['user_id'],
+                        "status" => $variable,
+                        "method" => 'moneris',
+                        'moneris_order_id' => $receipt->read('id'),
+                        'moneris_receipt' => $receipt->read('reference')
+                    ]);
+                    $input['payment_id'] = $payment->id;
+
+                    /**************** Store Order Function ****************/
+                    $orderResponse = $this->store_order($input);
+
+                    if ($orderResponse['status'] == 'success') {
+
+                        /************ Send Email ****************/
+                        $this->monerisPaymentService->sendOrderEmail($input['is_french'], $orderResponse['order']);
+                        return $this->sendResponse($orderResponse, 'Payment and order are successfully created');
+                    } else {
+                        return ($orderResponse);
+                    }
+                } elseif ($response->errors) {
+                    $errors = $response->errors;
+                    return $this->sendError($errors);
+                } else {
+                    return $this->sendError('Payment was not successful due to false parameters. Check for payment credentials');
+                }
+            }
+        } catch (\Exception $e) {
+            return $this->sendError($e->getMessage(), 401);
+        }
+
+
+    }
+
+
+    /*************EVA Delivery Service order request *************/
+    public function deliveryServiceOrder(CreateOrderEvaDeliveryRequest $request)
+    {
+        try {
+        $input = $request->all();
+        $input['delivery_type_id'] = 3;
+
+            /******  Find User ******/
+            $user = $this->userRepository->findWithoutFail($input['user_id']);
+            if (empty($user)) {
+                return $this->sendError('User was not found', 400);
+            } else {
+                /***** Moneris Setup *****/
+                $gateway_env = getenv("Live_ENV_MONERIS");
+                /***** Setting Moneris Pre Request params *****/
+                $statusResponse = $this->monerisPaymentService->monerisStatus($gateway_env);
 
                 /**************** Purchase ****************/
                 $params = [
@@ -222,7 +257,7 @@ class GenerateOrderAPIController extends Controller
                         $evaModal->createEvaFromOrder($evaParams);
 
                         /************ Send Email ****************/
-                        $this->PSmoneris->sendOrderEmail($input['is_french'], $orderResponse['order']);
+                        $this->monerisPaymentService->sendOrderEmail($input['is_french'], $orderResponse['order']);
                         return $this->sendResponse($orderResponse, 'Payment and order are successfully created');
                     } else {
                         return ($orderResponse);
@@ -234,6 +269,8 @@ class GenerateOrderAPIController extends Controller
                     return $this->sendError('Payment was not successful due to false parameters. Check for payment credentials');
                 }
             }
+        } catch (\Exception $e) {
+            return $this->sendError($e->getMessage(), 401);
         }
 
     }
@@ -299,7 +336,7 @@ class GenerateOrderAPIController extends Controller
                         $input['grand_total'] = '1.00';
                     }
                     /* Setting Moneris Pre Request params */
-                    $statusResponse = $this->PSmoneris->monerisStatus($gateway_env);
+                    $statusResponse = $this->monerisPaymentService->monerisStatus($gateway_env);
 
                     dd($statusResponse);
 
@@ -433,19 +470,3 @@ class GenerateOrderAPIController extends Controller
         return $orderResponse;
     }
 }
-
-
-//'user_id',
-//        'delivery_address_id',
-//        'delivery_fee',
-//        'driver_id',
-//        'is_french'
-//        'active',   1
-//        'tax',
-//        'order_status_id',
-//        'hint',
-//        'payment_id',
-//        'expected_delivery_time',
-//        'vendor_shared_price',
-//        'eezly_shared_price',
-//        'grand_total',
