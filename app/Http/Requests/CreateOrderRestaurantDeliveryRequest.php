@@ -13,7 +13,7 @@ class CreateOrderRestaurantDeliveryRequest extends FormRequest
      */
     public function authorize()
     {
-        return false;
+        return true;
     }
 
     /**
@@ -31,7 +31,6 @@ class CreateOrderRestaurantDeliveryRequest extends FormRequest
             'expiry_year'   => 'required',
             'cvc_code'   => 'required',
             "user_id"       => 'required',
-            "delivery_type_id"       => 'required',
             "delivery_address_id" => 'required',
             "delivery_fee"        => 'required',
             'is_french'           => 'required',
