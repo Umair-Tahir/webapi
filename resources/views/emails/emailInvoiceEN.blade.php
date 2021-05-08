@@ -221,9 +221,18 @@
 
                                                     <div id="legalcopy">
                                                         @if($toRestaurant)
-                                                            <p class="legal"><strong>Thank you for using eezly!</strong>  The order is expected to be delivered within <strong id="deliveryTime">@if(isset($order->expected_delivery_time) && !is_null($order->expected_delivery_time))  {{$order->expected_delivery_time}} min  @endif</strong>.Please reach out to customer via provided phone number if any delay is expected in delivery.</p>
+                                                                 @if($order->delivery_type_id=1)
+                                                                <p class="legal"><strong>Thank you for using eezly!</strong>  The order is expected to be picked up within <strong id="deliveryTime">@if(isset($order->expected_delivery_time) && !is_null($order->expected_delivery_time))  {{$order->expected_delivery_time}} min  @endif</strong>.Please reach out to customer via provided phone number if any delay is expected in delivery.</p>
+
+                                                            @else
+                                                                <p class="legal"><strong>Thank you for using eezly!</strong>  The order is expected to be delivered within <strong id="deliveryTime">@if(isset($order->expected_delivery_time) && !is_null($order->expected_delivery_time))  {{$order->expected_delivery_time}} min  @endif</strong>.Please reach out to customer via provided phone number if any delay is expected in delivery.</p>
+                                                            @endif
                                                         @else
-                                                        <p class="legal"><strong>Thank you for using eezly!</strong>  Your order is expected to be delivered within <strong id="deliveryTime">@if(isset($order->expected_delivery_time) && !is_null($order->expected_delivery_time))  {{$order->expected_delivery_time}} min  @endif</strong>.Please reach out to restaurant for any queries regarding order.</p>
+                                                            @if($order->delivery_type_id=1)
+                                                                <p class="legal"><strong>Thank you for using eezly!</strong>  Your order will be ready for pick up within <strong id="deliveryTime">@if(isset($order->expected_delivery_time) && !is_null($order->expected_delivery_time))  {{$order->expected_delivery_time}} min  @endif</strong>.Please contact us if you have any questions regarding the order.</p>
+                                                            @else
+                                                                <p class="legal"><strong>Thank you for using eezly!</strong>  Your order will be delivered within <strong id="deliveryTime">@if(isset($order->expected_delivery_time) && !is_null($order->expected_delivery_time))  {{$order->expected_delivery_time}} min  @endif</strong>.Please contact us if you have any questions regarding the order.</p>
+                                                            @endif
                                                         @endif
                                                     </div>
 
