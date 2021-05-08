@@ -45,7 +45,7 @@ class EvaAPIController extends Controller
         $responseBody = json_decode($response->getBody());
 
         /**** Get Quote ****/
-        if ($responseBody->availability == true) {
+        if ($responseBody->availability != true) {
             $QuoteResponse = $this->eva->getQuote($restaurant, $deliveryAddress);
         } else
             return $this->sendResponse($responseBody, 'Service not available');

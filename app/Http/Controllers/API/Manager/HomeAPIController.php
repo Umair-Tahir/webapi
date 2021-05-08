@@ -21,7 +21,7 @@ class HomeAPIController extends Controller
 
             /* Condition So that if no restaurant is found error could be sent*/
             if(!empty($rest_foods->first())){
-            $food_sales = FoodOrder::select('id','price')->where('food_id' , $rest_foods)->pluck('price');
+                $food_sales = FoodOrder::select('id','price')->whereIn('food_id' , $rest_foods)->pluck('price');
             }
             else{
                 return $this->sendError('No restaurant found against the request id',404);
@@ -29,7 +29,6 @@ class HomeAPIController extends Controller
 
             $total = 0;
             if(!empty($food_sales[1])) {
-
                 foreach ($food_sales as $price)
                     $total += $price;
             }
@@ -42,7 +41,6 @@ class HomeAPIController extends Controller
 
                 return $this->sendResponse($orderResponse,'No Orders were made in last 14 days');
             }
-
             $orderResponse=[
                 'total_orders ' => count($food_sales),
                 'total_sales' => '$'.round($total, 2),

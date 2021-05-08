@@ -126,7 +126,6 @@ class GenerateOrderAPIController extends Controller
     }
 
     /*************Restaurant Delivery order request *************/
-
     public function restaurantDeliveryOrder(CreateOrderRestaurantDeliveryRequest $request){
 
         try {
@@ -338,7 +337,7 @@ class GenerateOrderAPIController extends Controller
                     /* Setting Moneris Pre Request params */
                     $statusResponse = $this->monerisPaymentService->monerisStatus($gateway_env);
 
-                    dd($statusResponse);
+//                    dd($statusResponse);
 
                     /**************** Purchase ****************/
                     $params = [
