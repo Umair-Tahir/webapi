@@ -116,8 +116,9 @@ Route::middleware('auth:api')->group(function () {
     /* *************  ************* */
 
     /* ************ Generate Orders *********** */
-    Route::post('generate_order', 'API\GenerateOrderAPIController@order_payment');
     Route::post('order/pickup', 'API\GenerateOrderAPIController@pickupOrder');
+    Route::post('order/eva_ds', 'API\GenerateOrderAPIController@deliveryServiceOrder');
+    Route::post('order/restaurant_delivery', 'API\GenerateOrderAPIController@restaurantDeliveryOrder');
     Route::post('order/eva_delivery', 'API\GenerateOrderAPIController@deliveryServiceOrder');
     Route::post('order/restaurant_delivery', 'API\GenerateOrderAPIController@restaurantDeliveryOrder');
     /* *************   ************* */

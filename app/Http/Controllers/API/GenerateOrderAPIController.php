@@ -57,13 +57,13 @@ class GenerateOrderAPIController extends Controller
     public function pickupOrder(CreateOrderPickUpRequest $request)
     {
         try {
-        $input = $request->all();
-        $input['delivery_type_id'] = 1;
-        $input['delivery_address_id'] = null;
-        $input['delivery_fee'] = null;
-        $input ['tip'] = null;
+            $input = $request->all();
+            $input['delivery_type_id'] = 1;
+            $input['delivery_address_id'] = null;
+            $input['delivery_fee'] = null;
+            $input ['tip'] = null;
 
-        
+
             /******  Find User ******/
             $user = $this->userRepository->findWithoutFail($input['user_id']);
             if (empty($user)) {
@@ -199,8 +199,8 @@ class GenerateOrderAPIController extends Controller
     public function deliveryServiceOrder(CreateOrderEvaDeliveryRequest $request)
     {
         try {
-        $input = $request->all();
-        $input['delivery_type_id'] = 3;
+            $input = $request->all();
+            $input['delivery_type_id'] = 3;
 
             /******  Find User ******/
             $user = $this->userRepository->findWithoutFail($input['user_id']);
