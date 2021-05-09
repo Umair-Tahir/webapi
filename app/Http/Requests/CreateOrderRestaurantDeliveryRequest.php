@@ -42,7 +42,6 @@ class CreateOrderRestaurantDeliveryRequest extends FormRequest
             "tip" => 'required'
 
 
-
         ];
     }
 
