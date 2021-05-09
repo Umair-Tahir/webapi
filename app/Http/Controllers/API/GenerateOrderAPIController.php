@@ -41,6 +41,7 @@ class GenerateOrderAPIController extends Controller
     private $notificationRepository;
 
     private $monerisPaymentService;
+
     public function __construct(OrderRepository $orderRepo, FoodOrderRepository $foodOrderRepository, CartRepository $cartRepo, PaymentRepository $paymentRepo, NotificationRepository $notificationRepo, UserRepository $userRepository)
     {
         $this->orderRepository = $orderRepo;
@@ -57,11 +58,11 @@ class GenerateOrderAPIController extends Controller
     public function pickupOrder(CreateOrderPickUpRequest $request)
     {
         try {
-        $input = $request->all();
-        $input['delivery_type_id'] = 1;
-        $input['delivery_address_id'] = null;
-        $input['delivery_fee'] = null;
-        $input ['tip'] = null;
+            $input = $request->all();
+            $input['delivery_type_id'] = 1;
+            $input['delivery_address_id'] = null;
+            $input['delivery_fee'] = null;
+            $input ['tip'] = null;
 
 
             /******  Find User ******/
@@ -127,7 +128,8 @@ class GenerateOrderAPIController extends Controller
 
     /*************Restaurant Delivery order request *************/
 
-    public function restaurantDeliveryOrder(CreateOrderRestaurantDeliveryRequest $request){
+    public function restaurantDeliveryOrder(CreateOrderRestaurantDeliveryRequest $request)
+    {
 
         try {
             $input = $request->all();
@@ -176,7 +178,7 @@ class GenerateOrderAPIController extends Controller
                     if ($orderResponse['status'] == 'success') {
 
                         /************ Send Email ****************/
-//                        $this->monerisPaymentService->sendOrderEmail($input['is_french'], $orderResponse['order']);
+                        $this->monerisPaymentService->sendOrderEmail($input['is_french'], $orderResponse['order']);
                         return $this->sendResponse($orderResponse, 'Payment and order are successfully created');
                     } else {
                         return ($orderResponse);
@@ -200,8 +202,8 @@ class GenerateOrderAPIController extends Controller
     public function deliveryServiceOrder(CreateOrderEvaDeliveryRequest $request)
     {
         try {
-        $input = $request->all();
-        $input['delivery_type_id'] = 3;
+            $input = $request->all();
+            $input['delivery_type_id'] = 3;
 
             /******  Find User ******/
             $user = $this->userRepository->findWithoutFail($input['user_id']);
