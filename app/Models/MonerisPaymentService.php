@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Model;
 class MonerisPaymentService extends Model
 {
 
-    public function monerisStatus($status = false)
+    public function monerisStatus($status)
     {
         /***************** Order Payment  ****************/
         /***Card Verification Digits and/or Address Verification Service provided by Moneris
@@ -19,7 +19,7 @@ class MonerisPaymentService extends Model
          ***********************/
         /************** optional Instantiation    ***************/
 
-        if ($status == 'true') {
+        if ($status === "true") {
             $store_id = getenv("Live_MONERIS_STORE_ID");
             $api_token = getenv("Live_MONERIS_API_TOKEN");
             $params = [
@@ -28,7 +28,7 @@ class MonerisPaymentService extends Model
             ];
             $resp_message = 'Moneris Set to live';
 
-        } else if ($status == 'false') {
+        } else  {
             $store_id = getenv("Local_MONERIS_STORE_ID");
             $api_token = getenv("Local_MONERIS_API_TOKEN");
             $params = [
@@ -36,10 +36,8 @@ class MonerisPaymentService extends Model
                 'cvd' => false,
             ];
             $input['grand_total'] = '1.00';
-            $resp_message = 'Moneris is set to development. grand_total should be 1.00';
+            $resp_message = 'Moneris is soet to development. grand_total should be 1.00';
 
-        } else {
-            return "Wrong Parameters. Need to send TRUE or False";
         }
 
 

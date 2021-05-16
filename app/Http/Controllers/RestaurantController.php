@@ -132,6 +132,7 @@ class RestaurantController extends Controller
      */
     public function show($id)
     {
+
         $this->restaurantRepository->pushCriteria(new RestaurantsOfUserCriteria(auth()->id()));
         $restaurant = $this->restaurantRepository->findWithoutFail($id);
 
