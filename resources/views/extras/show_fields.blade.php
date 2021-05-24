@@ -14,19 +14,12 @@
   </div>
 </div>
 
-<!-- Image Field -->
-<div class="form-group row col-6">
-  {!! Form::label('image', 'Image:', ['class' => 'col-3 control-label text-right']) !!}
-  <div class="col-9">
-    <p>{!! $extra->image !!}</p>
-  </div>
-</div>
 
 <!-- Description Field -->
 <div class="form-group row col-6">
   {!! Form::label('description', 'Description:', ['class' => 'col-3 control-label text-right']) !!}
   <div class="col-9">
-    <p>{!! $extra->description !!}</p>
+    {!! $extra->description !!}
   </div>
 </div>
 
@@ -54,11 +47,29 @@
   </div>
 </div>
 
-<!-- Updated At Field -->
+
+<!-- Minimum Field -->
 <div class="form-group row col-6">
-  {!! Form::label('updated_at', 'Updated At:', ['class' => 'col-3 control-label text-right']) !!}
+  {!! Form::label('min', 'Minimum Limit:', ['class' => 'col-3 control-label text-right']) !!}
   <div class="col-9">
-    <p>{!! $extra->updated_at !!}</p>
+    <p>{!! $extra->min !!}</p>
   </div>
 </div>
+
+<!-- Maximum Field -->
+<div class="form-group row col-6">
+  {!! Form::label('max', 'Maximum Limit:', ['class' => 'col-3 control-label text-right']) !!}
+  <div class="col-9">
+    <p>{!! $extra->max !!}</p>
+  </div>
+</div>
+
+<!-- Is featured Field -->
+<div class="form-group row col-6">
+  {!! Form::label('featured', 'Is featured:', ['class' => 'col-3 control-label text-right']) !!}
+  <div class="col-9">
+    <p>{!! ($extra->featured) ? 'True'  : 'False' !!}</p>
+  </div>
+</div>
+
 

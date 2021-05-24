@@ -21,14 +21,6 @@
   </div>
 </div>
 
-<!-- Image Field -->
-<div class="form-group row col-6">
-  {!! Form::label('image', 'Image:', ['class' => 'col-3 control-label text-right']) !!}
-  <div class="col-9">
-    <p>{!! $food->image !!}</p>
-  </div>
-</div>
-
 <!-- Price Field -->
 <div class="form-group row col-6">
   {!! Form::label('price', 'Price:', ['class' => 'col-3 control-label text-right']) !!}
@@ -49,7 +41,7 @@
 <div class="form-group row col-6">
   {!! Form::label('description', 'Description:', ['class' => 'col-3 control-label text-right']) !!}
   <div class="col-9">
-    <p>{!! $food->description !!}</p>
+    {!! $food->description !!}
   </div>
 </div>
 

@@ -70,12 +70,14 @@ class ExtraController extends Controller
      * @return Response
      * @throws \Prettus\Repository\Exceptions\RepositoryException
      */
-    public function create()
+    public function create($food_id=null)
     {
         $this->foodRepository->pushCriteria(new FoodsOfUserCriteria(auth()->id()));
         $food = $this->foodRepository->groupedByRestaurants();
         $extraGroup = $this->extraGroupRepository->pluck('name', 'id');
-
+        if($food_id){
+            $food = $this->foodRepository->groupedByRestaurantsByFoodId($food_id);
+        }
         $hasCustomField = in_array($this->extraRepository->model(), setting('custom_field_models', []));
         if ($hasCustomField) {
             $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->extraRepository->model());
@@ -109,7 +111,8 @@ class ExtraController extends Controller
 
         Flash::success(__('lang.saved_successfully', ['operator' => __('lang.extra')]));
 
-        return redirect(route('extras.index'));
+        return redirect(route('foods.show', $input['food_id']));
+//        return redirect(route('extras.index'));
     }
 
     /**
@@ -143,7 +146,7 @@ class ExtraController extends Controller
      * @return Response
      * @throws \Prettus\Repository\Exceptions\RepositoryException
      */
-    public function edit($id)
+    public function edit($id,$food_id=null)
     {
         $this->extraRepository->pushCriteria(new ExtrasOfUserCriteria(auth()->id()));
         $extra = $this->extraRepository->findWithoutFail($id);
@@ -154,8 +157,9 @@ class ExtraController extends Controller
         $this->foodRepository->pushCriteria(new FoodsOfUserCriteria(auth()->id()));
         $food = $this->foodRepository->groupedByRestaurants();
         $extraGroup = $this->extraGroupRepository->pluck('name', 'id');
-
-
+        if($food_id){
+            $food = $this->foodRepository->groupedByRestaurantsByFoodId($food_id);
+        }
         $customFieldsValues = $extra->customFieldsValues()->with('customField')->get();
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->extraRepository->model());
         $hasCustomField = in_array($this->extraRepository->model(), setting('custom_field_models', []));
@@ -205,7 +209,8 @@ class ExtraController extends Controller
 
         Flash::success(__('lang.updated_successfully', ['operator' => __('lang.extra')]));
 
-        return redirect(route('extras.index'));
+        return redirect(route('foods.show', $input['food_id']));
+//        return redirect(route('extras.index'));
     }
 
     /**
@@ -220,6 +225,7 @@ class ExtraController extends Controller
     {
         $this->extraRepository->pushCriteria(new extrasOfUserCriteria(auth()->id()));
         $extra = $this->extraRepository->findWithoutFail($id);
+        $food_id=$extra->food_id;
 
         if (empty($extra)) {
             Flash::error('Extra not found');
@@ -231,7 +237,8 @@ class ExtraController extends Controller
 
         Flash::success(__('lang.deleted_successfully', ['operator' => __('lang.extra')]));
 
-        return redirect(route('extras.index'));
+        return redirect(route('foods.show', $food_id));
+//        return redirect(route('extras.index'));
     }
 
     /**

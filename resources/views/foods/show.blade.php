@@ -1,5 +1,7 @@
 @extends('layouts.app')
-
+@section('css_custom')
+  <link rel="stylesheet" href="{{asset('css/menu-custom.css')}}">
+@endsection
 @section('content')
 <!-- Content Header (Page header) -->
 <div class="content-header">
@@ -20,6 +22,7 @@
 </div>
 <!-- /.content-header -->
 <div class="content">
+  @include('flash::message')
   <div class="card">
     <div class="card-header">
       <ul class="nav nav-tabs align-items-end card-header-tabs w-100">
@@ -27,7 +30,10 @@
           <a class="nav-link" href="{!! route('foods.index') !!}"><i class="fa fa-list mr-2"></i>{{trans('lang.food_table')}}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" href="{!! route('foods.create') !!}"><i class="fa fa-plus mr-2"></i>{{trans('lang.food_create')}}</a>
+          <a class="nav-link" href="{!! route('foods.create') !!}"><i class="fa fa-plus mr-2"></i>{{trans('lang.food_create')}}</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active " href="{!! route('foods.edit',$food->id) !!}"><i class="fa fa-edit mr-2"></i>{{trans('lang.food_edit')}}</a>
         </li>
       </ul>
     </div>
@@ -37,11 +43,12 @@
 
         <!-- Back Field -->
         <div class="form-group col-12 text-right">
-          <a href="{!! route('foods.index') !!}" class="btn btn-default"><i class="fa fa-undo"></i> {{trans('lang.back')}}</a>
+          <a href="{!! route('restaurants.show',$food->restaurant_id) !!}" class="btn btn-default"><i class="fa fa-undo"></i> {{trans('lang.back')}}</a>
         </div>
       </div>
       <div class="clearfix"></div>
     </div>
   </div>
+  @include('foods.food_extras')
 </div>
 @endsection
