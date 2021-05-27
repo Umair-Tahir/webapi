@@ -3,7 +3,6 @@
 
 namespace App\Models;
 
-use Illuminate\Http\Request;
 use GuzzleHttp;
 use GuzzleHttp\Client;
 use Illuminate\Database\Eloquent\Model;

@@ -16,8 +16,6 @@ Route::post('partner-register', 'CustomController@createPartner');
 /* *********************** */
 
 
-
-
 /* ************* Protected Routes  ************* */
 Route::middleware('auth:api')->group(function () {
     Route::group(['middleware' => ['role:driver']], function () {
@@ -41,7 +39,6 @@ Route::middleware('auth:api')->group(function () {
             /* --- */
 
             Route::resource('earnings', 'API\EarningAPIController');
-
 
 
         });
@@ -119,6 +116,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('order/pickup', 'API\GenerateOrderAPIController@pickupOrder');
     Route::post('order/restaurant_delivery', 'API\GenerateOrderAPIController@restaurantDeliveryOrder');
     Route::post('order/eva_delivery', 'API\GenerateOrderAPIController@deliveryServiceOrder');
+    Route::post('order/tiktak_delivery', 'API\GenerateOrderAPIController@tiktakDeliveryService');
     /* *************   ************* */
 
     /* ************ Notifications *********** */
@@ -144,6 +142,10 @@ Route::middleware('auth:api')->group(function () {
     Route::resource('restaurant_reviews', 'API\RestaurantReviewAPIController');
     /* *************   ************* */
 
+    /* ************* TikTak Delivery Get Quote ,Call Ride ************* */
+    Route::post('tiktak_delivery_service/fare_estimation', 'API\DeliveryService\TikTakAPIController@getFareEstimate');
+    Route::post('tiktak_delivery_service/create_task', 'API\DeliveryService\TikTakAPIController@tiktakCreateTask');
+    Route::post('tiktak_delivery_service/call_ride', 'API\DeliveryService\TikTakAPIController@restaurantCallRide');
     /* *************  Trending_Foods ************* */
     Route::get('trending_foods', 'API\TrendAPIController@trendingFoods');
     /* *************   ************* */

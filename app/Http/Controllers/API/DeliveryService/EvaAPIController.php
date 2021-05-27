@@ -154,6 +154,10 @@ class EvaAPIController extends Controller
         return $this->sendResponse($responseBody, 'Successful');
     }
 
+    /***************************** Have to make ****************************
+     *           When Food is ready for Pickup  by EVA
+     *          called by restaurant
+     *********************************************************/
 
     public function restaurantCallRide(Request $request)
     {
@@ -199,17 +203,3 @@ class EvaAPIController extends Controller
 
 
 }
-
-
-
-//
-//$deliveryAddress = DeliveryAddress::find($addressID);
-//
-//if ($deliveryAddress) {
-//    $response = $this->eva->serviceAvailability($deliveryAddress);
-//} else
-//    return $this->sendError('Restaurant Address not found', 400);
-//
-//$responseBody = json_decode($response->getBody());
-//
-//if ($responseBody->availability === true) {
