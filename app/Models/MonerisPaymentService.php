@@ -19,7 +19,7 @@ class MonerisPaymentService extends Model
          ***********************/
         /************** optional Instantiation    ***************/
 
-        if ($status === 'true') {
+        if ($status === "true") {
             $store_id = getenv("Live_MONERIS_STORE_ID");
             $api_token = getenv("Live_MONERIS_API_TOKEN");
             $params = [
@@ -28,7 +28,7 @@ class MonerisPaymentService extends Model
             ];
             $resp_message = 'Moneris Set to live';
 
-        } else {
+        } else  {
             $store_id = getenv("Local_MONERIS_STORE_ID");
             $api_token = getenv("Local_MONERIS_API_TOKEN");
             $params = [
@@ -38,9 +38,6 @@ class MonerisPaymentService extends Model
             $resp_message = 'Moneris is set to development. grand_total should be 1.00';
 
         }
-//        else {
-//            return "Wrong Parameters. Need to send TRUE or False";
-//        }
 
 
         $gateway = (new Moneris($store_id, $api_token, $params))->connect();
@@ -52,17 +49,18 @@ class MonerisPaymentService extends Model
             'message' => $resp_message,
             'gateway' => $gateway
         ];
+
         return $response;
     }
 
     public function sendOrderEmail($isFrench, $order)
     {
-//        $toRestaurant = false;
-//        //Send email invoice to customer $order->user->email
-//        Mail::to($order->user->email)->send(new OrderNotificationEmail($order, $isFrench, $toRestaurant));
-//        $toRestaurant = true;
-//        //Send email invoice to restaurant $order->foodOrders[0]->food->restaurant->users[0]->email
-//        Mail::to('philippe.dallaire4@gmail.com')->send(new OrderNotificationEmail($order, $isFrench, $toRestaurant));
+        $toRestaurant = false;
+        //Send email invoice to customer $order->user->email
+        Mail::to($order->user->email)->send(new OrderNotificationEmail($order, $isFrench, $toRestaurant));
+        $toRestaurant = true;
+        //Send email invoice to restaurant $order->foodOrders[0]->food->restaurant->users[0]->email
+        Mail::to('philippe.dallaire4@gmail.com')->send(new OrderNotificationEmail($order, $isFrench, $toRestaurant));
 
     }
 

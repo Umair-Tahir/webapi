@@ -518,6 +518,7 @@ return [
     'food_category_id_help' => 'Insert Category',
     'food_category_id_placeholder' => 'Insert Category',
     'food_create' => 'Create Food',
+    'food_add' => 'Add Food',
     'food_desc' => 'Foods Management',
     'food_description' => 'Description',
     'food_description_help' => 'Insert Description',

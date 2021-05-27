@@ -6,6 +6,7 @@ use App\Criteria\Foods\FoodsOfUserCriteria;
 use App\DataTables\FoodDataTable;
 use App\Http\Requests\CreateFoodRequest;
 use App\Http\Requests\UpdateFoodRequest;
+use App\Models\Extra;
 use App\Repositories\CategoryRepository;
 use App\Repositories\CustomFieldRepository;
 use App\Repositories\RestaurantRepository;
@@ -68,14 +69,16 @@ class FoodController extends Controller
      *
      * @return Response
      */
-    public function create()
+    public function create($restaurant_id=null)
     {
-
         $category = $this->categoryRepository->pluck('name', 'id');
         if (auth()->user()->hasRole('admin')) {
             $restaurant = $this->restaurantRepository->pluck('name', 'id');
         } else {
             $restaurant = $this->restaurantRepository->myRestaurants()->pluck('name', 'id');
+        }
+        if($restaurant_id){
+            $restaurant = $this->restaurantRepository->where('id',$restaurant_id)->pluck('name', 'id');
         }
         $hasCustomField = in_array($this->foodRepository->model(), setting('custom_field_models', []));
         if ($hasCustomField) {
@@ -110,7 +113,9 @@ class FoodController extends Controller
 
         Flash::success(__('lang.saved_successfully', ['operator' => __('lang.food')]));
 
-        return redirect(route('foods.index'));
+
+        return redirect(route('restaurants.show', $input['restaurant_id']));
+//        return redirect(route('foods.index'));
     }
 
     /**
@@ -129,10 +134,18 @@ class FoodController extends Controller
         if (empty($food)) {
             Flash::error('Food not found');
 
-            return redirect(route('foods.index'));
+            return redirect()->back();
         }
 
-        return view('foods.show')->with('food', $food);
+        $extras=Extra::with('extraGroup')->where('extras.food_id',$id)->get()->pluck('extraGroup.name','extra_group_id')->toArray();
+        $extraGroups=[];
+        foreach ($extras as $key=>$value){
+            $section['extra_group']=$value;
+            $section['extras']=Extra::where([['extra_group_id','=',$key],['food_id','=',$id]])->get();
+            array_push($extraGroups,$section);
+        }
+        return view('foods.show')->with(compact('extraGroups','food'));
+//        return view('foods.show')->with('food', $food);
     }
 
     /**
@@ -143,7 +156,7 @@ class FoodController extends Controller
      * @return Response
      * @throws \Prettus\Repository\Exceptions\RepositoryException
      */
-    public function edit($id)
+    public function edit($id,$restaurant_id=null)
     {
         $this->foodRepository->pushCriteria(new FoodsOfUserCriteria(auth()->id()));
         $food = $this->foodRepository->findWithoutFail($id);
@@ -157,13 +170,15 @@ class FoodController extends Controller
         } else {
             $restaurant = $this->restaurantRepository->myRestaurants()->pluck('name', 'id');
         }
+        if($restaurant_id){
+            $restaurant = $this->restaurantRepository->where('id',$restaurant_id)->pluck('name', 'id');
+        }
         $customFieldsValues = $food->customFieldsValues()->with('customField')->get();
         $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->foodRepository->model());
         $hasCustomField = in_array($this->foodRepository->model(), setting('custom_field_models', []));
         if ($hasCustomField) {
             $html = generateCustomField($customFields, $customFieldsValues);
         }
-
         return view('foods.edit')->with('food', $food)->with("customFields", isset($html) ? $html : false)->with("restaurant", $restaurant)->with("category", $category);
     }
 
@@ -205,7 +220,8 @@ class FoodController extends Controller
 
         Flash::success(__('lang.updated_successfully', ['operator' => __('lang.food')]));
 
-        return redirect(route('foods.index'));
+        return redirect(route('restaurants.show', $input['restaurant_id']));
+//        return redirect(route('foods.index'));
     }
 
     /**
@@ -220,7 +236,7 @@ class FoodController extends Controller
         if (!env('APP_DEMO', false)) {
             $this->foodRepository->pushCriteria(new FoodsOfUserCriteria(auth()->id()));
             $food = $this->foodRepository->findWithoutFail($id);
-
+            $restaurant_id=$food->restaurant_id;
             if (empty($food)) {
                 Flash::error('Food not found');
 
@@ -234,7 +250,8 @@ class FoodController extends Controller
         } else {
             Flash::warning('This is only demo app you can\'t change this section ');
         }
-        return redirect(route('foods.index'));
+        return redirect(route('restaurants.show', $restaurant_id));
+//        return redirect(route('foods.index'));
     }
 
     /**

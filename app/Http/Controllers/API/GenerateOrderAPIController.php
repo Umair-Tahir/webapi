@@ -63,8 +63,8 @@ class GenerateOrderAPIController extends Controller
             $input = $request->all();
             $input['delivery_type_id'] = 1;
             $input['delivery_address_id'] = null;
-            $input['delivery_fee'] = null;
-            $input ['tip'] = null;
+            $input['delivery_fee'] = 0;
+            $input ['tip'] = 0;
 
 
             /******  Find User ******/

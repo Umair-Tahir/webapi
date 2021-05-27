@@ -27,7 +27,10 @@
           <a class="nav-link" href="{!! route('extras.index') !!}"><i class="fa fa-list mr-2"></i>{{trans('lang.extra_table')}}</a>
         </li>
         <li class="nav-item">
-          <a class="nav-link active" href="{!! route('extras.create') !!}"><i class="fa fa-plus mr-2"></i>{{trans('lang.extra_create')}}</a>
+          <a class="nav-link " href="{!! route('extras.create') !!}"><i class="fa fa-plus mr-2"></i>{{trans('lang.extra_create')}}</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link active " href="{!! route('extras.edit',$extra->id) !!}"><i class="fa fa-edit mr-2"></i>{{trans('lang.extra_edit')}}</a>
         </li>
       </ul>
     </div>
@@ -37,7 +40,7 @@
 
         <!-- Back Field -->
         <div class="form-group col-12 text-right">
-          <a href="{!! route('extras.index') !!}" class="btn btn-default"><i class="fa fa-undo"></i> {{trans('lang.back')}}</a>
+          <a href="{!! route('foods.show',$extra->food_id) !!}" class="btn btn-default"><i class="fa fa-undo"></i> {{trans('lang.back')}}</a>
         </div>
       </div>
       <div class="clearfix"></div>

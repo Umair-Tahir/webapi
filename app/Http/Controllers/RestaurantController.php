@@ -8,6 +8,7 @@ use App\DataTables\RestaurantDataTable;
 use App\Events\RestaurantChangedEvent;
 use App\Http\Requests\CreateRestaurantRequest;
 use App\Http\Requests\UpdateRestaurantRequest;
+use App\Models\Food;
 use App\Repositories\CustomFieldRepository;
 use App\Repositories\CuisineRepository;
 use App\Repositories\DeliveryTypeRepository;
@@ -99,6 +100,7 @@ class RestaurantController extends Controller
      */
     public function store(CreateRestaurantRequest $request)
     {
+
         $input = $request->all();
         if (auth()->user()->hasRole('manager')) {
             $input['users'] = [auth()->id()];
@@ -132,16 +134,23 @@ class RestaurantController extends Controller
      */
     public function show($id)
     {
+
         $this->restaurantRepository->pushCriteria(new RestaurantsOfUserCriteria(auth()->id()));
         $restaurant = $this->restaurantRepository->findWithoutFail($id);
-
         if (empty($restaurant)) {
             Flash::error('Restaurant not found');
 
             return redirect(route('restaurants.index'));
         }
+        $categories=Food::with('category')->where('foods.restaurant_id',$id)->get()->pluck('category.name','category_id')->toArray();
+        $menu=[];
+        foreach ($categories as $key=>$value){
+            $section['category']=$value;
+            $section['foods']=Food::where([['category_id','=',$key],['restaurant_id','=',$id]])->get();
+            array_push($menu,$section);
+        }
 
-        return view('restaurants.show')->with('restaurant', $restaurant);
+        return view('restaurants.show')->with(compact('menu','restaurant'));
     }
 
     /**

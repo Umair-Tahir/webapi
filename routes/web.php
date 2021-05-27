@@ -100,9 +100,12 @@ Route::middleware('auth')->group(function () {
     ]);
 
     Route::post('restaurants/remove-media', 'RestaurantController@removeMedia');
-    Route::resource('restaurants', 'RestaurantController')->except([
-        'show'
-    ]);
+    Route::resource('restaurants', 'RestaurantController');
+
+
+//    Route::resource('restaurants', 'RestaurantController')->except([
+//        'show'
+//    ]);
 
     Route::post('categories/remove-media', 'CategoryController@removeMedia');
     Route::resource('categories', 'CategoryController')->except([
@@ -118,9 +121,13 @@ Route::middleware('auth')->group(function () {
     ]);;
 
     Route::post('foods/remove-media', 'FoodController@removeMedia');
-    Route::resource('foods', 'FoodController')->except([
-        'show'
-    ]);
+    Route::resource('foods', 'FoodController');
+    Route::get('foods/create/{restaurant_id?}', 'FoodController@create')->name('foods.create');
+    Route::get('foods/edit/{id}/{restaurant_id?}', 'FoodController@edit')->name('foods.edit');
+
+//    Route::resource('foods', 'FoodController')->except([
+//        'show'
+//    ]);
 
     Route::post('galleries/remove-media', 'GalleryController@removeMedia');
     Route::resource('galleries', 'GalleryController')->except([
@@ -138,6 +145,9 @@ Route::middleware('auth')->group(function () {
 
     Route::post('extras/remove-media', 'ExtraController@removeMedia');
     Route::resource('extras', 'ExtraController');
+    Route::get('extras/create/{food_id?}', 'ExtraController@create')->name('extras.create');
+    Route::get('extras/edit/{id}/{food_id?}', 'ExtraController@edit')->name('extras.edit');
+
 
     Route::resource('payments', 'PaymentController')->except([
         'create', 'store', 'edit', 'destroy'

@@ -24,6 +24,9 @@ class ExtraRepository extends BaseRepository
         'french_name',
         'description',
         'price',
+        'min',
+        'max',
+        'featured',
         'food_id',
         'extra_group_id'
     ];

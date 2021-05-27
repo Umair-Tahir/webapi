@@ -36,6 +36,9 @@ class Extra extends Model implements HasMedia
         'description',
         'price',
         'food_id',
+        'min',
+        'max',
+        'featured',
         'extra_group_id'
     ];
 
@@ -51,6 +54,9 @@ class Extra extends Model implements HasMedia
         'description' => 'string',
         'price' => 'double',
         'food_id' => 'integer',
+        'min' => 'integer',
+        'max' => 'integer',
+        'featured' => 'boolean',
         'extra_group_id' => 'integer'
     ];
 
@@ -63,7 +69,9 @@ class Extra extends Model implements HasMedia
         'name' => 'required',
         'price' => 'nullable|numeric|min:0',
         'food_id' => 'required|exists:foods,id',
-        'extra_group_id' => 'required|exists:extra_groups,id'
+        'extra_group_id' => 'required|exists:extra_groups,id',
+        'min' => 'nullable|numeric|min:0',
+        'max' => 'nullable|numeric|min:0'
     ];
 
     /**

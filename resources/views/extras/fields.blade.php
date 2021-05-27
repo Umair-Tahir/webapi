@@ -122,6 +122,39 @@
         </div>
     </div>
 
+    <!-- Minimum limit Field -->
+    <div class="form-group row ">
+        {!! Form::label('min', trans("lang.extra_min"), ['class' => 'col-3 control-label text-right']) !!}
+        <div class="col-9">
+            {!! Form::number('min', null,  ['class' => 'form-control','step'=>"1",'placeholder'=>  trans("lang.extra_min_placeholder")]) !!}
+            <div class="form-text text-muted">
+                {{ trans("lang.extra_min_help") }}
+            </div>
+        </div>
+    </div>
+
+    <!-- Minimum limit Field -->
+    <div class="form-group row ">
+        {!! Form::label('max', trans("lang.extra_max"), ['class' => 'col-3 control-label text-right']) !!}
+        <div class="col-9">
+            {!! Form::number('max', null,  ['class' => 'form-control','step'=>"1",'placeholder'=>  trans("lang.extra_max_placeholder")]) !!}
+            <div class="form-text text-muted">
+                {{ trans("lang.extra_max_help") }}
+            </div>
+        </div>
+    </div>
+
+    <!-- 'Boolean Featured Field' -->
+    <div class="form-group row ">
+        {!! Form::label('featured', trans("lang.extra_featured"),['class' => 'col-3 control-label text-right']) !!}
+        <div class="checkbox icheck">
+            <label class="col-9 ml-2 form-check-inline">
+                {!! Form::hidden('featured', 0) !!}
+                {!! Form::checkbox('featured', 1, null) !!}
+            </label>
+        </div>
+    </div>
+
 </div>
 @if($customFields)
     <div class="clearfix"></div>
@@ -133,5 +166,5 @@
 <!-- Submit Field -->
 <div class="form-group col-12 text-right">
     <button type="submit" class="btn btn-{{setting('theme_color')}}"><i class="fa fa-save"></i> {{trans('lang.save')}} {{trans('lang.extra')}}</button>
-    <a href="{!! route('extras.index') !!}" class="btn btn-default"><i class="fa fa-undo"></i> {{trans('lang.cancel')}}</a>
+    <a href="{!! url()->previous() !!}" class="btn btn-default"><i class="fa fa-undo"></i> {{trans('lang.cancel')}}</a>
 </div>

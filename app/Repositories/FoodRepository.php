@@ -65,4 +65,14 @@ class FoodRepository extends BaseRepository implements CacheableInterface
         }
         return $foods;
     }
+
+    public function groupedByRestaurantsByFoodId($foodId)
+    {
+
+        $foods = [];
+        foreach ($this->where('id',$foodId)->get() as $model) {
+            $foods[$model->restaurant->name][$model->id] = $model->name;
+        }
+        return $foods;
+    }
 }
