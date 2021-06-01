@@ -169,7 +169,6 @@ class TikTakApiController extends Controller
                 $tiktakDs->job_token = $responseBody->data->job_token;
 
                 $tiktakDs->save();
-
                 return $this->sendResponse($responseBody, 'Call Ride Successful');
 
             } else {
@@ -177,6 +176,5 @@ class TikTakApiController extends Controller
             }
         } else
             return $this->sendError('TikTak record Not Found', 404);
-
     }
 }

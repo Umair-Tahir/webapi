@@ -71,7 +71,7 @@ Route::middleware('auth:api')->group(function () {
     Route::post('delivery_service/service_availability', 'API\DeliveryService\EvaAPIController@serviceAvailability');
     Route::post('delivery_service/get_quote', 'API\DeliveryService\EvaAPIController@getQuote');
     Route::post('delivery_service/call_ride', 'API\DeliveryService\EvaAPIController@callRide');
-    Route::post('delivery_service/restaurant_call_ride', 'API\DeliveryService\EvaAPIController@restaurantCallRide');
+//    Route::post('delivery_service/restaurant_call_ride', 'API\DeliveryService\EvaAPIController@restaurantCallRide');
 
     /* *************  ************* */
 
@@ -117,6 +117,8 @@ Route::middleware('auth:api')->group(function () {
     Route::post('order/restaurant_delivery', 'API\GenerateOrderAPIController@restaurantDeliveryOrder');
     Route::post('order/eva_delivery', 'API\GenerateOrderAPIController@deliveryServiceOrder');
     Route::post('order/tiktak_delivery', 'API\GenerateOrderAPIController@tiktakDeliveryService');
+    Route::post('order/call_ride', 'API\GenerateOrderAPIController@callRide');
+
     /* *************   ************* */
 
     /* ************ Notifications *********** */
@@ -145,7 +147,7 @@ Route::middleware('auth:api')->group(function () {
     /* ************* TikTak Delivery Get Quote ,Call Ride ************* */
     Route::post('tiktak_delivery_service/fare_estimation', 'API\DeliveryService\TikTakAPIController@getFareEstimate');
     Route::post('tiktak_delivery_service/create_task', 'API\DeliveryService\TikTakAPIController@tiktakCreateTask');
-    Route::post('tiktak_delivery_service/call_ride', 'API\DeliveryService\TikTakAPIController@restaurantCallRide');
+//    Route::post('tiktak_delivery_service/call_ride', 'API\DeliveryService\TikTakAPIController@restaurantCallRide');
     /* *************  Trending_Foods ************* */
     Route::get('trending_foods', 'API\TrendAPIController@trendingFoods');
     /* *************   ************* */
