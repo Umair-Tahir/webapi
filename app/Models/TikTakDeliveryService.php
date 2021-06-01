@@ -14,7 +14,6 @@ class TikTakDeliveryService extends Model
     private $google_api_key;
 
 
-
     public $table = 'ds_tiktak';
 
 
@@ -36,8 +35,8 @@ class TikTakDeliveryService extends Model
         'job_id' => 'string',
         'delivery_job_id' => 'string',
         'order_id' => 'integer',
-        'total'=> 'integer',
-        'job_token'=> 'string'
+        'total' => 'integer',
+        'job_token' => 'string'
     ];
 
     /**
@@ -48,7 +47,6 @@ class TikTakDeliveryService extends Model
     public static $rules = [
         'order_id' => 'required'
     ];
-
 
 
     /************  Setting Client URL
@@ -66,13 +64,15 @@ class TikTakDeliveryService extends Model
 //            'exceptions' => true,
         ]);
 
-        $this->api_key = getenv('Local_Tik_Tak_API_TOKEN');
+
+        $this->api_key = getenv('Tik_Tak_API_TOKEN');
+        $this->live_tiktak = getenv('Live_Tik_Tak');
         $this->google_api_key = getenv('Google_Maps_Key');
     }
 
 
     /********* Checking for Fare ****************************
-                     * By Tik Tak
+     * By Tik Tak
      ********************************************************/
     public function fareEstimate($deliverAddress, $restaurant)
     {
@@ -105,15 +105,16 @@ class TikTakDeliveryService extends Model
     }
 
 
-
-
-    /***************************** Have to make****************************
-     *           a custom id for TikTak Table
+    /***************************** This is the  ****************************
+     *           Call Ride function for Tik Tak
      *********************************************************/
 
     public function tiktakTask($orderId, $restaurant, $deliveryAddress, $user)
     {
-        $description = "Pick Up and Delivery Request By Ezzly";
+        if ($this->live_tiktak == 'false')
+            $description = "Testing Pick Up and Delivery Request By Ezzly";
+        else
+            $description = "Live Pick Up and Delivery Request By Ezzly";
 
         $parameters = [
             "api_key" => $this->api_key,
@@ -170,6 +171,9 @@ class TikTakDeliveryService extends Model
 
     }
 
+    /***************************** This is to  ****************************
+     *           save order data into Tik Tak table
+     *********************************************************/
 
     public function createTikTakFromOrder($data)
     {

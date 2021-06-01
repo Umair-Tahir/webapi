@@ -41,7 +41,8 @@ class Order extends Model
         'eezly_shared_price',
         'grand_total',
         'is_french',
-        'tip'
+        'tip',
+        'delivery_company_name'
     ];
     /**
      * The attributes that should be casted to native types.
@@ -61,6 +62,7 @@ class Order extends Model
         'restaurant_id' => 'integer',
         'delivery_fee'=>'double',
         'active'=>'boolean',
+        'delivery_company_name' => 'string',
     ];
 
     /**

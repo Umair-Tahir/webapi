@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\API;
 
 
-use App\Http\Middleware\App;
+use App\Models\Restaurant;
+use App\Models\User;
+use App\Models\DeliveryAddress;
 use App\Http\Requests\CreateOrderEvaDeliveryRequest;
 use App\Http\Requests\CreateOrderPickUpRequest;
 use App\Http\Requests\CreateOrderRestaurantDeliveryRequest;
-use App\Mail\OrderNotificationEmail;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\MonerisPaymentService;
@@ -19,6 +20,7 @@ use App\Repositories\FoodOrderRepository;
 use App\Repositories\UserRepository;
 use App\Models\EvaDeliveryService;
 use App\Models\TikTakDeliveryService;
+use App\Models\Order;
 
 use Flash;
 use Illuminate\Support\Facades\Mail;
@@ -53,6 +55,7 @@ class GenerateOrderAPIController extends Controller
         $this->notificationRepository = $notificationRepo;
         $this->monerisPaymentService = new MonerisPaymentService();
         $this->tiktakDeliveryService = new TikTakDeliveryService();
+        $this->eva = new EvaDeliveryService();
     }
 
 
@@ -180,6 +183,7 @@ class GenerateOrderAPIController extends Controller
 
                 /**************** Purchase Successful ****************/
                 $input['payment_id'] = $paymentStatus['data'];
+                $input['delivery_company_name'] = 'eva';
 
                 /**************** Store Order Function ****************/
                 $orderResponse = $this->store_order($input);
@@ -238,13 +242,14 @@ class GenerateOrderAPIController extends Controller
 
                 /**************** Purchase Successful ****************/
                 $input['payment_id'] = $paymentStatus['data'];
+                $input['delivery_company_name'] = 'tik_tak';
 
                 /**************** Store Order Function ****************/
                 $orderResponse = $this->store_order($input);
 
                 if ($orderResponse['status'] == 'success') {
 
-                   $tiktakParams = [
+                    $tiktakParams = [
                         'order_id' => $orderResponse['order']->id,
                         'restaurant_id' => $input['restaurant_id'],
                         'distance' => $input['distance'],
@@ -263,6 +268,77 @@ class GenerateOrderAPIController extends Controller
         } catch (\Exception $e) {
             return $this->sendError($e->getMessage(), 401);
         }
+    }
+
+
+    /*************   Restaurant Call Ride ********************************************
+     *       A single function is created for every call ride for every type of
+     *       company delivery service
+     *********************************************************/
+    public
+    function callRide(Request $request)
+    {
+        $validated = $request->validate([
+            'order_id' => 'required'
+        ]);
+
+        $order = Order::find($request['order_id']);
+        if ($order) {
+            $restaurant = Restaurant::find($order->restaurant_id);
+            $deliveryAddress = DeliveryAddress::find($order->delivery_address_id);
+            $user = User::find($order->user_id);
+
+            /************************************* For Eva **********************/
+            if ($order->delivery_type_id == 3 && $order->delivery_company_name == 'eva') {
+                $evaDs = EvaDeliveryService::where('order_id', $request['order_id'])->first();
+                $response = $this->eva
+                    ->callRide($order->id, $restaurant, $deliveryAddress, $user, $evaDs->tip_token_charge);
+
+                $responseBody = json_decode($response->getBody());
+                if (!$responseBody) {
+                    return $this
+                        ->sendError('Ride cannot be called as EVA is currently not available',
+                            $response->getStatusCode()
+                        );
+                }
+
+                $evaDs->tracking_id = $responseBody->tracking_id;
+                if ($responseBody->business_tracking_id)
+                    $evaDs->business_tracking_id = $responseBody->business_tracking_id;
+                $evaDs->save();
+
+                $tracking_link = 'https://business.eva.cab/public/live_tracker?tracking_id='.$responseBody
+                        ->tracking_id;
+                $responseBody->tracking_link = $tracking_link;
+                return $this->sendResponse($responseBody, 'Successful');
+
+                /************************************* For Tik Tak **********************/
+            } elseif ($order->delivery_type_id == 3 && $order->delivery_company_name == 'tik_tak') {
+                $tiktakDs = TikTakDeliveryService::where('order_id', $request['order_id'])->first();
+                $response = $this->tiktakDeliveryService->tiktakTask($order->id, $restaurant, $deliveryAddress, $user);
+
+                $responseBody = json_decode($response->getBody());
+
+                if ($responseBody->status == 200) {
+                    /************ Store Tracking ID ****************/
+                    $tiktakDs->job_id = $responseBody->data->job_id;
+                    $tiktakDs->delivery_job_id = $responseBody->data->delivery_job_id;
+                    $tiktakDs->job_token = $responseBody->data->job_token;
+
+                    $tiktakDs->save();
+                    return $this->sendResponse($responseBody, 'Call Ride Successful');
+
+                } else {
+                    return $this->sendError($responseBody, 400);
+                }
+            } else
+                return $this->sendError('Order was not selected to be deilvered by a delivery service',
+                    400);
+        } else
+            return $this->sendError('Order Not Found', 404);
+
+
+
     }
 
 
@@ -344,6 +420,7 @@ class GenerateOrderAPIController extends Controller
                 'expected_delivery_time' => $input['expected_delivery_time'],
                 "delivery_fee" => $input['delivery_fee'],
                 'delivery_type_id' => $input['delivery_type_id'],
+                'delivery_company_name' => $input['delivery_company_name'],
             ]);
 
             /******** Making Food Order  ***/
