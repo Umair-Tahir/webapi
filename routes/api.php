@@ -145,9 +145,9 @@ Route::middleware('auth:api')->group(function () {
     /* *************   ************* */
 
     /* ************* TikTak Delivery Get Quote ,Call Ride ************* */
-    Route::post('tiktak_delivery_service/fare_estimation', 'API\DeliveryService\TikTakAPIController@getFareEstimate');
-    Route::post('tiktak_delivery_service/create_task', 'API\DeliveryService\TikTakAPIController@tiktakCreateTask');
-//    Route::post('tiktak_delivery_service/call_ride', 'API\DeliveryService\TikTakAPIController@restaurantCallRide');
+    Route::post('tiktak_delivery_service/fare_estimation', 'API\DeliveryService\TikTakApiController@getFareEstimate');
+    Route::post('tiktak_delivery_service/create_task', 'API\DeliveryService\TikTakApiController@tiktakCreateTask');
+//    Route::post('tiktak_delivery_service/call_ride', 'API\DeliveryService\TikTakApiController@restaurantCallRide');
     /* *************  Trending_Foods ************* */
     Route::get('trending_foods', 'API\TrendAPIController@trendingFoods');
     /* *************   ************* */
