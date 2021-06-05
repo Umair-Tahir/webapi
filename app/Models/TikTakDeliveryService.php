@@ -12,6 +12,7 @@ class TikTakDeliveryService extends Model
     private $client;
     private $api_key;
     private $google_api_key;
+    private $live_tiktak;
 
 
     public $table = 'ds_tiktak';
