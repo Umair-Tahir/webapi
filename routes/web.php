@@ -30,6 +30,12 @@ Route::get('/run-migrations', function () {
     return Artisan::call('migrate', ["--force" => true ]);
 });
 
+Route::get('/dumpautoload', function()
+{
+    Artisan::call('dump-autoload');
+    echo 'dump-autoload complete';
+});
+
 Route::get('run-seeder/{class}',function($class){
     return Artisan::call("db:seed",array("--force" => true,'--class'=>$class));
 });
@@ -111,6 +117,8 @@ Route::middleware('auth')->group(function () {
     Route::resource('categories', 'CategoryController')->except([
         'show'
     ]);
+
+    Route::resource('coupons', 'CouponController');
 
     Route::resource('faqCategories', 'FaqCategoryController')->except([
         'show'

@@ -25,6 +25,19 @@
         <a class="nav-link {{ Request::is('deliveryTypes*') ? 'active' : '' }}" href="{!! route('deliveryTypes.index') !!}">@if($icons)<i class="nav-icon fa fa-ship"></i>@endif<p>{{trans('lang.delivery_type_plural')}}</p></a>
     </li>
 @endcan
+@can('categories.index')
+    <li class="nav-item">
+        <a class="nav-link {{ Request::is('categories*') ? 'active' : '' }}" href="{!! route('categories.index') !!}">@if($icons)
+                <i class="nav-icon fa fa-folder"></i>@endif<p>{{trans('lang.category_plural')}}</p></a>
+    </li>
+@endcan
+
+@can('coupons.index')
+    <li class="nav-item">
+        <a class="nav-link {{ Request::is('coupons*') ? 'active' : '' }}" href="{!! route('coupons.index') !!}">@if($icons)
+                <i class="nav-icon fa fa-ticket"></i>@endif<p>{{trans('lang.coupon_plural')}}</p></a>
+    </li>
+@endcan
 
 @can('restaurants.index')
     <li class="nav-item has-treeview {{ (Request::is('restaurants*') || Request::is('galleries*') || Request::is('restaurantReviews*')) && !Request::is('restaurantsPayouts*') ? 'menu-open' : '' }}">
@@ -56,12 +69,6 @@
     </li>
 @endcan
 
-@can('categories.index')
-    <li class="nav-item">
-        <a class="nav-link {{ Request::is('categories*') ? 'active' : '' }}" href="{!! route('categories.index') !!}">@if($icons)
-                <i class="nav-icon fa fa-folder"></i>@endif<p>{{trans('lang.category_plural')}}</p></a>
-    </li>
-@endcan
 
 @can('foods.index')
     <li class="nav-item has-treeview {{ Request::is('foods*') || Request::is('extra*') || Request::is('foodReviews*') || Request::is('nutrition*') ? 'menu-open' : '' }}">

@@ -6,6 +6,7 @@ use App\Criteria\Restaurants\RestaurantsOfCuisinesCriteria;
 use App\Criteria\Restaurants\NearCriteria;
 use App\Criteria\Restaurants\PopularCriteria;
 use App\Http\Controllers\Controller;
+use App\Models\Food;
 use App\Models\Restaurant;
 use App\Repositories\CustomFieldRepository;
 use App\Repositories\RestaurantRepository;
@@ -94,12 +95,24 @@ class RestaurantAPIController extends Controller
                 return $this->sendError($e->getMessage());
             }
             $restaurant = $this->restaurantRepository->findWithoutFail($id);
+
+
+
         }
 
         if (empty($restaurant)) {
             return $this->sendError('Restaurant not found');
         }
-
+        if($request->has(['menu'])){
+            $categories=Food::with('category')->where('foods.restaurant_id',$id)->get()->pluck('category.name','category_id')->toArray();
+            $menu=[];
+            foreach ($categories as $key=>$value){
+                $section['category']=$value;
+                $section['foods']=Food::where([['category_id','=',$key],['restaurant_id','=',$id]])->get()->toArray();
+                array_push($menu,$section);
+                $restaurant['menu']=$menu;
+            }
+        }
         return $this->sendResponse($restaurant->toArray(), 'Restaurant retrieved successfully');
     }
 

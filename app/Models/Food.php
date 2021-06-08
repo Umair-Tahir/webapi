@@ -92,7 +92,8 @@ class Food extends Model implements HasMedia
     protected $appends = [
         'custom_fields',
         'has_media',
-        'restaurant'
+//        'restaurant',
+        'extras'
     ];
 
     /**
@@ -213,5 +214,13 @@ class Food extends Model implements HasMedia
         return $this->belongsTo(\App\Models\Restaurant::class, 'restaurant_id', 'id');
     }
 
+    /**
+     * get restaurant attribute
+     * @return \Illuminate\Database\Eloquent\Model|\Illuminate\Database\Eloquent\Relations\BelongsTo|object|null
+     */
+    public function getExtrasAttribute()
+    {
+        return $this->extras()->get();
+    }
 
 }
