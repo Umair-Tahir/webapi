@@ -78,12 +78,8 @@ class ExtraController extends Controller
         if($food_id){
             $food = $this->foodRepository->groupedByRestaurantsByFoodId($food_id);
         }
-        $hasCustomField = in_array($this->extraRepository->model(), setting('custom_field_models', []));
-        if ($hasCustomField) {
-            $customFields = $this->customFieldRepository->findByField('custom_field_model', $this->extraRepository->model());
-            $html = generateCustomField($customFields);
-        }
-        return view('extras.create')->with("customFields", isset($html) ? $html : false)->with("food", $food)->with("extraGroup", $extraGroup);
+
+        return view('extras.create')->with("food", $food)->with("extraGroup", $extraGroup);
     }
 
     /**

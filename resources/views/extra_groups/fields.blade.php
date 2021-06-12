@@ -1,6 +1,4 @@
-@if($customFields)
-<h5 class="col-12 pb-4">{!! trans('lang.main_fields') !!}</h5>
-@endif
+
 <div style="flex: 50%;max-width: 50%;padding: 0 4px;" class="column">
 <!-- Name Field -->
 <div class="form-group row ">
@@ -12,16 +10,28 @@
     </div>
   </div>
 </div>
+  <div class="form-group row">
+
+    {!! Form::label('min', trans("lang.extra_group_min"), ['class' => 'col-3 control-label text-right']) !!}
+    <div class="col-3">
+      {!! Form::number('min', null,  ['class' => 'form-control','step'=>'1','onkeypress'=>'return event.charCode >= 48 && event.charCode <= 57','placeholder'=>  trans("lang.extra_group_min_placeholder")]) !!}
+      <div class="form-text text-muted">
+        {{ trans("lang.extra_group_min_help") }}
+      </div>
+    </div>
+    {!! Form::label('max', trans("lang.extra_group_max"), ['class' => 'col-2 control-label ']) !!}
+    <div class="col-4">
+      {!! Form::number('max', null,  ['class' => 'form-control','step'=>'1','onkeypress'=>'return event.charCode >= 48 && event.charCode <= 57','placeholder'=>  trans("lang.extra_group_max_placeholder")]) !!}
+      <div class="form-text text-muted">
+        {{ trans("lang.extra_group_max_help") }}
+      </div>
+    </div>
+  </div>
 </div>
+
 <div style="flex: 50%;max-width: 50%;padding: 0 4px;" class="column">
 </div>
-@if($customFields)
-<div class="clearfix"></div>
-<div class="col-12 custom-field-container">
-  <h5 class="col-12 pb-4">{!! trans('lang.custom_field_plural') !!}</h5>
-  {!! $customFields !!}
-</div>
-@endif
+
 <!-- Submit Field -->
 <div class="form-group col-12 text-right">
   <button type="submit" class="btn btn-{{setting('theme_color')}}" ><i class="fa fa-save"></i> {{trans('lang.save')}} {{trans('lang.extra_group')}}</button>

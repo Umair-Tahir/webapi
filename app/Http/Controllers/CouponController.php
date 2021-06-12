@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\DataTables\CouponDataTable;
 use App\Http\Requests\CreateCouponRequest;
-use App\Http\Requests\UpdatecouponRequest;
+use App\Http\Requests\UpdateCouponRequest;
 use App\Repositories\CouponRepository;
 use App\Repositories\CustomFieldRepository;
 use App\Repositories\UploadRepository;
@@ -116,7 +116,7 @@ class CouponController extends Controller
      * Update the specified coupon in storage.
      *
      * @param int $id
-     * @param UpdatecouponRequest $request
+     * @param UpdateCouponRequest $request
      *
      * @return Response
      */

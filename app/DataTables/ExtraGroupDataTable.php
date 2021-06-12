@@ -15,6 +15,7 @@ class ExtraGroupDataTable extends DataTable
      * @var array
      */
     public static $customFields = [];
+
     /**
      * Build DataTable class.
      *
@@ -26,12 +27,9 @@ class ExtraGroupDataTable extends DataTable
         $dataTable = new EloquentDataTable($query);
         $columns = array_column($this->getColumns(), 'data');
         $dataTable = $dataTable
-            
-            ->editColumn('updated_at',function($extraGroup){
-    return getDateColumn($extraGroup,'updated_at');
-})
-            
-            
+            ->editColumn('updated_at', function ($extraGroup) {
+                return getDateColumn($extraGroup, 'updated_at');
+            })
             ->addColumn('action', 'extra_groups.datatables_actions')
             ->rawColumns(array_merge($columns, ['action']));
 
@@ -59,12 +57,12 @@ class ExtraGroupDataTable extends DataTable
         return $this->builder()
             ->columns($this->getColumns())
             ->minifiedAjax()
-            ->addAction(['width' => '80px', 'printable' => false ,'responsivePriority'=>'100'])
+            ->addAction(['width' => '80px', 'printable' => false, 'responsivePriority' => '100'])
             ->parameters(array_merge(
                 config('datatables-buttons.parameters'), [
                     'language' => json_decode(
-                        file_get_contents(base_path('resources/lang/'.app()->getLocale().'/datatable.json')
-                        ),true)
+                        file_get_contents(base_path('resources/lang/' . app()->getLocale() . '/datatable.json')
+                        ), true)
                 ]
             ));
     }
@@ -78,18 +76,28 @@ class ExtraGroupDataTable extends DataTable
     {
         $columns = [
             [
-  'data' => 'name',
-  'title' => trans('lang.extra_group_name'),
-  
-],
-            [
-  'data' => 'updated_at',
-  'title' => trans('lang.extra_group_updated_at'),
-  'searchable'=>false,
-]
-            ];
+                'data' => 'name',
+                'title' => trans('lang.extra_group_name'),
 
-        $hasCustomField = in_array(ExtraGroup::class, setting('custom_field_models',[]));
+            ],
+            [
+                'data' => 'min',
+                'title' => trans('lang.extra_group_min'),
+
+            ],
+            [
+                'data' => 'max',
+                'title' => trans('lang.extra_group_max'),
+
+            ],
+            [
+                'data' => 'updated_at',
+                'title' => trans('lang.extra_group_updated_at'),
+                'searchable' => false,
+            ]
+        ];
+
+        $hasCustomField = in_array(ExtraGroup::class, setting('custom_field_models', []));
         if ($hasCustomField) {
             $customFieldsCollection = CustomField::where('custom_field_model', ExtraGroup::class)->where('in_table', '=', true)->get();
             foreach ($customFieldsCollection as $key => $cuisine) {
@@ -122,6 +130,6 @@ class ExtraGroupDataTable extends DataTable
     {
         $data = $this->getDataForPrint();
         $pdf = PDF::loadView($this->printPreview, compact('data'));
-        return $pdf->download($this->filename().'.pdf');
+        return $pdf->download($this->filename() . '.pdf');
     }
 }

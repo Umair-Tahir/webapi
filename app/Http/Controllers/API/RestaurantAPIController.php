@@ -6,6 +6,8 @@ use App\Criteria\Restaurants\RestaurantsOfCuisinesCriteria;
 use App\Criteria\Restaurants\NearCriteria;
 use App\Criteria\Restaurants\PopularCriteria;
 use App\Http\Controllers\Controller;
+use App\Models\Extra;
+use App\Models\ExtraGroup;
 use App\Models\Food;
 use App\Models\Restaurant;
 use App\Repositories\CustomFieldRepository;
@@ -109,6 +111,20 @@ class RestaurantAPIController extends Controller
             foreach ($categories as $key=>$value){
                 $section['category']=$value;
                 $section['foods']=Food::where([['category_id','=',$key],['restaurant_id','=',$id]])->get()->toArray();
+//                $section['foods']=Food::where([['category_id','=',$key],['restaurant_id','=',$id]])->get();
+                for($i=0;$i<count($section['foods']);$i++){
+                    $extraGroups=Extra::with('extraGroup')->where('extras.food_id',$section['foods'][$i]['id'])->get()->pluck('extraGroup.name','extraGroup.id');
+                    $extraGroupsArray=[];
+                    foreach ($extraGroups as $extraGroupKey=>$extraGroupValue){
+                        $extraGroup=ExtraGroup::findOrFail($extraGroupKey);
+                        $extras['extra_group_name']=$extraGroupValue;
+                        $extras['extra_group_min']=$extraGroup->min;
+                        $extras['extra_group_max']=$extraGroup->max;
+                        $extras['extras']=Extra::where([['extra_group_id','=',$extraGroupKey],['food_id','=',$section['foods'][$i]['id']]])->get()->toArray();
+                        array_push($extraGroupsArray,$extras);
+                    }
+                   $section['foods'][$i]['extra_groups']=$extraGroupsArray;
+                }
                 array_push($menu,$section);
                 $restaurant['menu']=$menu;
             }
