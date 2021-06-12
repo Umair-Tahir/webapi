@@ -93,7 +93,7 @@ class Food extends Model implements HasMedia
         'custom_fields',
         'has_media',
 //        'restaurant',
-        'extras'
+//        'extras'
     ];
 
     /**

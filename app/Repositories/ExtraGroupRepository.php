@@ -20,7 +20,9 @@ class ExtraGroupRepository extends BaseRepository
      * @var array
      */
     protected $fieldSearchable = [
-        'name'
+        'name',
+        'min',
+        'max',
     ];
 
     /**

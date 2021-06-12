@@ -19,7 +19,9 @@ class ExtraGroup extends Model
 
 
     public $fillable = [
-        'name'
+        'name',
+        'min',
+        'max'
     ];
 
     /**
@@ -28,7 +30,9 @@ class ExtraGroup extends Model
      * @var array
      */
     protected $casts = [
-        'name' => 'string'
+        'name' => 'string',
+        'min' => 'integer',
+        'max' => 'integer',
     ];
 
     /**
@@ -37,18 +41,12 @@ class ExtraGroup extends Model
      * @var array
      */
     public static $rules = [
-        'name' => 'required'
+        'name' => 'required',
+        'min' => 'required',
+        'max' => 'required',
     ];
 
-    /**
-     * New Attributes
-     *
-     * @var array
-     */
-    protected $appends = [
-        'custom_fields',
-        
-    ];
+
 
     public function customFieldsValues()
     {
