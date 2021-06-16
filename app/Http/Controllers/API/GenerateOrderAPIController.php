@@ -337,8 +337,6 @@ class GenerateOrderAPIController extends Controller
         } else
             return $this->sendError('Order Not Found', 404);
 
-
-
     }
 
 
@@ -440,3 +438,4 @@ class GenerateOrderAPIController extends Controller
         return $orderResponse;
     }
 }
+
