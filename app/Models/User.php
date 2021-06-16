@@ -177,6 +177,11 @@ class User extends Authenticatable implements HasMedia
         return $this->belongsToMany(\App\Models\Restaurant::class, 'user_restaurants');
     }
 
+    public function coupons()
+    {
+        return $this->hasMany(\App\Models\Coupon::class,'user_id');
+    }
+
     public function deliveryAddresses()
     {
         return $this->belongsTo(\App\Models\DeliveryAddress::class);

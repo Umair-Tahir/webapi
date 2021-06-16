@@ -29,7 +29,7 @@ class CouponRepository extends BaseRepository
         'max_uses_user',
         'type',
         'discount_amount',
-        'percent_off',
+//        'percent_off',
         'active',
         'starts_at',
         'expires_at'

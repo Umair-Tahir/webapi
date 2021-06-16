@@ -31,8 +31,10 @@ class CreateCouponsTable extends Migration
             $table->tinyInteger( 'type' )->unsigned( );
             // The amount to discount by if is fixed price  in this example.
             $table->double( 'discount_amount',5,2 )->nullable( );
-            // The percentage to discount by if is fixed price  in this example.
-            $table->integer( 'percent_off' )->unsigned( )->nullable( );
+//            // The percentage to discount by if is fixed price  in this example.
+//            $table->integer( 'percent_off' )->unsigned( )->nullable( );
+//            UID of the creator
+            $table->integer('user_id')->unsigned();
             // If voucher is active
             $table->boolean('active')->default(1); // added
             // When the voucher begins
@@ -42,6 +44,10 @@ class CreateCouponsTable extends Migration
             $table->timestamps( );
             // We like to horde data.
             $table->softDeletes( );
+
+
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade')->onUpdate('cascade');
+
         });
     }
 

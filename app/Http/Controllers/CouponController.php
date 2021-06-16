@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Criteria\Coupons\CouponsOfUserCriteria;
 use App\DataTables\CouponDataTable;
 use App\Http\Requests\CreateCouponRequest;
 use App\Http\Requests\UpdateCouponRequest;
@@ -58,8 +59,13 @@ class CouponController extends Controller
     public function store(CreateCouponRequest $request)
     {
         $input = $request->all();
-        $input['starts_at']=Carbon::parse($input['starts_at']);
-        $input['expires_at']=Carbon::parse($input['expires_at']);
+        $input['user_id']=auth()->id();
+        if($input['starts_at']!=null){
+            $input['starts_at']=Carbon::parse($input['starts_at']);
+        }
+        if($input['expires_at']!=null){
+            $input['expires_at']=Carbon::parse($input['expires_at']);
+        }
         try {
             $coupon = $this->couponRepository->create($input);
         } catch (ValidatorException $e) {
@@ -80,6 +86,7 @@ class CouponController extends Controller
      */
     public function show($id)
     {
+        $this->couponRepository->pushCriteria(new CouponsOfUserCriteria(auth()->id()));
         $coupon = $this->couponRepository->findWithoutFail($id);
 
         if (empty($coupon)) {
@@ -100,6 +107,7 @@ class CouponController extends Controller
      */
     public function edit($id)
     {
+        $this->couponRepository->pushCriteria(new CouponsOfUserCriteria(auth()->id()));
         $coupon = $this->couponRepository->findWithoutFail($id);
 
 
@@ -122,6 +130,7 @@ class CouponController extends Controller
      */
     public function update($id, UpdateCouponRequest $request)
     {
+        $this->couponRepository->pushCriteria(new CouponsOfUserCriteria(auth()->id()));
         $coupon = $this->couponRepository->findWithoutFail($id);
 
         if (empty($coupon)) {
@@ -129,8 +138,14 @@ class CouponController extends Controller
             return redirect(route('coupons.index'));
         }
         $input = $request->all();
-        $input['starts_at']=Carbon::parse($input['starts_at']);
-        $input['expires_at']=Carbon::parse($input['expires_at']);
+        $input['user_id']=auth()->id();
+        if($input['starts_at']!=null){
+            $input['starts_at']=Carbon::parse($input['starts_at']);
+        }
+        if($input['expires_at']!=null){
+            $input['expires_at']=Carbon::parse($input['expires_at']);
+        }
+
         try {
             $coupon = $this->couponRepository->update($input, $id);
 
@@ -152,6 +167,7 @@ class CouponController extends Controller
      */
     public function destroy($id)
     {
+        $this->couponRepository->pushCriteria(new CouponsOfUserCriteria(auth()->id()));
         $coupon = $this->couponRepository->findWithoutFail($id);
 
         if (empty($coupon)) {

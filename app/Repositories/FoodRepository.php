@@ -75,4 +75,18 @@ class FoodRepository extends BaseRepository implements CacheableInterface
         }
         return $foods;
     }
+
+    public function randomFoodsWithRestaurant($limit = 5){
+        $foods= $this->with('restaurant')->inRandomOrder()
+            ->limit($limit)
+            ->get();
+        return $foods;
+    }
+
+    public function getFoodsWithRestaurant($foodIds=[]){
+        $foods= $this->with('restaurant')->findWhereIn('id',$foodIds);
+        return $foods;
+    }
+
+
 }

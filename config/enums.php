@@ -9,6 +9,7 @@ return [
 
     'coupon_types_array' => array(
         1 => 'Fixed Price',
-        2 => 'Percentage'
+        2 => 'Percentage',
+        3 => 'Delivery',
     ),
 ];

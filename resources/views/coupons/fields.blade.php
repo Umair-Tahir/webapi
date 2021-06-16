@@ -24,14 +24,14 @@
   <div class="form-group row ">
     {!! Form::label('starts_at', 'Start', ['class' => 'col-3 control-label text-right']) !!}
     <div class="col-3">
-      {!! Form::text('starts_at', null,  ['id'=>'timePickerOpeningHour','class' => 'form-control','placeholder'=>  trans('lang.coupon_starts_at')]) !!}
+      {!! Form::text('starts_at', old('starts_at'),  ['id'=>'timePickerOpeningHour','class' => 'form-control','placeholder'=>  trans('lang.coupon_starts_at')]) !!}
       <div class="form-text text-muted">
         Select Coupon Active Date
       </div>
     </div>
     {!! Form::label('expires_at', 'Expiry', ['class' => 'col-3 control-label text-right']) !!}
     <div class="col-3">
-      {!! Form::text('expires_at', null,  ['id'=>'timePickerClosingHour','class' => 'form-control','placeholder'=>  trans('lang.coupon_expires_at')]) !!}
+      {!! Form::text('expires_at', old('expires_at'),  ['id'=>'timePickerClosingHour','class' => 'form-control','placeholder'=>  trans('lang.coupon_expires_at')]) !!}
       <div class="form-text text-muted">
         Select Coupon Expiry Date
       </div>
@@ -93,28 +93,9 @@
     </div>
   </div>
 
-  <div class="form-group row  coupon-type-2">
-    {!! Form::label('percent_off', trans("lang.coupon_percent_off"), ['class' => 'col-3 control-label text-right']) !!}
-    <div class="col-9">
-      {!! Form::number('percent_off', null,  ['class' => 'form-control percent_off_input', 'step'=>'any', 'placeholder'=>  trans("lang.coupon_percent_off_placeholder")]) !!}
-      <div class="form-text text-muted">
-        {{ trans("lang.coupon_percent_off_help") }}
-      </div>
-    </div>
-  </div>
 </div>
 <!-- Submit Field -->
 <div class="form-group col-12 text-right">
   <button type="submit" class="btn btn-{{setting('theme_color')}}" ><i class="fa fa-save"></i> {{trans('lang.save')}} {{trans('lang.coupon')}}</button>
   <a href="{!! route('coupons.index') !!}" class="btn btn-default"><i class="fa fa-undo"></i> {{trans('lang.cancel')}}</a>
 </div>
-{{--@prepend('scripts')--}}
-{{--<script type="text/javascript">--}}
-  {{--function toogleCouponType(val) {--}}
-      {{--document.querySelector('.percent_off_input').value=null;--}}
-      {{--document.querySelector('.discount_amount_input').value=null;--}}
-      {{--var active = document.querySelector('.coupon-type-'+val);--}}
-       {{--active.classList.remove("d-none");--}}
-  {{--}--}}
-{{--</script>--}}
-{{--@endprepend--}}

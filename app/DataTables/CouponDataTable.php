@@ -94,7 +94,11 @@ class CouponDataTable extends DataTable
      */
     public function query(Coupon $model)
     {
-        return $model->newQuery();
+        if (auth()->user()->hasRole('admin')) {
+            return $model->newQuery();
+        }else if (auth()->user()->hasRole('manager')){
+            return $model->newQuery()->where('user_id', auth()->id());
+        }
     }
 
     /**

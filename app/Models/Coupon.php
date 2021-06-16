@@ -31,7 +31,8 @@ class Coupon extends Model
         'max_uses_user',
         'type',
         'discount_amount',
-        'percent_off',
+//        'percent_off',
+        'user_id',
         'active',
         'starts_at',
         'expires_at'
@@ -51,7 +52,8 @@ class Coupon extends Model
         'max_uses_user' => 'integer',
         'type' => 'integer',
         'discount_amount' => 'double',
-        'percent_off' => 'integer',
+        'user_id' => 'integer',
+//        'percent_off' => 'integer',
         'active' => 'boolean'
     ];
 
@@ -63,11 +65,12 @@ class Coupon extends Model
     public static $rules = [
         'code' => 'required',
         'name' => 'required',
-        'type' => 'required',
-        'starts_at' => 'required',
-        'expires_at' => 'required',
+        'type' => 'required'
     ];
 
-
+    public function users()
+    {
+        return $this->belongsTo(\App\Models\User::class);
+    }
 
 }
