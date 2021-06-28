@@ -34,7 +34,9 @@ class OrderRepository extends BaseRepository
         'eezly_shared_price',
         'grand_total',
         'is_french',
-        'tip'
+        'tip',
+        'delivery_company_name',
+        'coupon_id',
     ];
 
     /**

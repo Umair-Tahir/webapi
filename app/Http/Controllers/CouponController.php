@@ -59,13 +59,8 @@ class CouponController extends Controller
     public function store(CreateCouponRequest $request)
     {
         $input = $request->all();
+        $input['code']=strtolower($input['code']);
         $input['user_id']=auth()->id();
-        if($input['starts_at']!=null){
-            $input['starts_at']=Carbon::parse($input['starts_at']);
-        }
-        if($input['expires_at']!=null){
-            $input['expires_at']=Carbon::parse($input['expires_at']);
-        }
         try {
             $coupon = $this->couponRepository->create($input);
         } catch (ValidatorException $e) {
@@ -138,14 +133,7 @@ class CouponController extends Controller
             return redirect(route('coupons.index'));
         }
         $input = $request->all();
-        $input['user_id']=auth()->id();
-        if($input['starts_at']!=null){
-            $input['starts_at']=Carbon::parse($input['starts_at']);
-        }
-        if($input['expires_at']!=null){
-            $input['expires_at']=Carbon::parse($input['expires_at']);
-        }
-
+        $input['code']=strtolower($input['code']);
         try {
             $coupon = $this->couponRepository->update($input, $id);
 

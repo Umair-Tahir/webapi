@@ -68,9 +68,70 @@ class Coupon extends Model
         'type' => 'required'
     ];
 
-    public function users()
+    public function user()
     {
         return $this->belongsTo(\App\Models\User::class);
     }
 
+    public function orders()
+    {
+        return $this->hasMany(\App\Models\Order::class,'coupon_id');
+    }
+    public function couponValid($couponCode){
+        $coupon= self::where([['code','=',strtolower($couponCode)],['active','=',1]])->first();
+        if($coupon){
+            $currentDate = date('Y-m-d');
+            $couponStart=date('Y-m-d', strtotime($coupon->starts_at));
+            $couponExpire=date('Y-m-d', strtotime($coupon->expires_at));
+            if (($currentDate >= $couponStart) && ($currentDate <= $couponExpire)){
+                return $coupon;
+            }
+        }
+        return false;
+    }
+
+    public function restaurantEligibility(Coupon $coupon, $restaurantId){
+        $couponOwner=$coupon->user;
+        if($couponOwner->roles->first()->name=='admin'){
+            return true;
+        }else{
+            $userRestaurantsId=$couponOwner->restaurants->pluck('id')->toArray();
+            if(in_array($restaurantId,$userRestaurantsId)){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public function usageLimit(Coupon $coupon,$userId){
+          $userUsageCount=$coupon->orders->where('user_id',$userId)->count();
+          if((0<$coupon->max_uses)&&($userUsageCount<$coupon->max_uses_user)){
+             return true;
+          }
+          return false;
+    }
+
+    public function calculatedDiscount(Coupon $coupon, $amount){
+        $data=[
+            'discountable_amount'=>0,
+            'message'=>'No calculations were done as no type defined'
+        ];
+        $couponType=$coupon->type;
+        $discountableAmount=$coupon->discount_amount;
+        switch ($couponType) {
+            case 1:
+                  $data['discountable_amount']=$discountableAmount;
+                  $data['message']="Displaying amount discountable via applying " .config('enums.coupon_types_array.'.$couponType). " coupon";
+                break;
+            case 2:
+                $data['discountable_amount']=$amount*($discountableAmount/100);
+                $data['message']="Displaying amount discountable via applying " .config('enums.coupon_types_array.'.$couponType). " coupon";
+                break;
+            case 3:
+                $data['discountable_amount']=$discountableAmount;
+                $data['message']="Displaying amount discountable via applying " .config('enums.coupon_types_array.'.$couponType). " coupon";
+                break;
+        }
+        return $data;
+    }
 }

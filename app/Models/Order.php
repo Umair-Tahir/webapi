@@ -42,7 +42,8 @@ class Order extends Model
         'grand_total',
         'is_french',
         'tip',
-        'delivery_company_name'
+        'delivery_company_name',
+        'coupon_id',
     ];
     /**
      * The attributes that should be casted to native types.
@@ -63,6 +64,7 @@ class Order extends Model
         'delivery_fee'=>'double',
         'active'=>'boolean',
         'delivery_company_name' => 'string',
+        'coupon_id' => 'integer',
     ];
 
     /**
@@ -77,6 +79,7 @@ class Order extends Model
         'delivery_address_id' => 'required|exists:delivery_addresses,id',
         'restaurant_id' => 'required|exists:restaurants,id',
         'payment_id' => 'exists:payments,id',
+        'coupon_id' => 'exists:coupons,id',
     ];
 
     /**
@@ -86,7 +89,7 @@ class Order extends Model
      */
     protected $appends = [
         'custom_fields',
-        
+
     ];
 
     public function customFieldsValues()
@@ -131,6 +134,13 @@ class Order extends Model
         return $this->belongsTo(\App\Models\OrderStatus::class, 'order_status_id', 'id');
     }
 
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function coupon()
+    {
+        return $this->belongsTo(\App\Models\Coupon::class);
+    }
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/

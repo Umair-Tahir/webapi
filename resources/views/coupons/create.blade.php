@@ -73,8 +73,13 @@
 <script src="{{asset('plugins/datetimepicker/bootstrap-datetimepicker.min.js')}}"></script>
 <script type="text/javascript">
     $(function () {
-        $('#timePickerOpeningHour').datetimepicker();
-        $('#timePickerClosingHour').datetimepicker();
+        $('#timePickerOpeningHour').datetimepicker({
+            format: 'Do-MMMM-YYYY'
+
+        });
+        $('#timePickerClosingHour').datetimepicker({
+            format: 'Do-MMMM-YYYY'
+        });
     });
 </script>
 

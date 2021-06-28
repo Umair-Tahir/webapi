@@ -38,9 +38,9 @@ class CreateCouponsTable extends Migration
             // If voucher is active
             $table->boolean('active')->default(1); // added
             // When the voucher begins
-            $table->timestamp( 'starts_at' );
+            $table->string( 'starts_at' );
             // When the voucher ends
-            $table->timestamp( 'expires_at' );
+            $table->string( 'expires_at' );
             $table->timestamps( );
             // We like to horde data.
             $table->softDeletes( );

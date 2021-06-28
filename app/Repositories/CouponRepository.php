@@ -42,4 +42,27 @@ class CouponRepository extends BaseRepository
     {
         return Coupon::class;
     }
+
+
+    public function verifyCoupon(array $input){
+        $result=[
+            'success'=>false,
+            'message'=>'Coupon does not exist or has been expired Coupon.',
+        ];
+        $coupon=$this->couponValid($input['coupon_code']);
+        if($coupon){
+           if($this->restaurantEligibility($coupon,$input['restaurant_id'])){
+                if($this->usageLimit($coupon,$input['user_id'])){
+                            $result=$this->calculatedDiscount($coupon,$input['amount'] );
+                            $result['success']=true;
+                }else{
+                    $result['message']='Your limit of applying this coupon has been exceeded';
+                }
+           }else{
+               $result['message']='Coupon is not applicable on selected restaurant';
+           }
+        }
+        return $result;
+
+    }
 }
