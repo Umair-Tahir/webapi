@@ -53,7 +53,7 @@ class CouponRepository extends BaseRepository
         if($coupon){
            if($this->restaurantEligibility($coupon,$input['restaurant_id'])){
                 if($this->usageLimit($coupon,$input['user_id'])){
-                            $result=$this->calculatedDiscount($coupon,$input['amount'] );
+                            $result=$this->calculatedDiscount($coupon);
                             $result['success']=true;
                 }else{
                     $result['message']='Your limit of applying this coupon has been exceeded';

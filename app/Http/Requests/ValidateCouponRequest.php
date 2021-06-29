@@ -28,9 +28,7 @@ class ValidateCouponRequest extends FormRequest
         return [
             'coupon_code'   => 'required',
             'restaurant_id' => 'required',
-            'user_id' => 'required',
-            'amount' => 'required'
-
+            'user_id' => 'required'
         ];
     }
 }

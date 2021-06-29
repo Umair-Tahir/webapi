@@ -111,27 +111,12 @@ class Coupon extends Model
           return false;
     }
 
-    public function calculatedDiscount(Coupon $coupon, $amount){
-        $data=[
-            'discountable_amount'=>0,
-            'message'=>'No calculations were done as no type defined'
-        ];
-        $couponType=$coupon->type;
-        $discountableAmount=$coupon->discount_amount;
-        switch ($couponType) {
-            case 1:
-                  $data['discountable_amount']=$discountableAmount;
-                  $data['message']="Displaying amount discountable via applying " .config('enums.coupon_types_array.'.$couponType). " coupon";
-                break;
-            case 2:
-                $data['discountable_amount']=$amount*($discountableAmount/100);
-                $data['message']="Displaying amount discountable via applying " .config('enums.coupon_types_array.'.$couponType). " coupon";
-                break;
-            case 3:
-                $data['discountable_amount']=$discountableAmount;
-                $data['message']="Displaying amount discountable via applying " .config('enums.coupon_types_array.'.$couponType). " coupon";
-                break;
-        }
-        return $data;
-    }
+    public function calculatedDiscount(Coupon $coupon){
+         $couponType=$coupon->type;
+        $data['discountable_amount']=$coupon->discount_amount;
+        $data['type']=$couponType;
+        $data['type_name']=config('enums.coupon_types_array.'.$couponType);
+        $data['message']="Coupon verified. Displaying amount discountable via " .config('enums.coupon_types_array.'.$couponType). " coupon";
+    return $data;
+}
 }
