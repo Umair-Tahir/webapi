@@ -119,12 +119,13 @@ Route::middleware('auth:api')->group(function () {
     Route::post('order/tiktak_delivery', 'API\GenerateOrderAPIController@tiktakDeliveryService');
     Route::post('order/call_ride', 'API\GenerateOrderAPIController@callRide');
     /* *************   ************* */
+
     /* ************ Coupons  *********** */
     Route::post('coupon/validate_coupon', 'API\CouponAPIController@validateCoupon');
+    /* *************   ************* */
 
-
-
-    Route::post('order/call_ride', 'API\GenerateOrderAPIController@callRide');
+    /* ************ GlobalPayment  *********** */
+    Route::post('global_payment/authorize', 'API\GlobalPaymentAPIController@authorizePayment');
 
     /* *************   ************* */
 

@@ -9,6 +9,7 @@ use App\Models\DeliveryAddress;
 use App\Http\Requests\CreateOrderEvaDeliveryRequest;
 use App\Http\Requests\CreateOrderPickUpRequest;
 use App\Http\Requests\CreateOrderRestaurantDeliveryRequest;
+use App\Repositories\GlobalPaymentRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Models\MonerisPaymentService;
@@ -43,19 +44,20 @@ class GenerateOrderAPIController extends Controller
     /* @var  NotificationRepository */
     private $notificationRepository;
 
-    private $monerisPaymentService;
+    private $globalPaymentRepository;
 
-    public function __construct(OrderRepository $orderRepo, FoodOrderRepository $foodOrderRepository, CartRepository $cartRepo, PaymentRepository $paymentRepo, NotificationRepository $notificationRepo, UserRepository $userRepository)
+    public function __construct(OrderRepository $orderRepo,TikTakDeliveryService $tikTakDeliveryService, EvaDeliveryService $evaDeliveryService, FoodOrderRepository $foodOrderRepository, CartRepository $cartRepo, PaymentRepository $paymentRepo, GlobalPaymentRepository $globalPaymentRepository, NotificationRepository $notificationRepo, UserRepository $userRepository)
     {
         $this->orderRepository = $orderRepo;
         $this->foodOrderRepository = $foodOrderRepository;
         $this->cartRepository = $cartRepo;
         $this->userRepository = $userRepository;
         $this->paymentRepository = $paymentRepo;
+
+        $this->globalPaymentRepository = $globalPaymentRepository;
         $this->notificationRepository = $notificationRepo;
-        $this->monerisPaymentService = new MonerisPaymentService();
-        $this->tiktakDeliveryService = new TikTakDeliveryService();
-        $this->eva = new EvaDeliveryService();
+        $this->tikTakDeliveryService = $tikTakDeliveryService;
+        $this->eva = $evaDeliveryService;
     }
 
 
@@ -75,28 +77,22 @@ class GenerateOrderAPIController extends Controller
             if (empty($user)) {
                 $this->sendError('User was not found', 400);
             } else {
-                /***** Moneris Setup *****/
-                $gateway_env = getenv("Live_ENV_MONERIS");
 
-                /***** Setting Moneris Pre Request params *****/
-                $statusResponse = $this->monerisPaymentService->monerisStatus($gateway_env);
-
-                /**************** Purchase ****************/
-                $paymentStatus = $this->createPurchase($input, $statusResponse);
-                if ($paymentStatus['status'] == 'Failed')
-                    return $this->sendError('Payment was not successful due to false parameters. Check for payment credentials');
-                elseif ($paymentStatus['status'] == 'moneris_error')
-                    return $this->sendError($paymentStatus['data']);
+                /**************** Payment deduction request ****************/
+                $paymentCharge = $this->paymentTransaction($input);
+                if ($paymentCharge['status'] == 'Failed')
+                    return $this->sendError($paymentCharge['error']);
 
                 /**************** Purchase Successful ****************/
-                $input['payment_id'] = $paymentStatus['data'];
+                $input['payment_id'] = $paymentCharge['payment_id'];
 
                 /**************** Store Order Function ****************/
                 $orderResponse = $this->store_order($input);
                 if ($orderResponse['status'] == 'success') {
-
                     /************ Send Email ****************/
-                    $this->monerisPaymentService->sendOrderEmail($input['is_french'], $orderResponse['order']);
+                    $sentEmail = $this->orderRepository->sendOrderEmail($input['is_french'], $orderResponse['order']);
+                    if ($sentEmail != 'success')
+                        return $sentEmail;
                     return $this->sendResponse($orderResponse, 'Payment and order are successfully created');
                 } else {
                     return ($orderResponse);
@@ -105,6 +101,7 @@ class GenerateOrderAPIController extends Controller
         } catch (\Exception $e) {
             return $this->sendError($e->getMessage(), 401);
         }
+        return $this->sendError("internal server error", 500);
     }
 
     /*************Restaurant Delivery order request *************/
@@ -119,30 +116,24 @@ class GenerateOrderAPIController extends Controller
             /******  Find User ******/
             $user = $this->userRepository->findWithoutFail($input['user_id']);
             if (empty($user)) {
-                return $this->sendError('User was not found', 400);
+                $this->sendError('User was not found', 400);
             } else {
-                /***** Moneris Setup *****/
-                $gateway_env = getenv("Live_ENV_MONERIS");
-                /***** Setting Moneris Pre Request params *****/
-                $statusResponse = $this->monerisPaymentService->monerisStatus($gateway_env);
-
-                /**************** Purchase ****************/
-                $paymentStatus = $this->createPurchase($input, $statusResponse);
-                if ($paymentStatus['status'] == 'Failed')
-                    return $this->sendError('Payment was not successful due to false parameters. Check for payment credentials');
-                elseif ($paymentStatus['status'] == 'moneris_error')
-                    return $this->sendError($paymentStatus['data']);
+                /**************** Payment deduction request ****************/
+                $paymentCharge = $this->paymentTransaction($input);
+                if ($paymentCharge['status'] == 'Failed')
+                    return $this->sendError($paymentCharge['error']);
 
                 /**************** Purchase Successful ****************/
-                $input['payment_id'] = $paymentStatus['data'];
+                $input['payment_id'] = $paymentCharge['payment_id'];
 
                 /**************** Store Order Function ****************/
                 $orderResponse = $this->store_order($input);
 
                 if ($orderResponse['status'] == 'success') {
-
                     /************ Send Email ****************/
-                    $this->monerisPaymentService->sendOrderEmail($input['is_french'], $orderResponse['order']);
+                    $sentEmail = $this->orderRepository->sendOrderEmail($input['is_french'], $orderResponse['order']);
+                    if ($sentEmail != 'success')
+                        return $sentEmail;
                     return $this->sendResponse($orderResponse, 'Payment and order are successfully created');
                 } else {
                     return ($orderResponse);
@@ -151,8 +142,7 @@ class GenerateOrderAPIController extends Controller
         } catch (\Exception $e) {
             return $this->sendError($e->getMessage(), 401);
         }
-
-
+        return $this->sendError("internal server error", 500);
     }
 
 
@@ -162,28 +152,20 @@ class GenerateOrderAPIController extends Controller
         try {
             $input = $request->all();
             $input['delivery_type_id'] = 3;
+            $input['delivery_company_name'] = 'eva';
 
             /******  Find User ******/
             $user = $this->userRepository->findWithoutFail($input['user_id']);
             if (empty($user)) {
-                return $this->sendError('User was not found', 400);
+                $this->sendError('User was not found', 400);
             } else {
-                /***** Moneris Setup *****/
-                $gateway_env = getenv("Live_ENV_MONERIS");
-                /***** Setting Moneris Pre Request params *****/
-                $statusResponse = $this->monerisPaymentService->monerisStatus($gateway_env);
-
-
-                /**************** Purchase ****************/
-                $paymentStatus = $this->createPurchase($input, $statusResponse);
-                if ($paymentStatus['status'] == 'Failed')
-                    return $this->sendError('Payment was not successful due to false parameters. Check for payment credentials');
-                elseif ($paymentStatus['status'] == 'moneris_error')
-                    return $this->sendError($paymentStatus['data']);
+                /**************** Payment deduction request ****************/
+                $paymentCharge = $this->paymentTransaction($input);
+                if ($paymentCharge['status'] == 'Failed')
+                    return $this->sendError($paymentCharge['error']);
 
                 /**************** Purchase Successful ****************/
-                $input['payment_id'] = $paymentStatus['data'];
-                $input['delivery_company_name'] = 'eva';
+                $input['payment_id'] = $paymentCharge['payment_id'];
 
                 /**************** Store Order Function ****************/
                 $orderResponse = $this->store_order($input);
@@ -196,13 +178,15 @@ class GenerateOrderAPIController extends Controller
                         'distance' => $input['distance'],
                         'delivery_tax' => $input['delivery_tax'],
                         'total_charges_plus_tax' => $input['total_charges_plus_tax'],
-                        'tip_token_charge' => $input['tip'],
+                        'tip_token_charge' => ($input['tip'])? $input['tip'] : 0
                     ];
                     $evaModal = new EvaDeliveryService();
                     $evaModal->createEvaFromOrder($evaParams);
 
                     /************ Send Email ****************/
-                    $this->monerisPaymentService->sendOrderEmail($input['is_french'], $orderResponse['order']);
+                    $sentEmail = $this->orderRepository->sendOrderEmail($input['is_french'], $orderResponse['order']);
+                    if ($sentEmail != 'success')
+                        return $sentEmail;
                     return $this->sendResponse($orderResponse, 'Payment and order are successfully created');
                 } else {
                     return ($orderResponse);
@@ -211,38 +195,31 @@ class GenerateOrderAPIController extends Controller
         } catch (\Exception $e) {
             return $this->sendError($e->getMessage(), 401);
         }
+        return $this->sendError("internal server error", 500);
 
     }
 
 
     /************* Tookan (Tik Tak) Delivery Service order request *************/
-    public
-    function tiktakDeliveryService(Request $request)
+    public function tiktakDeliveryService(Request $request)
     {
         try {
             $input = $request->all();
             $input['delivery_type_id'] = 3;
+            $input['delivery_company_name'] = 'tik_tak';
 
             /******  Find User ******/
             $user = $this->userRepository->findWithoutFail($input['user_id']);
             if (empty($user)) {
-                return $this->sendError('User was not found', 400);
+                $this->sendError('User was not found', 400);
             } else {
-                /***** Moneris Setup *****/
-                $gateway_env = getenv("Live_ENV_MONERIS");
-                /***** Setting Moneris Pre Request params *****/
-                $statusResponse = $this->monerisPaymentService->monerisStatus($gateway_env);
-
-                /**************** Purchase ****************/
-                $paymentStatus = $this->createPurchase($input, $statusResponse);
-                if ($paymentStatus['status'] == 'Failed')
-                    return $this->sendError('Payment was not successful due to false parameters. Check for payment credentials');
-                elseif ($paymentStatus['status'] == 'moneris_error')
-                    return $this->sendError($paymentStatus['data']);
+                /**************** Payment deduction request ****************/
+                $paymentCharge = $this->paymentTransaction($input);
+                if ($paymentCharge['status'] == 'Failed')
+                    return $this->sendError($paymentCharge['error']);
 
                 /**************** Purchase Successful ****************/
-                $input['payment_id'] = $paymentStatus['data'];
-                $input['delivery_company_name'] = 'tik_tak';
+                $input['payment_id'] = $paymentCharge['payment_id'];
 
                 /**************** Store Order Function ****************/
                 $orderResponse = $this->store_order($input);
@@ -255,11 +232,12 @@ class GenerateOrderAPIController extends Controller
                         'distance' => $input['distance'],
                         'total' => $input['total'] // This is the delivery fee of tik tak
                     ];
-                    $tiktakModal = new TikTakDeliveryService();
-                    $tiktakModal->createTikTakFromOrder($tiktakParams);
+                    $this->tikTakDeliveryService->createTikTakFromOrder($tiktakParams);
 
                     /************ Send Email ****************/
-//                    $this->monerisPaymentService->sendOrderEmail($input['is_french'], $orderResponse['order']);
+                    $sentEmail = $this->orderRepository->sendOrderEmail($input['is_french'], $orderResponse['order']);
+                    if ($sentEmail != 'success')
+                        return $sentEmail;
                     return $this->sendResponse($orderResponse, 'Payment and order are successfully created');
                 } else {
                     return ($orderResponse);
@@ -268,6 +246,7 @@ class GenerateOrderAPIController extends Controller
         } catch (\Exception $e) {
             return $this->sendError($e->getMessage(), 401);
         }
+        return $this->sendError("internal server error", 500);
     }
 
 
@@ -275,8 +254,7 @@ class GenerateOrderAPIController extends Controller
      *       A single function is created for every call ride for every type of
      *       company delivery service
      *********************************************************/
-    public
-    function callRide(Request $request)
+    public function callRide(Request $request)
     {
         $validated = $request->validate([
             'order_id' => 'required'
@@ -307,7 +285,7 @@ class GenerateOrderAPIController extends Controller
                     $evaDs->business_tracking_id = $responseBody->business_tracking_id;
                 $evaDs->save();
 
-                $tracking_link = 'https://business.eva.cab/public/live_tracker?tracking_id='.$responseBody
+                $tracking_link = 'https://business.eva.cab/public/live_tracker?tracking_id=' . $responseBody
                         ->tracking_id;
                 $responseBody->tracking_link = $tracking_link;
                 return $this->sendResponse($responseBody, 'Successful');
@@ -315,7 +293,7 @@ class GenerateOrderAPIController extends Controller
                 /************************************* For Tik Tak **********************/
             } elseif ($order->delivery_type_id == 3 && $order->delivery_company_name == 'tik_tak') {
                 $tiktakDs = TikTakDeliveryService::where('order_id', $request['order_id'])->first();
-                $response = $this->tiktakDeliveryService->tiktakTask($order->id, $restaurant, $deliveryAddress, $user);
+                $response = $this->tikTakDeliveryService->tiktakTask($order->id, $restaurant, $deliveryAddress, $user);
 
                 $responseBody = json_decode($response->getBody());
 
@@ -332,7 +310,7 @@ class GenerateOrderAPIController extends Controller
                     return $this->sendError($responseBody, 400);
                 }
             } else
-                return $this->sendError('Order was not selected to be deilvered by a delivery service',
+                return $this->sendError('Order was not selected to be delivered by a delivery service',
                     400);
         } else
             return $this->sendError('Order Not Found', 404);
@@ -341,53 +319,44 @@ class GenerateOrderAPIController extends Controller
 
 
     /**
-     * Create new Purchase
+     * Do payment request to Global payments and save detail upon success
      */
-    public
-    function createPurchase($input, $statusResponse)
+    public function paymentTransaction($input)
     {
         /**************** Purchase ****************/
-        $params = [
-            'cvd' => $input['cvc_code'],
-            'order_id' => uniqid('1234-56789', true) . '_' . date('Y-m-d'),
-            'amount' => $input['grand_total'],
-            'credit_card' => str_replace(' ', '', $input['credit_card']),
-            'expiry_month' => $input['expiry_month'],
-            'expiry_year' => $input['expiry_year'],
-        ];
-        $purchaseResponse = $statusResponse['gateway']->purchase($params);
+        $user = $this->userRepository->findOrFail($input['user_id']);
+        $input['user_name'] = $user->name;
+        $paymentResponse = $this->globalPaymentRepository->authorizePayment($input);
+        if (gettype($paymentResponse) == 'object' && $paymentResponse->responseCode == 00) {
 
-        /********* Checking for payment status
-         * &
-         * Saving Payment
-         **********/
-        if ($purchaseResponse->successful) {
-            $receipt = $purchaseResponse->receipt();
-            $receipt_json = json_encode($receipt);
-            $variable = $receipt->read('message');
-            $variable = substr((string)$variable, 0, strpos((string)$variable, "  "));
+            //On success payment save details and return payment ID
             $payment = $this->paymentRepository->create([
-                "price" => $receipt->read('amount'),
+                "price" => $input['grand_total'],
                 "user_id" => $input['user_id'],
-                "status" => $variable,
-                "method" => 'moneris',
-                'moneris_order_id' => $receipt->read('id'),
-                'moneris_receipt' => $receipt->read('reference')
+                "status" => 'success',
+                "method" => 'global_payment',
+                'response_code' => $paymentResponse->responseCode,
+                'response_message' => $paymentResponse->responseMessage,
+                'gp_order_id' => $paymentResponse->orderId,
+                'authorization_code' => $paymentResponse->authorizationCode,
+                'transaction_id' => $paymentResponse->transactionId,
+                'scheme_id' => $paymentResponse->schemeId,
             ]);
-            return $response = [
+
+            $response = [
                 'status' => 'Success',
-                'data' => $payment->id
+                'payment_id' => $payment->id
             ];
-        } elseif ($purchaseResponse->errors) {
-            $errors = $purchaseResponse->errors;
-            return $response = [
-                'status' => 'moneris_error', //These errors are generated by moneris
-                'data' => $errors
+        } else {
+            //On transaction errors  return error message by Global Payments/Custom message
+            $response = [
+                'status' => 'Failed',
+//                'error' => $paymentResponse,
+                'error' => "Unable to authorize the payment. Please check your debit/credit card details."
             ];
-        } else
-            return $response = [
-                'status' => 'Failed'
-            ];
+        }
+
+        return $response;
 
     }
 
@@ -395,38 +364,18 @@ class GenerateOrderAPIController extends Controller
     /**
      * Create new Order after receiving parameters from app
      */
-    public
-    function store_order($input)
+    public function store_order($input)
     {
         /************* Create Order *****/
         try {
-            $order = $this->orderRepository->create([
-                'user_id' => $input['user_id'],
-                'order_status_id' => 1,
-                'tax' => $input['tax'],
-                'hint' => $input['hint'],
-                'active' => 1,
-                'payment_id' => $input['payment_id'],
-                'tip' => $input['tip'],
-                'vendor_shared_price' => $input['vendor_shared_price'],
-                'eezly_shared_price' => $input['eezly_shared_price'],
-                'grand_total' => $input['grand_total'],
-                'is_french' => $input['is_french'],
-
-                'restaurant_id' => $input['restaurant_id'],
-                "delivery_address_id" => $input['delivery_address_id'],
-                'expected_delivery_time' => $input['expected_delivery_time'],
-                "delivery_fee" => $input['delivery_fee'],
-                'delivery_type_id' => $input['delivery_type_id'],
-                'delivery_company_name' => $input['delivery_company_name'],
-            ]);
+            $input['order_status_id'] = 1;
+            $order = $this->orderRepository->create($input);
 
             /******** Making Food Order  ***/
             foreach ($input['foods'] as $foodOrder) {
                 $foodOrder['order_id'] = $order->id;
                 $this->foodOrderRepository->create($foodOrder);
             }
-
             $orderResponse = [
                 'status' => 'success',
                 'order' => $order

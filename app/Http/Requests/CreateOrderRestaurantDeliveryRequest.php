@@ -39,7 +39,7 @@ class CreateOrderRestaurantDeliveryRequest extends FormRequest
             'vendor_shared_price'    => 'required',
             'eezly_shared_price'     => 'required',
             'grand_total'            => 'required',
-            "tip" => 'required'
+//            "tip" => 'required'
 
 
         ];
@@ -62,7 +62,7 @@ class CreateOrderRestaurantDeliveryRequest extends FormRequest
             'delivery_address_id.required'  =>  "Delivery Address ID is required",
             'delivery_fee.required'  =>  "Delivery Fee is required",
             'expected_delivery_time.required'  =>  "Expected Delivery Time is required",
-            'tip.required'  =>  "Tip is required",
+//            'tip.required'  =>  "Tip is required",
         ];
     }
 }

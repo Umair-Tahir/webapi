@@ -18,7 +18,6 @@ class Payment extends Model
 {
 
     public $table = 'payments';
-    
 
 
     public $fillable = [
@@ -28,7 +27,14 @@ class Payment extends Model
         'method',
         'user_id',
         'moneris_order_id',
-        'moneris_receipt'
+        'moneris_receipt',
+        'response_code',
+        'response_message',
+        'gp_order_id',
+        'authorization_code',
+        'transaction_id',
+        'scheme_id',
+
     ];
 
     /**
@@ -42,6 +48,12 @@ class Payment extends Model
         'status' => 'string',
         'method' => 'string',
         'user_id' => 'integer',
+        'response_code'=> 'integer',
+        'response_message'=> 'string',
+        'gp_order_id'=> 'string',
+        'authorization_code'=> 'string',
+        'transaction_id'=> 'string',
+        'scheme_id'=> 'string',
     ];
 
     /**
@@ -53,6 +65,8 @@ class Payment extends Model
         'price' => 'required',
         'description' => 'required',
         'user_id' => 'required|exists:users,id',
+        'response_code' => 'required',
+        'response_message' => 'required'
     ];
 
     /**

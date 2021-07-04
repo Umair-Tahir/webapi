@@ -1,7 +1,10 @@
 <?php
 namespace App\Models;
 
+use App\Mail\OrderNotificationEmail;
 use Eloquent as Model;
+use GlobalPayments\Api\Entities\Exceptions\ApiException;
+use Illuminate\Support\Facades\Mail;
 
 /**
  * Class Order
@@ -177,5 +180,25 @@ class Order extends Model
 
     public function evadeliveryservice(){
         return $this->hasOne(EvaDeliveryService::class);
+    }
+
+
+    /**
+     * Send order confirmation email
+     **/
+    public function sendOrderEmail($isFrench, $order)
+    {
+        try {
+        $toRestaurant = false;
+        //Send email invoice to customer $order->user->email
+        Mail::to($order->user->email)->send(new OrderNotificationEmail($order, $isFrench, $toRestaurant));
+        $toRestaurant = true;
+        //Send email invoice to restaurant $order->foodOrders[0]->food->restaurant->users[0]->email
+        Mail::to('philippe.dallaire4@gmail.com')->send(new OrderNotificationEmail($order, $isFrench, $toRestaurant));
+        } catch (ApiException $e) {
+            return $e->getMessage();
+        }
+
+        return 'success';
     }
 }
