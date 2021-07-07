@@ -7,9 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class FoodOrderExtra extends Model
 {
 
-    public $table = ' food_order_extras';
-
-
+    public $table = 'food_order_extras';
 
     public $fillable = [
         'price',
@@ -47,4 +45,8 @@ class FoodOrderExtra extends Model
      * @var array
      */
 
+    public function foodOrder()
+    {
+        return $this->belongsTo(\App\Models\FoodOrder::class);
+    }
 }

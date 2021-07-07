@@ -39,8 +39,6 @@ Route::middleware('auth:api')->group(function () {
             /* --- */
 
             Route::resource('earnings', 'API\EarningAPIController');
-
-
         });
     });
     /* ***************************************   *************************************** */
@@ -71,12 +69,12 @@ Route::middleware('auth:api')->group(function () {
     Route::post('delivery_service/service_availability', 'API\DeliveryService\EvaAPIController@serviceAvailability');
     Route::post('delivery_service/get_quote', 'API\DeliveryService\EvaAPIController@getQuote');
     Route::post('delivery_service/call_ride', 'API\DeliveryService\EvaAPIController@callRide');
-//    Route::post('delivery_service/restaurant_call_ride', 'API\DeliveryService\EvaAPIController@restaurantCallRide');
+    //    Route::post('delivery_service/restaurant_call_ride', 'API\DeliveryService\EvaAPIController@restaurantCallRide');
 
     /* *************  ************* */
 
     /* ************* Restaurants ************* */
-    Route::resource('restaurants', 'API\RestaurantAPIController');
+    Route::resource('restaurants', 'API\RestaurantAPIController@');
     /* *************  ************* */
 
     /* *************  Extras ************* */
@@ -155,7 +153,7 @@ Route::middleware('auth:api')->group(function () {
     /* ************* TikTak Delivery Get Quote ,Call Ride ************* */
     Route::post('tiktak_delivery_service/fare_estimation', 'API\DeliveryService\TikTakApiController@getFareEstimate');
     Route::post('tiktak_delivery_service/create_task', 'API\DeliveryService\TikTakApiController@tiktakCreateTask');
-//    Route::post('tiktak_delivery_service/call_ride', 'API\DeliveryService\TikTakApiController@restaurantCallRide');
+    //    Route::post('tiktak_delivery_service/call_ride', 'API\DeliveryService\TikTakApiController@restaurantCallRide');
     /* *************  Trending_Foods ************* */
     Route::get('trending_foods', 'API\TrendAPIController@trendingFoods');
     /* *************   ************* */
@@ -166,10 +164,14 @@ Route::middleware('auth:api')->group(function () {
     /* *************   ************* */
 
 
+    /* *************  Text-Em-all ************* */
+    Route::get('text-em-all', 'API\TextEmAllAPIController@sample22');
+    /* *************   ************* */
+
+
     /* *************  Verify Phone ************* */
     Route::post('phone_verify', 'API\Manager\UserAPIController@phoneVerify');
     /* *************   ************* */
-
 });
 
 /* ************************ Public routes *********************** */

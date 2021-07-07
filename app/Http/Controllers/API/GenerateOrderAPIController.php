@@ -22,7 +22,7 @@ use App\Repositories\UserRepository;
 use App\Models\EvaDeliveryService;
 use App\Models\TikTakDeliveryService;
 use App\Models\Order;
-
+use App\models\TextEmAll;
 use Flash;
 use Illuminate\Support\Facades\Mail;
 use Prettus\Validator\Exceptions\ValidatorException;
@@ -46,7 +46,7 @@ class GenerateOrderAPIController extends Controller
 
     private $globalPaymentRepository;
 
-    public function __construct(OrderRepository $orderRepo,TikTakDeliveryService $tikTakDeliveryService, EvaDeliveryService $evaDeliveryService, FoodOrderRepository $foodOrderRepository, CartRepository $cartRepo, PaymentRepository $paymentRepo, GlobalPaymentRepository $globalPaymentRepository, NotificationRepository $notificationRepo, UserRepository $userRepository)
+    public function __construct(OrderRepository $orderRepo, TikTakDeliveryService $tikTakDeliveryService, EvaDeliveryService $evaDeliveryService, FoodOrderRepository $foodOrderRepository, CartRepository $cartRepo, PaymentRepository $paymentRepo, GlobalPaymentRepository $globalPaymentRepository, NotificationRepository $notificationRepo, UserRepository $userRepository)
     {
         $this->orderRepository = $orderRepo;
         $this->foodOrderRepository = $foodOrderRepository;
@@ -58,6 +58,7 @@ class GenerateOrderAPIController extends Controller
         $this->notificationRepository = $notificationRepo;
         $this->tikTakDeliveryService = $tikTakDeliveryService;
         $this->eva = $evaDeliveryService;
+        $this->textEmAll = new TextEmAll();
     }
 
 
@@ -69,7 +70,7 @@ class GenerateOrderAPIController extends Controller
             $input['delivery_type_id'] = 1;
             $input['delivery_address_id'] = null;
             $input['delivery_fee'] = 0;
-            $input ['tip'] = 0;
+            $input['tip'] = 0;
 
 
             /******  Find User ******/
@@ -78,7 +79,7 @@ class GenerateOrderAPIController extends Controller
                 $this->sendError('User was not found', 400);
             } else {
 
-                /**************** Payment deduction request ****************/
+                /**************** GPS Payment deduction request ****************/
                 $paymentCharge = $this->paymentTransaction($input);
                 if ($paymentCharge['status'] == 'Failed')
                     return $this->sendError($paymentCharge['error']);
@@ -89,10 +90,15 @@ class GenerateOrderAPIController extends Controller
                 /**************** Store Order Function ****************/
                 $orderResponse = $this->store_order($input);
                 if ($orderResponse['status'] == 'success') {
+                    /************ Send Text ****************/
+                    $textemall = $this->textEmAll->createText($orderResponse['order'], $input['restaurant_id']);
                     /************ Send Email ****************/
                     $sentEmail = $this->orderRepository->sendOrderEmail($input['is_french'], $orderResponse['order']);
-                    if ($sentEmail != 'success')
+                    if ($sentEmail  != 'success') {
                         return $sentEmail;
+                    } else if ($textemall != 'success')
+                        return $this->sendError($textemall, 'Failed');
+
                     return $this->sendResponse($orderResponse, 'Payment and order are successfully created');
                 } else {
                     return ($orderResponse);
@@ -108,7 +114,6 @@ class GenerateOrderAPIController extends Controller
 
     public function restaurantDeliveryOrder(CreateOrderRestaurantDeliveryRequest $request)
     {
-
         try {
             $input = $request->all();
             $input['delivery_type_id'] = 2;
@@ -130,10 +135,15 @@ class GenerateOrderAPIController extends Controller
                 $orderResponse = $this->store_order($input);
 
                 if ($orderResponse['status'] == 'success') {
+                    /************ Send Text ****************/
+                    $textemall = $this->textEmAll->createText($orderResponse['order'], $input['restaurant_id']);
                     /************ Send Email ****************/
                     $sentEmail = $this->orderRepository->sendOrderEmail($input['is_french'], $orderResponse['order']);
-                    if ($sentEmail != 'success')
+                    if ($sentEmail  != 'success') {
                         return $sentEmail;
+                    } else if ($textemall != 'success')
+                        return $this->sendError($textemall, 'Failed');
+
                     return $this->sendResponse($orderResponse, 'Payment and order are successfully created');
                 } else {
                     return ($orderResponse);
@@ -178,15 +188,19 @@ class GenerateOrderAPIController extends Controller
                         'distance' => $input['distance'],
                         'delivery_tax' => $input['delivery_tax'],
                         'total_charges_plus_tax' => $input['total_charges_plus_tax'],
-                        'tip_token_charge' => ($input['tip'])? $input['tip'] : 0
+                        'tip_token_charge' => ($input['tip']) ? $input['tip'] : 0
                     ];
                     $evaModal = new EvaDeliveryService();
                     $evaModal->createEvaFromOrder($evaParams);
 
+                    /************ Send Text ****************/
+                    $textemall = $this->textEmAll->createText($orderResponse['order'], $input['restaurant_id']);
                     /************ Send Email ****************/
                     $sentEmail = $this->orderRepository->sendOrderEmail($input['is_french'], $orderResponse['order']);
-                    if ($sentEmail != 'success')
+                    if ($sentEmail  != 'success') {
                         return $sentEmail;
+                    } else if ($textemall != 'success')
+                        return $this->sendError($textemall, 'Failed');
                     return $this->sendResponse($orderResponse, 'Payment and order are successfully created');
                 } else {
                     return ($orderResponse);
@@ -196,7 +210,6 @@ class GenerateOrderAPIController extends Controller
             return $this->sendError($e->getMessage(), 401);
         }
         return $this->sendError("internal server error", 500);
-
     }
 
 
@@ -234,10 +247,14 @@ class GenerateOrderAPIController extends Controller
                     ];
                     $this->tikTakDeliveryService->createTikTakFromOrder($tiktakParams);
 
+                    /************ Send Text ****************/
+                    $textemall = $this->textEmAll->createText($orderResponse['order'], $input['restaurant_id']);
                     /************ Send Email ****************/
                     $sentEmail = $this->orderRepository->sendOrderEmail($input['is_french'], $orderResponse['order']);
-                    if ($sentEmail != 'success')
+                    if ($sentEmail  != 'success') {
                         return $sentEmail;
+                    } else if ($textemall != 'success')
+                        return $this->sendError($textemall, 'Failed');
                     return $this->sendResponse($orderResponse, 'Payment and order are successfully created');
                 } else {
                     return ($orderResponse);
@@ -275,7 +292,8 @@ class GenerateOrderAPIController extends Controller
                 $responseBody = json_decode($response->getBody());
                 if (!$responseBody) {
                     return $this
-                        ->sendError('Ride cannot be called as EVA is currently not available',
+                        ->sendError(
+                            'Ride cannot be called as EVA is currently not available',
                             $response->getStatusCode()
                         );
                 }
@@ -286,7 +304,7 @@ class GenerateOrderAPIController extends Controller
                 $evaDs->save();
 
                 $tracking_link = 'https://business.eva.cab/public/live_tracker?tracking_id=' . $responseBody
-                        ->tracking_id;
+                    ->tracking_id;
                 $responseBody->tracking_link = $tracking_link;
                 return $this->sendResponse($responseBody, 'Successful');
 
@@ -305,16 +323,16 @@ class GenerateOrderAPIController extends Controller
 
                     $tiktakDs->save();
                     return $this->sendResponse($responseBody, 'Call Ride Successful');
-
                 } else {
                     return $this->sendError($responseBody, 400);
                 }
             } else
-                return $this->sendError('Order was not selected to be delivered by a delivery service',
-                    400);
+                return $this->sendError(
+                    'Order was not selected to be delivered by a delivery service',
+                    400
+                );
         } else
             return $this->sendError('Order Not Found', 404);
-
     }
 
 
@@ -351,13 +369,12 @@ class GenerateOrderAPIController extends Controller
             //On transaction errors  return error message by Global Payments/Custom message
             $response = [
                 'status' => 'Failed',
-//                'error' => $paymentResponse,
+                //                'error' => $paymentResponse,
                 'error' => "Unable to authorize the payment. Please check your debit/credit card details."
             ];
         }
 
         return $response;
-
     }
 
 
@@ -387,4 +404,3 @@ class GenerateOrderAPIController extends Controller
         return $orderResponse;
     }
 }
-

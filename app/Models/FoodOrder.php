@@ -21,7 +21,7 @@ class FoodOrder extends Model
 {
 
     public $table = 'food_orders';
-    
+
 
 
     public $fillable = [
@@ -72,16 +72,16 @@ class FoodOrder extends Model
 
     public function getCustomFieldsAttribute()
     {
-        $hasCustomField = in_array(static::class,setting('custom_field_models',[]));
-        if (!$hasCustomField){
+        $hasCustomField = in_array(static::class, setting('custom_field_models', []));
+        if (!$hasCustomField) {
             return [];
         }
         $array = $this->customFieldsValues()
-            ->join('custom_fields','custom_fields.id','=','custom_field_values.custom_field_id')
-            ->where('custom_fields.in_table','=',true)
+            ->join('custom_fields', 'custom_fields.id', '=', 'custom_field_values.custom_field_id')
+            ->where('custom_fields.in_table', '=', true)
             ->get()->toArray();
 
-        return convertToAssoc($array,'name');
+        return convertToAssoc($array, 'name');
     }
 
     /**
@@ -107,9 +107,16 @@ class FoodOrder extends Model
     {
         return $this->belongsTo(\App\Models\Order::class, 'order_id', 'id');
     }
-        /**
-    * @return \Illuminate\Database\Eloquent\Collection
-    */
+
+    public function foodOrderExtras()
+    {
+        return $this->hasMany(\App\Models\FoodOrderExtra::class);
+    }
+
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Collection
+     */
     public function getExtrasAttribute()
     {
         return $this->extras()->get(['extras.id', 'extras.name']);
@@ -120,6 +127,6 @@ class FoodOrder extends Model
      */
     public function getFoodAttribute()
     {
-        return $this->food()->get(['foods.id', 'foods.name','foods.price','foods.unit','foods.weight']);
+        return $this->food()->get(['foods.id', 'foods.name', 'foods.price', 'foods.unit', 'foods.weight']);
     }
 }
