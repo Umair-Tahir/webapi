@@ -34,8 +34,7 @@ class CreateOrderPickUpRequest extends FormRequest
             'vendor_shared_price' => 'required',
             'eezly_shared_price' => 'required',
             "restaurant_id" => 'required',
-            'grand_total' => 'required',
-            'expected_delivery_time' => 'required'
+            'grand_total' => 'required'
         ];
     }
 
@@ -52,8 +51,7 @@ class CreateOrderPickUpRequest extends FormRequest
             'vendor_shared_price.required'  =>  "Vendor Shared Price is required",
             'eezly_shared_price.required'  => "Eezly Shared Price is required",
             'restaurant_id.required'  =>  "Restaurant ID is required",
-            'grand_total.required'  =>  "Grand Total is required",
-            'expected_delivery_time.required'  =>  "Expected Delivery Time is required"
+            'grand_total.required'  =>  "Grand Total is required"
         ];
     }
 }
