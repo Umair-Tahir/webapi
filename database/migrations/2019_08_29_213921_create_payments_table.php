@@ -19,7 +19,7 @@ class CreatePaymentsTable extends Migration
             $table->integer('user_id')->unsigned();
             $table->string('status')->nullable();
             $table->string('method')->nullable();
-            $table->integer('response_code')->nullable();
+            $table->string('response_code')->nullable();
             $table->string('response_message')->nullable();
             $table->string('gp_order_id')->nullable();
             $table->string('authorization_code')->nullable();

@@ -46,6 +46,10 @@ class GenerateOrderAPIController extends Controller
 
     private $globalPaymentRepository;
 
+    private $tikTakDeliveryService;
+    private $eva;
+
+    private $textEmAll;
     public function __construct(OrderRepository $orderRepo, TikTakDeliveryService $tikTakDeliveryService, EvaDeliveryService $evaDeliveryService, FoodOrderRepository $foodOrderRepository, CartRepository $cartRepo, PaymentRepository $paymentRepo, GlobalPaymentRepository $globalPaymentRepository, NotificationRepository $notificationRepo, UserRepository $userRepository)
     {
         $this->orderRepository = $orderRepo;
@@ -342,8 +346,6 @@ class GenerateOrderAPIController extends Controller
     public function paymentTransaction($input)
     {
         /**************** Purchase ****************/
-        $user = $this->userRepository->findOrFail($input['user_id']);
-        $input['user_name'] = $user->name;
         $paymentResponse = $this->globalPaymentRepository->authorizePayment($input);
         if (gettype($paymentResponse) == 'object' && $paymentResponse->responseCode == 00) {
 

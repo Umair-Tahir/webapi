@@ -28,6 +28,7 @@ class CreateOrderEvaDeliveryRequest extends FormRequest
             'credit_card' => 'required',
             'expiry_month' => 'required',
             'expiry_year' => 'required',
+            'card_holder_name' => 'required',
             "user_id" => 'required',
             'is_french' => 'required',
             'tax' => 'required',

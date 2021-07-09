@@ -48,7 +48,7 @@ class Payment extends Model
         'status' => 'string',
         'method' => 'string',
         'user_id' => 'integer',
-        'response_code'=> 'integer',
+        'response_code'=> 'string',
         'response_message'=> 'string',
         'gp_order_id'=> 'string',
         'authorization_code'=> 'string',

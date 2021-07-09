@@ -17,12 +17,24 @@ class GlobalPayment extends Model
 
     public function authorizePayment($data)
     {
+        if(getenv('Live_GP')=== "true"){
+            $clientId=getenv('GP_CLIENT_ID');
+            $accountId=getenv('GP_ACCOUNT_ID');
+            $secret=getenv('GP_SECRET');
+            $url=getenv('GP_URL');
+
+        }else{
+            $clientId=getenv('SANDBOX_GP_CLIENT_ID');
+            $accountId=getenv('SANDBOX_GP_ACCOUNT_ID');
+            $secret=getenv('SANDBOX_GP_SECRET');
+            $url=getenv('SANDBOX_GP_URL');
+        }
 
         $config = new GpEcomConfig();
-        $config->merchantId = "eezly";
-        $config->accountId = "internet";
-        $config->sharedSecret = "secret";
-        $config->serviceUrl = "https://api.sandbox.realexpayments.com/epage-remote.cgi";
+        $config->merchantId = $clientId;
+        $config->accountId = $accountId;
+        $config->sharedSecret = $secret;
+        $config->serviceUrl = $url;
         ServicesContainer::configureService($config);
 
 // create the card object
@@ -31,7 +43,7 @@ class GlobalPayment extends Model
         $card->expMonth = $data['expiry_month'];
         $card->expYear = $data['expiry_year'];
         $card->cvn = $data['cvc_code'];
-        $card->cardHolderName =$data['user_name'];
+        $card->cardHolderName =$data['card_holder_name'];
 
         try {
             // process an auto-capture authorization

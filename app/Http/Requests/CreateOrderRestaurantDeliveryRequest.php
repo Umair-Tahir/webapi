@@ -29,6 +29,7 @@ class CreateOrderRestaurantDeliveryRequest extends FormRequest
             'restaurant_id' => 'required',
             'expiry_month'   => 'required',
             'expiry_year'   => 'required',
+            'card_holder_name' => 'required',
             'cvc_code'   => 'required',
             "user_id"       => 'required',
             "delivery_address_id" => 'required',

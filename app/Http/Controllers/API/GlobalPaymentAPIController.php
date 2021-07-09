@@ -40,8 +40,6 @@ class GlobalPaymentAPIController extends Controller
         $input=$request->all();
 
         try{
-            $user=User::findOrFail($input['user_id']);
-            $input['user_name']=$user->name;
             $paymentResponse=$this->globalPaymentRepository->authorizePayment($input);
             if (gettype($paymentResponse) == 'object' && $paymentResponse->responseCode == 00) {
 
